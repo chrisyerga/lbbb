@@ -1,0 +1,30 @@
+services:
+  web:
+    image: ${WEB_IMAGE:-ghcr.io/OWNER/REPO:latest}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      SITE_URL: ${SITE_URL}
+      VITE_CONVEX_URL: ${VITE_CONVEX_URL}
+      GIT_SHA: ${GIT_SHA:-unknown}
+    ports:
+      - '127.0.0.1:3000:3000'
+
+  caddy:
+    image: caddy:2.9-alpine
+    restart: unless-stopped
+    depends_on:
+      - web
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN}
+    volumes:
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
