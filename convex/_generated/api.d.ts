@@ -14,6 +14,9 @@ import type * as costs from "../costs.js";
 import type * as generation from "../generation.js";
 import type * as http from "../http.js";
 import type * as jobs from "../jobs.js";
+import type * as lib_requireUser from "../lib/requireUser.js";
+import type * as pets from "../pets.js";
+import type * as profiles from "../profiles.js";
 import type * as prompts from "../prompts.js";
 import type * as quotas from "../quotas.js";
 
@@ -30,6 +33,9 @@ declare const fullApi: ApiFromModules<{
   generation: typeof generation;
   http: typeof http;
   jobs: typeof jobs;
+  "lib/requireUser": typeof lib_requireUser;
+  pets: typeof pets;
+  profiles: typeof profiles;
   prompts: typeof prompts;
   quotas: typeof quotas;
 }>;

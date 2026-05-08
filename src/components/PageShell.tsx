@@ -3,10 +3,12 @@ import type { ReactNode } from 'react'
 export function PageShell({
   eyebrow,
   title,
+  description,
   children,
 }: {
   eyebrow: string
   title: string
+  description?: string
   children: ReactNode
 }) {
   return (
@@ -16,6 +18,11 @@ export function PageShell({
         <h1 className="display-title m-0 max-w-3xl text-4xl font-bold tracking-tight text-[var(--sea-ink)] sm:text-5xl">
           {title}
         </h1>
+        {description ? (
+          <p className="mt-3 max-w-2xl text-sm text-[var(--sea-ink-soft)]">
+            {description}
+          </p>
+        ) : null}
         <div className="mt-8">{children}</div>
       </section>
     </main>

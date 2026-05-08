@@ -11,14 +11,17 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AppRouteRouteImport } from './routes/app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppAccountRouteImport } from './routes/app/account'
 import { Route as PPetSlugIndexRouteImport } from './routes/p/$petSlug/index'
 import { Route as AppPetsIndexRouteImport } from './routes/app/pets/index'
 import { Route as AppAdminIndexRouteImport } from './routes/app/admin/index'
 import { Route as PPetSlugArchiveRouteImport } from './routes/p/$petSlug/archive'
 import { Route as PPetSlugAboutRouteImport } from './routes/p/$petSlug/about'
 import { Route as AppPetsNewRouteImport } from './routes/app/pets/new'
+import { Route as AppPetsPetIdRouteImport } from './routes/app/pets/$petId'
 import { Route as AppGenerationsJobIdRouteImport } from './routes/app/generations.$jobId'
 import { Route as AppAdminJobsRouteImport } from './routes/app/admin/jobs'
 import { Route as AppAdminCostsRouteImport } from './routes/app/admin/costs'
@@ -34,15 +37,25 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
-  id: '/app/',
-  path: '/app/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppAccountRoute = AppAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const PPetSlugIndexRoute = PPetSlugIndexRouteImport.update({
   id: '/p/$petSlug/',
@@ -50,14 +63,14 @@ const PPetSlugIndexRoute = PPetSlugIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppPetsIndexRoute = AppPetsIndexRouteImport.update({
-  id: '/app/pets/',
-  path: '/app/pets/',
-  getParentRoute: () => rootRouteImport,
+  id: '/pets/',
+  path: '/pets/',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const AppAdminIndexRoute = AppAdminIndexRouteImport.update({
-  id: '/app/admin/',
-  path: '/app/admin/',
-  getParentRoute: () => rootRouteImport,
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const PPetSlugArchiveRoute = PPetSlugArchiveRouteImport.update({
   id: '/p/$petSlug/archive',
@@ -70,24 +83,29 @@ const PPetSlugAboutRoute = PPetSlugAboutRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppPetsNewRoute = AppPetsNewRouteImport.update({
-  id: '/app/pets/new',
-  path: '/app/pets/new',
-  getParentRoute: () => rootRouteImport,
+  id: '/pets/new',
+  path: '/pets/new',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppPetsPetIdRoute = AppPetsPetIdRouteImport.update({
+  id: '/pets/$petId',
+  path: '/pets/$petId',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const AppGenerationsJobIdRoute = AppGenerationsJobIdRouteImport.update({
-  id: '/app/generations/$jobId',
-  path: '/app/generations/$jobId',
-  getParentRoute: () => rootRouteImport,
+  id: '/generations/$jobId',
+  path: '/generations/$jobId',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const AppAdminJobsRoute = AppAdminJobsRouteImport.update({
-  id: '/app/admin/jobs',
-  path: '/app/admin/jobs',
-  getParentRoute: () => rootRouteImport,
+  id: '/admin/jobs',
+  path: '/admin/jobs',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const AppAdminCostsRoute = AppAdminCostsRouteImport.update({
-  id: '/app/admin/costs',
-  path: '/app/admin/costs',
-  getParentRoute: () => rootRouteImport,
+  id: '/admin/costs',
+  path: '/admin/costs',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const PPetSlugPostsPostSlugRoute = PPetSlugPostsPostSlugRouteImport.update({
   id: '/p/$petSlug/posts/$postSlug',
@@ -97,12 +115,15 @@ const PPetSlugPostsPostSlugRoute = PPetSlugPostsPostSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/app/account': typeof AppAccountRoute
   '/app/': typeof AppIndexRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
   '/app/admin/jobs': typeof AppAdminJobsRoute
   '/app/generations/$jobId': typeof AppGenerationsJobIdRoute
+  '/app/pets/$petId': typeof AppPetsPetIdRoute
   '/app/pets/new': typeof AppPetsNewRoute
   '/p/$petSlug/about': typeof PPetSlugAboutRoute
   '/p/$petSlug/archive': typeof PPetSlugArchiveRoute
@@ -115,10 +136,12 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/app/account': typeof AppAccountRoute
   '/app': typeof AppIndexRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
   '/app/admin/jobs': typeof AppAdminJobsRoute
   '/app/generations/$jobId': typeof AppGenerationsJobIdRoute
+  '/app/pets/$petId': typeof AppPetsPetIdRoute
   '/app/pets/new': typeof AppPetsNewRoute
   '/p/$petSlug/about': typeof PPetSlugAboutRoute
   '/p/$petSlug/archive': typeof PPetSlugArchiveRoute
@@ -130,12 +153,15 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/app/account': typeof AppAccountRoute
   '/app/': typeof AppIndexRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
   '/app/admin/jobs': typeof AppAdminJobsRoute
   '/app/generations/$jobId': typeof AppGenerationsJobIdRoute
+  '/app/pets/$petId': typeof AppPetsPetIdRoute
   '/app/pets/new': typeof AppPetsNewRoute
   '/p/$petSlug/about': typeof PPetSlugAboutRoute
   '/p/$petSlug/archive': typeof PPetSlugArchiveRoute
@@ -148,12 +174,15 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/app'
     | '/about'
     | '/login'
+    | '/app/account'
     | '/app/'
     | '/app/admin/costs'
     | '/app/admin/jobs'
     | '/app/generations/$jobId'
+    | '/app/pets/$petId'
     | '/app/pets/new'
     | '/p/$petSlug/about'
     | '/p/$petSlug/archive'
@@ -166,10 +195,12 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/login'
+    | '/app/account'
     | '/app'
     | '/app/admin/costs'
     | '/app/admin/jobs'
     | '/app/generations/$jobId'
+    | '/app/pets/$petId'
     | '/app/pets/new'
     | '/p/$petSlug/about'
     | '/p/$petSlug/archive'
@@ -180,12 +211,15 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/app'
     | '/about'
     | '/login'
+    | '/app/account'
     | '/app/'
     | '/app/admin/costs'
     | '/app/admin/jobs'
     | '/app/generations/$jobId'
+    | '/app/pets/$petId'
     | '/app/pets/new'
     | '/p/$petSlug/about'
     | '/p/$petSlug/archive'
@@ -197,17 +231,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRouteRoute: typeof AppRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   LoginRoute: typeof LoginRoute
-  AppIndexRoute: typeof AppIndexRoute
-  AppAdminCostsRoute: typeof AppAdminCostsRoute
-  AppAdminJobsRoute: typeof AppAdminJobsRoute
-  AppGenerationsJobIdRoute: typeof AppGenerationsJobIdRoute
-  AppPetsNewRoute: typeof AppPetsNewRoute
   PPetSlugAboutRoute: typeof PPetSlugAboutRoute
   PPetSlugArchiveRoute: typeof PPetSlugArchiveRoute
-  AppAdminIndexRoute: typeof AppAdminIndexRoute
-  AppPetsIndexRoute: typeof AppPetsIndexRoute
   PPetSlugIndexRoute: typeof PPetSlugIndexRoute
   PPetSlugPostsPostSlugRoute: typeof PPetSlugPostsPostSlugRoute
 }
@@ -228,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -237,10 +272,17 @@ declare module '@tanstack/react-router' {
     }
     '/app/': {
       id: '/app/'
-      path: '/app'
+      path: '/'
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/app/account': {
+      id: '/app/account'
+      path: '/account'
+      fullPath: '/app/account'
+      preLoaderRoute: typeof AppAccountRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/p/$petSlug/': {
       id: '/p/$petSlug/'
@@ -251,17 +293,17 @@ declare module '@tanstack/react-router' {
     }
     '/app/pets/': {
       id: '/app/pets/'
-      path: '/app/pets'
+      path: '/pets'
       fullPath: '/app/pets/'
       preLoaderRoute: typeof AppPetsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/app/admin/': {
       id: '/app/admin/'
-      path: '/app/admin'
+      path: '/admin'
       fullPath: '/app/admin/'
       preLoaderRoute: typeof AppAdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/p/$petSlug/archive': {
       id: '/p/$petSlug/archive'
@@ -279,31 +321,38 @@ declare module '@tanstack/react-router' {
     }
     '/app/pets/new': {
       id: '/app/pets/new'
-      path: '/app/pets/new'
+      path: '/pets/new'
       fullPath: '/app/pets/new'
       preLoaderRoute: typeof AppPetsNewRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/app/pets/$petId': {
+      id: '/app/pets/$petId'
+      path: '/pets/$petId'
+      fullPath: '/app/pets/$petId'
+      preLoaderRoute: typeof AppPetsPetIdRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/app/generations/$jobId': {
       id: '/app/generations/$jobId'
-      path: '/app/generations/$jobId'
+      path: '/generations/$jobId'
       fullPath: '/app/generations/$jobId'
       preLoaderRoute: typeof AppGenerationsJobIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/app/admin/jobs': {
       id: '/app/admin/jobs'
-      path: '/app/admin/jobs'
+      path: '/admin/jobs'
       fullPath: '/app/admin/jobs'
       preLoaderRoute: typeof AppAdminJobsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/app/admin/costs': {
       id: '/app/admin/costs'
-      path: '/app/admin/costs'
+      path: '/admin/costs'
       fullPath: '/app/admin/costs'
       preLoaderRoute: typeof AppAdminCostsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/p/$petSlug/posts/$postSlug': {
       id: '/p/$petSlug/posts/$postSlug'
@@ -315,19 +364,41 @@ declare module '@tanstack/react-router' {
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
-  LoginRoute: LoginRoute,
+interface AppRouteRouteChildren {
+  AppAccountRoute: typeof AppAccountRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppAdminCostsRoute: typeof AppAdminCostsRoute
+  AppAdminJobsRoute: typeof AppAdminJobsRoute
+  AppGenerationsJobIdRoute: typeof AppGenerationsJobIdRoute
+  AppPetsPetIdRoute: typeof AppPetsPetIdRoute
+  AppPetsNewRoute: typeof AppPetsNewRoute
+  AppAdminIndexRoute: typeof AppAdminIndexRoute
+  AppPetsIndexRoute: typeof AppPetsIndexRoute
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppAccountRoute: AppAccountRoute,
   AppIndexRoute: AppIndexRoute,
   AppAdminCostsRoute: AppAdminCostsRoute,
   AppAdminJobsRoute: AppAdminJobsRoute,
   AppGenerationsJobIdRoute: AppGenerationsJobIdRoute,
+  AppPetsPetIdRoute: AppPetsPetIdRoute,
   AppPetsNewRoute: AppPetsNewRoute,
-  PPetSlugAboutRoute: PPetSlugAboutRoute,
-  PPetSlugArchiveRoute: PPetSlugArchiveRoute,
   AppAdminIndexRoute: AppAdminIndexRoute,
   AppPetsIndexRoute: AppPetsIndexRoute,
+}
+
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AppRouteRoute: AppRouteRouteWithChildren,
+  AboutRoute: AboutRoute,
+  LoginRoute: LoginRoute,
+  PPetSlugAboutRoute: PPetSlugAboutRoute,
+  PPetSlugArchiveRoute: PPetSlugArchiveRoute,
   PPetSlugIndexRoute: PPetSlugIndexRoute,
   PPetSlugPostsPostSlugRoute: PPetSlugPostsPostSlugRoute,
 }

@@ -1,5 +1,6 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import { requireUser } from './lib/requireUser'
 
 export const createGenerationJob = mutation({
   args: {
@@ -14,14 +15,7 @@ export const createGenerationJob = mutation({
     stylePresetId: v.optional(v.id('stylePresets')),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) throw new Error('Authentication required')
-
-    const user = await ctx.db
-      .query('users')
-      .withIndex('email', (q) => q.eq('email', identity.email ?? ''))
-      .first()
-    if (!user) throw new Error('User record not found')
+    const user = await requireUser(ctx)
 
     const now = Date.now()
     const jobId = await ctx.db.insert('generationJobs', {

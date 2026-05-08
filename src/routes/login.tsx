@@ -3,10 +3,16 @@ import { useAuthActions } from '@convex-dev/auth/react'
 import { PageShell } from '#/components/PageShell'
 import { Button } from '#/components/ui/Button'
 
-export const Route = createFileRoute('/login')({ component: LoginPage })
+export const Route = createFileRoute('/login')({
+  validateSearch: (raw: Record<string, unknown>) => ({
+    redirect: typeof raw.redirect === 'string' ? raw.redirect : undefined,
+  }),
+  component: LoginPage,
+})
 
 function LoginPage() {
   const { signIn } = useAuthActions()
+  const { redirect } = Route.useSearch()
 
   return (
     <PageShell eyebrow="Convex Auth" title="Sign in to manage your pet blogs.">
@@ -21,7 +27,9 @@ function LoginPage() {
           </p>
           <Button
             className="mt-4"
-            onClick={() => void signIn('google', { redirectTo: '/app' })}
+            onClick={() =>
+              void signIn('google', { redirectTo: redirect ?? '/app/' })
+            }
           >
             Continue with Google
           </Button>
