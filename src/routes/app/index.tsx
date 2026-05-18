@@ -4,6 +4,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from 'convex/react'
 import { MetricCard } from '#/components/MetricCard'
 import { PageShell } from '#/components/PageShell'
+import { buttonClassName } from '#/components/ui/Button'
 import { api } from '#convex/_generated/api'
 
 export const Route = createFileRoute('/app/')({ component: AppDashboard })
@@ -25,21 +26,15 @@ function AppDashboard() {
       eyebrow="Dashboard"
       title="Create, review, and publish pet stories."
     >
-      <div className="mb-6 flex flex-wrap gap-3 text-sm">
-        <Link
-          to="/app/pets"
-          className="rounded-full border border-[rgba(50,143,151,0.3)] bg-[rgba(79,184,178,0.14)] px-4 py-2 font-semibold text-[var(--lagoon-deep)] no-underline"
-        >
+      <div className="mb-6 flex flex-wrap gap-3">
+        <Link to="/app/pets" className={buttonClassName('primary')}>
           Manage pets
         </Link>
-        <Link
-          to="/app/account"
-          className="rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-4 py-2 font-semibold text-[var(--sea-ink)] no-underline"
-        >
+        <Link to="/app/account" className={buttonClassName('secondary')}>
           Account
         </Link>
       </div>
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="metric-grid sm:grid-cols-3">
         <MetricCard
           label="Pets"
           value={pets === undefined ? '…' : String(pets.length)}

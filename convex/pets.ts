@@ -2,7 +2,7 @@ import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 import type { GenericQueryCtx } from 'convex/server'
 import type { DataModel } from './_generated/dataModel'
-import { requireUser } from './lib/requireUser'
+import { optionalUser, requireUser } from './lib/requireUser'
 
 const RESERVED_SLUGS = new Set([
   'admin',
@@ -54,13 +54,7 @@ async function allocatePetBlogSlug(ctx: DbReader, baseSlug: string) {
 export const listMine = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) return []
-
-    const user = await ctx.db
-      .query('users')
-      .withIndex('email', (q) => q.eq('email', identity.email ?? ''))
-      .first()
+    const user = await optionalUser(ctx)
     if (!user) return []
 
     const pets = await ctx.db
@@ -85,13 +79,7 @@ export const listMine = query({
 export const getMineByPetId = query({
   args: { petId: v.id('pets') },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) return null
-
-    const user = await ctx.db
-      .query('users')
-      .withIndex('email', (q) => q.eq('email', identity.email ?? ''))
-      .first()
+    const user = await optionalUser(ctx)
     if (!user) return null
 
     const pet = await ctx.db.get(args.petId)

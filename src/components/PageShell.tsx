@@ -12,18 +12,20 @@ export function PageShell({
   children: ReactNode
 }) {
   return (
-    <main className="page-wrap px-4 pb-12 pt-12">
-      <section className="island-shell rounded-[2rem] p-6 sm:p-8">
-        <p className="island-kicker mb-3">{eyebrow}</p>
-        <h1 className="display-title m-0 max-w-3xl text-4xl font-bold tracking-tight text-[var(--sea-ink)] sm:text-5xl">
+    <main className="page-wrap px-4 pb-12 pt-8">
+      <section className="panel p-6 sm:p-8">
+        <p className="section-label mb-3">{eyebrow}</p>
+        <h1 className="m-0 max-w-3xl text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl">
           {title}
         </h1>
         {description ? (
-          <p className="mt-3 max-w-2xl text-sm text-[var(--sea-ink-soft)]">
+          <p className="mt-3 max-w-2xl text-sm text-[var(--text-muted)]">
             {description}
           </p>
         ) : null}
-        <div className="mt-8">{children}</div>
+        <div className="mt-8 border-t border-[var(--border)] pt-8">
+          {children}
+        </div>
       </section>
     </main>
   )

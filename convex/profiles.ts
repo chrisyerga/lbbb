@@ -1,17 +1,11 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
-import { requireUser } from './lib/requireUser'
+import { optionalUser, requireUser } from './lib/requireUser'
 
 export const getMine = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity()
-    if (!identity) return null
-
-    const user = await ctx.db
-      .query('users')
-      .withIndex('email', (q) => q.eq('email', identity.email ?? ''))
-      .first()
+    const user = await optionalUser(ctx)
     if (!user) return null
 
     const profile = await ctx.db

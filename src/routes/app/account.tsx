@@ -26,16 +26,6 @@ function AccountPage() {
     setBio(data.profile?.bio ?? '')
   }, [data])
 
-  console.error('data', data)
-  console.error('displayName', displayName)
-  console.error('bio', bio)
-  console.error('saving', saving)
-  console.error('savedAt', savedAt)
-  console.error('updateProfile', updateProfile)
-  console.error('displayName.trim()', displayName.trim())
-  console.error('bio.trim()', bio.trim())
-  console.error('displayName.trim() || undefined', displayName.trim() || undefined)
-  
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setSaving(true)
@@ -54,7 +44,7 @@ function AccountPage() {
   if (data === undefined) {
     return (
       <PageShell eyebrow="Account" title="Your profile">
-        <p className="text-sm text-[var(--sea-ink-soft)]">Loading…</p>
+        <p className="text-sm text-[var(--text-muted)]">Loading…</p>
       </PageShell>
     )
   }
@@ -62,7 +52,7 @@ function AccountPage() {
   if (data === null) {
     return (
       <PageShell eyebrow="Account" title="Your profile">
-        <p className="text-sm text-[var(--sea-ink-soft)]">
+        <p className="text-sm text-[var(--text-muted)]">
           Sign in to manage your profile.
         </p>
       </PageShell>
@@ -78,38 +68,33 @@ function AccountPage() {
       description="How you appear on LBBB. Pet names are edited per pet."
     >
       <div className="grid gap-8 lg:grid-cols-2">
-        <form
-          onSubmit={(e) => void onSubmit(e)}
-          className="feature-card grid gap-4 rounded-3xl p-6 text-sm"
-        >
+        <form onSubmit={(e) => void onSubmit(e)} className="panel grid gap-4 p-6 text-sm">
           <div className="grid gap-1">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--sea-ink-soft)]">
-              Email
-            </p>
-            <p className="m-0 text-[var(--sea-ink)]">{user.email ?? '—'}</p>
-            <p className="m-0 text-xs text-[var(--sea-ink-soft)]">
+            <p className="section-label">Email</p>
+            <p className="m-0 text-[var(--text-primary)]">{user.email ?? '—'}</p>
+            <p className="m-0 text-xs text-[var(--text-muted)]">
               Email comes from your sign-in provider and isn’t editable here.
             </p>
           </div>
 
-          <label className="grid gap-2 text-[var(--sea-ink)]">
+          <label className="grid gap-2 text-[var(--text-primary)]">
             Display name
             <input
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              className="rounded-2xl border border-[var(--line)] bg-[var(--surface-strong)] px-4 py-3"
+              className="input-field"
               placeholder={user.name ?? 'Your name'}
               autoComplete="name"
             />
           </label>
 
-          <label className="grid gap-2 text-[var(--sea-ink)]">
+          <label className="grid gap-2 text-[var(--text-primary)]">
             Bio
             <textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               rows={4}
-              className="resize-y rounded-2xl border border-[var(--line)] bg-[var(--surface-strong)] px-4 py-3"
+              className="input-field resize-y"
               placeholder="A short line about you…"
             />
           </label>
@@ -119,21 +104,20 @@ function AccountPage() {
               {saving ? 'Saving…' : 'Save profile'}
             </Button>
             {savedAt !== null ? (
-              <span className="text-xs text-[var(--lagoon-deep)]">Saved.</span>
+              <span className="text-xs text-[var(--accent)]">Saved.</span>
             ) : null}
           </div>
         </form>
 
-        <div className="feature-card rounded-3xl p-6 text-sm text-[var(--sea-ink-soft)]">
-          <p className="mt-0 text-[var(--sea-ink)]">
+        <div className="panel p-6 text-sm text-[var(--text-muted)]">
+          <p className="mt-0 text-[var(--text-primary)]">
             Convex stores an optional profile row for{' '}
-            <code className="text-[var(--lagoon-deep)]">displayName</code> and{' '}
-            <code className="text-[var(--lagoon-deep)]">bio</code>
+            <code>displayName</code> and <code>bio</code>
             {profile ? ' (you have one).' : ' — save the form to create yours).'}
           </p>
           <p>
             To rename pets, open{' '}
-            <Link to="/app/pets" className="font-semibold text-[var(--lagoon-deep)]">
+            <Link to="/app/pets" className="font-semibold">
               Pets
             </Link>
             .

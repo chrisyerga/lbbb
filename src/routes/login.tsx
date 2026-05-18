@@ -15,10 +15,10 @@ function LoginPage() {
   const { redirect } = Route.useSearch()
 
   return (
-    <PageShell eyebrow="Convex Auth" title="Sign in to manage your pet blogs.">
-      <div className="grid gap-4 text-sm text-[var(--sea-ink-soft)] sm:grid-cols-2">
-        <div className="feature-card rounded-3xl p-5">
-          <h2 className="text-lg font-semibold text-[var(--sea-ink)]">
+    <PageShell eyebrow="Sign in" title="Sign in to manage your pet blogs.">
+      <div className="grid gap-0 border border-[var(--border)] text-sm text-[var(--text-muted)] sm:grid-cols-2">
+        <div className="border-b border-[var(--border)] p-6 sm:border-b-0 sm:border-r">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">
             Google OAuth
           </h2>
           <p>
@@ -34,8 +34,8 @@ function LoginPage() {
             Continue with Google
           </Button>
         </div>
-        <div className="feature-card rounded-3xl p-5">
-          <h2 className="text-lg font-semibold text-[var(--sea-ink)]">
+        <div className="p-6">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">
             Magic Link
           </h2>
           <p>

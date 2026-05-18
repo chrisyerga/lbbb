@@ -1,10 +1,28 @@
 import type { ButtonHTMLAttributes, PropsWithChildren } from 'react'
 import { cn } from '#/lib/utils'
 
+type ButtonVariant = 'primary' | 'secondary' | 'ghost'
+
+export function buttonClassName(
+  variant: ButtonVariant = 'primary',
+  className?: string,
+) {
+  return cn(
+    'btn inline-flex items-center justify-center px-4 py-2 text-sm font-semibold no-underline transition disabled:cursor-not-allowed disabled:opacity-50',
+    variant === 'primary' &&
+      'btn-primary border border-[var(--accent)] bg-[var(--accent)] text-white hover:border-[var(--accent-hover)] hover:bg-[var(--accent-hover)] hover:text-white',
+    variant === 'secondary' &&
+      'btn-secondary border border-[var(--border)] bg-[var(--bg-raised)] text-[var(--text-primary)] hover:border-[var(--accent)]',
+    variant === 'ghost' &&
+      'border border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]',
+    className,
+  )
+}
+
 type ButtonProps = PropsWithChildren<
   ButtonHTMLAttributes<HTMLButtonElement>
 > & {
-  variant?: 'primary' | 'secondary' | 'ghost'
+  variant?: ButtonVariant
 }
 
 export function Button({
@@ -13,18 +31,6 @@ export function Button({
   ...props
 }: ButtonProps) {
   return (
-    <button
-      className={cn(
-        'inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50',
-        variant === 'primary' &&
-          'bg-[var(--sea-ink)] text-white hover:-translate-y-0.5 hover:bg-[var(--lagoon-deep)]',
-        variant === 'secondary' &&
-          'border border-[var(--line)] bg-[var(--surface-strong)] text-[var(--sea-ink)] hover:-translate-y-0.5',
-        variant === 'ghost' &&
-          'text-[var(--sea-ink-soft)] hover:bg-[var(--chip-bg)]',
-        className,
-      )}
-      {...props}
-    />
+    <button className={buttonClassName(variant, className)} {...props} />
   )
 }

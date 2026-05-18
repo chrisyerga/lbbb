@@ -8,12 +8,12 @@ export function MetricCard({
   detail: string
 }) {
   return (
-    <article className="island-shell rounded-3xl p-5">
-      <p className="island-kicker mb-2">{label}</p>
-      <p className="display-title m-0 text-3xl font-bold text-[var(--sea-ink)]">
+    <article className="bg-[var(--bg-raised)] p-5">
+      <p className="section-label mb-2">{label}</p>
+      <p className="m-0 text-3xl font-bold text-[var(--text-primary)]">
         {value}
       </p>
-      <p className="mt-2 text-sm text-[var(--sea-ink-soft)]">{detail}</p>
+      <p className="mt-2 text-sm text-[var(--text-muted)]">{detail}</p>
     </article>
   )
 }

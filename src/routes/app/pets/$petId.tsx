@@ -79,7 +79,7 @@ function EditPetPage() {
   if (data === undefined) {
     return (
       <PageShell eyebrow="Pets" title="Edit pet">
-        <p className="text-sm text-[var(--sea-ink-soft)]">Loading…</p>
+        <p className="text-sm text-[var(--text-muted)]">Loading…</p>
       </PageShell>
     )
   }
@@ -87,13 +87,10 @@ function EditPetPage() {
   if (data === null) {
     return (
       <PageShell eyebrow="Pets" title="Edit pet">
-        <p className="text-sm text-[var(--sea-ink-soft)]">
+        <p className="text-sm text-[var(--text-muted)]">
           Pet not found or you don’t have access.
         </p>
-        <Link
-          to="/app/pets"
-          className="mt-4 inline-block font-semibold text-[var(--lagoon-deep)]"
-        >
+        <Link to="/app/pets" className="mt-4 inline-block font-semibold">
           Back to pets
         </Link>
       </PageShell>
@@ -112,45 +109,45 @@ function EditPetPage() {
       <div className="grid gap-8 lg:grid-cols-2">
         <form
           onSubmit={(e) => void onSavePet(e)}
-          className="feature-card grid gap-4 rounded-3xl p-6 text-sm"
+          className="panel grid gap-4 p-6 text-sm"
         >
-          <h2 className="m-0 text-lg font-semibold text-[var(--sea-ink)]">
+          <h2 className="m-0 text-lg font-semibold text-[var(--text-primary)]">
             Pet profile
           </h2>
-          <label className="grid gap-2 text-[var(--sea-ink)]">
+          <label className="grid gap-2 text-[var(--text-primary)]">
             Name
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="rounded-2xl border border-[var(--line)] bg-[var(--surface-strong)] px-4 py-3"
+              className="input-field"
             />
           </label>
-          <label className="grid gap-2 text-[var(--sea-ink)]">
+          <label className="grid gap-2 text-[var(--text-primary)]">
             Species
             <input
               value={species}
               onChange={(e) => setSpecies(e.target.value)}
-              className="rounded-2xl border border-[var(--line)] bg-[var(--surface-strong)] px-4 py-3"
+              className="input-field"
               placeholder="Dog"
             />
           </label>
-          <label className="grid gap-2 text-[var(--sea-ink)]">
+          <label className="grid gap-2 text-[var(--text-primary)]">
             Breed
             <input
               value={breed}
               onChange={(e) => setBreed(e.target.value)}
-              className="rounded-2xl border border-[var(--line)] bg-[var(--surface-strong)] px-4 py-3"
+              className="input-field"
               placeholder="Corgi"
             />
           </label>
-          <label className="grid gap-2 text-[var(--sea-ink)]">
+          <label className="grid gap-2 text-[var(--text-primary)]">
             Bio
             <textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               rows={3}
-              className="resize-y rounded-2xl border border-[var(--line)] bg-[var(--surface-strong)] px-4 py-3"
+              className="input-field resize-y"
             />
           </label>
           <Button type="submit" disabled={savingPet}>
@@ -160,40 +157,35 @@ function EditPetPage() {
 
         <form
           onSubmit={(e) => void onSaveBlog(e)}
-          className="feature-card grid gap-4 rounded-3xl p-6 text-sm"
+          className="panel grid gap-4 p-6 text-sm"
         >
-          <h2 className="m-0 text-lg font-semibold text-[var(--sea-ink)]">
+          <h2 className="m-0 text-lg font-semibold text-[var(--text-primary)]">
             Public blog
           </h2>
           {blog ? (
             <>
               <div className="grid gap-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--sea-ink-soft)]">
-                  URL slug (read-only)
-                </p>
-                <code className="rounded-xl bg-[var(--surface-strong)] px-3 py-2 text-[var(--lagoon-deep)]">
+                <p className="section-label">URL slug (read-only)</p>
+                <code className="block bg-[var(--bg-input)] px-3 py-2 text-[var(--accent)]">
                   {blog.slug}
                 </code>
                 {publicUrl ? (
-                  <a
-                    href={publicUrl}
-                    className="font-semibold text-[var(--lagoon-deep)] no-underline hover:underline"
-                  >
+                  <a href={publicUrl} className="font-semibold no-underline">
                     View public blog
                   </a>
                 ) : null}
               </div>
-              <label className="grid gap-2 text-[var(--sea-ink)]">
+              <label className="grid gap-2 text-[var(--text-primary)]">
                 Blog description
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
-                  className="resize-y rounded-2xl border border-[var(--line)] bg-[var(--surface-strong)] px-4 py-3"
+                  className="input-field resize-y"
                   placeholder="Shown on the public blog home…"
                 />
               </label>
-              <label className="grid gap-2 text-[var(--sea-ink)]">
+              <label className="grid gap-2 text-[var(--text-primary)]">
                 Visibility
                 <select
                   value={visibility}
@@ -202,7 +194,7 @@ function EditPetPage() {
                       e.target.value as 'private' | 'public' | 'unlisted',
                     )
                   }
-                  className="rounded-2xl border border-[var(--line)] bg-[var(--surface-strong)] px-4 py-3"
+                  className="input-field"
                 >
                   <option value="public">Public</option>
                   <option value="unlisted">Unlisted</option>
@@ -214,16 +206,13 @@ function EditPetPage() {
               </Button>
             </>
           ) : (
-            <p className="text-[var(--sea-ink-soft)]">No blog row for this pet.</p>
+            <p className="text-[var(--text-muted)]">No blog row for this pet.</p>
           )}
         </form>
       </div>
 
       <p className="mt-8 text-sm">
-        <Link
-          to="/app/pets"
-          className="font-semibold text-[var(--lagoon-deep)] no-underline hover:underline"
-        >
+        <Link to="/app/pets" className="font-semibold no-underline">
           ← All pets
         </Link>
       </p>

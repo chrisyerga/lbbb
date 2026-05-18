@@ -20,7 +20,7 @@ function AppLayout() {
 
   if (isLoading) {
     return (
-      <div className="page-wrap px-4 py-12 text-sm text-[var(--sea-ink-soft)]">
+      <div className="page-wrap px-4 py-12 text-sm text-[var(--text-muted)]">
         Loading…
       </div>
     )

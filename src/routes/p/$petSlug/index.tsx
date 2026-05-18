@@ -19,21 +19,21 @@ function PublicPetBlog() {
 
   if (data === undefined) {
     return (
-      <main className="page-wrap px-4 pb-12 pt-12">
-        <p className="text-sm text-[var(--sea-ink-soft)]">Loading…</p>
+      <main className="page-wrap px-4 pb-12 pt-8">
+        <p className="text-sm text-[var(--text-muted)]">Loading…</p>
       </main>
     )
   }
 
   if (data === null) {
     return (
-      <main className="page-wrap px-4 pb-12 pt-12">
-        <article className="island-shell rounded-[2.5rem] p-8">
-          <p className="island-kicker mb-3">Public Pet Blog</p>
-          <h1 className="display-title m-0 text-5xl font-bold text-[var(--sea-ink)]">
+      <main className="page-wrap px-4 pb-12 pt-8">
+        <article className="panel p-8">
+          <p className="section-label mb-3">Public Pet Blog</p>
+          <h1 className="m-0 text-4xl font-bold text-[var(--text-primary)]">
             Not found
           </h1>
-          <p className="max-w-2xl text-[var(--sea-ink-soft)]">
+          <p className="max-w-2xl text-[var(--text-muted)]">
             No public blog exists for <code>{petSlug}</code>, or it is set to
             private.
           </p>
@@ -45,23 +45,25 @@ function PublicPetBlog() {
   const { pet, blog } = data
 
   return (
-    <main className="page-wrap px-4 pb-12 pt-12">
-      <article className="island-shell rounded-[2.5rem] p-8">
-        <p className="island-kicker mb-3">Public Pet Blog</p>
-        <h1 className="display-title m-0 text-5xl font-bold text-[var(--sea-ink)]">
+    <main className="page-wrap px-4 pb-12 pt-8">
+      <article className="panel p-8">
+        <p className="section-label mb-3">Public Pet Blog</p>
+        <h1 className="m-0 text-4xl font-bold text-[var(--text-primary)]">
           {blog.title}
         </h1>
-        <p className="mt-2 text-xl text-[var(--sea-ink)]">{pet.name}</p>
+        <p className="mt-2 text-xl font-semibold text-[var(--text-primary)]">
+          {pet.name}
+        </p>
         {blog.description ? (
-          <p className="max-w-2xl text-[var(--sea-ink-soft)]">{blog.description}</p>
+          <p className="max-w-2xl text-[var(--text-muted)]">{blog.description}</p>
         ) : (
-          <p className="max-w-2xl text-[var(--sea-ink-soft)]">
+          <p className="max-w-2xl text-[var(--text-muted)]">
             Stories and memories from {pet.name}
             {pet.species ? ` (${pet.species})` : ''}.
           </p>
         )}
         {pet.bio ? (
-          <p className="max-w-2xl text-sm text-[var(--sea-ink-soft)]">{pet.bio}</p>
+          <p className="max-w-2xl text-sm text-[var(--text-muted)]">{pet.bio}</p>
         ) : null}
         <a href={examplePost} className="mt-6 inline-flex font-semibold">
           Example post route (placeholder)
