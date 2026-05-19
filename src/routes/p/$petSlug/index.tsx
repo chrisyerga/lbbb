@@ -1,9 +1,10 @@
 'use client'
 
 import { createFileRoute } from '@tanstack/react-router'
-import { publicRoutes } from '#/lib/product'
 import { useQuery } from 'convex/react'
+import { PetBlogNotFound } from '#/components/NotFoundPanel'
 import { api } from '#convex/_generated/api'
+import { publicRoutes } from '#/lib/product'
 
 export const Route = createFileRoute('/p/$petSlug/')({
   component: PublicPetBlog,
@@ -26,20 +27,7 @@ function PublicPetBlog() {
   }
 
   if (data === null) {
-    return (
-      <main className="page-wrap px-4 pb-12 pt-8">
-        <article className="panel p-8">
-          <p className="section-label mb-3">Public Pet Blog</p>
-          <h1 className="m-0 text-4xl font-bold text-[var(--text-primary)]">
-            Not found
-          </h1>
-          <p className="max-w-2xl text-[var(--text-muted)]">
-            No public blog exists for <code>{petSlug}</code>, or it is set to
-            private.
-          </p>
-        </article>
-      </main>
-    )
+    return <PetBlogNotFound petSlug={petSlug} />
   }
 
   const { pet, blog } = data

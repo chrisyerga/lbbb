@@ -5,8 +5,9 @@ import { useMutation, useQuery } from 'convex/react'
 import { PageShell } from '#/components/PageShell'
 import { Button } from '#/components/ui/Button'
 import { PetAvatarSection } from '#/components/PetAvatarSection'
+import { PetNotFound } from '#/components/NotFoundPanel'
 import { api } from '#convex/_generated/api'
-import type { Id } from '#convex/_generated/dataModel'
+import { parsePetId } from '#/lib/convexIds'
 import { publicRoutes } from '#/lib/product'
 import { useEffect, useState } from 'react'
 
@@ -16,9 +17,11 @@ export const Route = createFileRoute('/app/pets/$petId')({
 
 function EditPetPage() {
   const { petId } = Route.useParams() as { petId: string }
-  const data = useQuery(api.pets.getMineByPetId, {
-    petId: petId as Id<'pets'>,
-  })
+  const parsedPetId = parsePetId(petId)
+  const data = useQuery(
+    api.pets.getMineByPetId,
+    parsedPetId ? { petId } : 'skip',
+  )
   const updatePet = useMutation(api.pets.update)
   const updateBlog = useMutation(api.pets.updateBlogMeta)
 
@@ -77,6 +80,10 @@ function EditPetPage() {
     }
   }
 
+  if (!parsedPetId) {
+    return <PetNotFound petId={petId} />
+  }
+
   if (data === undefined) {
     return (
       <PageShell eyebrow="Pets" title="Edit pet">
@@ -86,16 +93,7 @@ function EditPetPage() {
   }
 
   if (data === null) {
-    return (
-      <PageShell eyebrow="Pets" title="Edit pet">
-        <p className="text-sm text-[var(--text-muted)]">
-          Pet not found or you don’t have access.
-        </p>
-        <Link to="/app/pets" className="mt-4 inline-block font-semibold">
-          Back to pets
-        </Link>
-      </PageShell>
-    )
+    return <PetNotFound petId={petId} />
   }
 
   const { pet, blog, avatarUrl } = data

@@ -16,6 +16,7 @@ import type * as generation from "../generation.js";
 import type * as http from "../http.js";
 import type * as jobs from "../jobs.js";
 import type * as lib_assets from "../lib/assets.js";
+import type * as lib_ids from "../lib/ids.js";
 import type * as lib_requireUser from "../lib/requireUser.js";
 import type * as memories from "../memories.js";
 import type * as pets from "../pets.js";
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   jobs: typeof jobs;
   "lib/assets": typeof lib_assets;
+  "lib/ids": typeof lib_ids;
   "lib/requireUser": typeof lib_requireUser;
   memories: typeof memories;
   pets: typeof pets;

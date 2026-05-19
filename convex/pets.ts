@@ -3,6 +3,7 @@ import { v } from 'convex/values'
 import type { GenericQueryCtx } from 'convex/server'
 import type { DataModel, Id } from './_generated/dataModel'
 import { requirePetAsset, resolveAssetUrl } from './lib/assets'
+import { parsePetId } from './lib/ids'
 import { optionalUser, requireUser } from './lib/requireUser'
 
 const RESERVED_SLUGS = new Set([
@@ -89,12 +90,15 @@ export const listMine = query({
 })
 
 export const getMineByPetId = query({
-  args: { petId: v.id('pets') },
+  args: { petId: v.string() },
   handler: async (ctx, args) => {
     const user = await optionalUser(ctx)
     if (!user) return null
 
-    const pet = await ctx.db.get(args.petId)
+    const petId = parsePetId(args.petId)
+    if (!petId) return null
+
+    const pet = await ctx.db.get(petId)
     if (!pet || pet.deletedAt !== undefined) return null
     if (pet.ownerUserId !== user._id) return null
     const blog = await ctx.db

@@ -4,10 +4,12 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useMutation, useQuery } from 'convex/react'
 import { useState } from 'react'
 import { PageShell } from '#/components/PageShell'
+import { PetNotFound } from '#/components/NotFoundPanel'
 import { PhotoUpload } from '#/components/PhotoUpload'
 import { Button } from '#/components/ui/Button'
 import { api } from '#convex/_generated/api'
 import type { Id } from '#convex/_generated/dataModel'
+import { parsePetId } from '#/lib/convexIds'
 
 export const Route = createFileRoute('/app/pets/$petId/memories')({
   component: PetMemoriesPage,
@@ -20,12 +22,15 @@ type PendingPhoto = {
 
 function PetMemoriesPage() {
   const { petId } = Route.useParams() as { petId: string }
-  const petData = useQuery(api.pets.getMineByPetId, {
-    petId: petId as Id<'pets'>,
-  })
-  const memories = useQuery(api.memories.listByPet, {
-    petId: petId as Id<'pets'>,
-  })
+  const parsedPetId = parsePetId(petId)
+  const petData = useQuery(
+    api.pets.getMineByPetId,
+    parsedPetId ? { petId } : 'skip',
+  )
+  const memories = useQuery(
+    api.memories.listByPet,
+    parsedPetId ? { petId: parsedPetId } : 'skip',
+  )
   const createMemory = useMutation(api.memories.create)
   const removeMemory = useMutation(api.memories.remove)
 
@@ -49,7 +54,7 @@ function PetMemoriesPage() {
     setSubmitting(true)
     try {
       await createMemory({
-        petId: petId as Id<'pets'>,
+        petId: parsedPetId!,
         occurredOn,
         description,
         sourceAssetIds: pendingPhotos.map((p) => p.assetId),
@@ -64,6 +69,10 @@ function PetMemoriesPage() {
     }
   }
 
+  if (!parsedPetId) {
+    return <PetNotFound petId={petId} />
+  }
+
   if (petData === undefined) {
     return (
       <PageShell eyebrow="Memories" title="Pet memories">
@@ -73,16 +82,7 @@ function PetMemoriesPage() {
   }
 
   if (petData === null) {
-    return (
-      <PageShell eyebrow="Memories" title="Pet memories">
-        <p className="text-sm text-[var(--text-muted)]">
-          Pet not found or you don’t have access.
-        </p>
-        <Link to="/app/pets" className="mt-4 inline-block font-semibold">
-          Back to pets
-        </Link>
-      </PageShell>
-    )
+    return <PetNotFound petId={petId} />
   }
 
   const { pet } = petData
