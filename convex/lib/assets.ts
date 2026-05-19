@@ -10,9 +10,7 @@ function maxUploadBytes() {
 }
 
 export function assertUploadAllowed(contentType: string, byteSize: number) {
-  if (
-    !(ALLOWED_UPLOAD_TYPES as readonly string[]).includes(contentType)
-  ) {
+  if (!(ALLOWED_UPLOAD_TYPES as readonly string[]).includes(contentType)) {
     throw new Error('File type not allowed. Use JPEG, PNG, or WebP.')
   }
   if (byteSize <= 0) {

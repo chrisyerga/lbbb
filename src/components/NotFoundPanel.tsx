@@ -76,7 +76,7 @@ export function PetNotFound({ petId }: { petId?: string }) {
   return (
     <NotFoundPanel
       title="Pet not found"
-      description="That pet doesn&apos;t exist or you don&apos;t have access to it."
+      description="That pet doesn't exist or you don't have access to it."
       subject={petId}
       actions={[
         { label: 'View pets', to: '/app/pets', variant: 'primary' },

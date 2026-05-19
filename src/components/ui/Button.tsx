@@ -30,7 +30,5 @@ export function Button({
   variant = 'primary',
   ...props
 }: ButtonProps) {
-  return (
-    <button className={buttonClassName(variant, className)} {...props} />
-  )
+  return <button className={buttonClassName(variant, className)} {...props} />
 }

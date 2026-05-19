@@ -19,16 +19,16 @@ Flat, utilitarian, app-first UI. No decorative gradients, glass effects, or pill
 
 Defined in [`src/styles.css`](src/styles.css):
 
-| Token | Use |
-|-------|-----|
-| `--bg-base` | Page background |
-| `--bg-raised` | Panels, header |
-| `--bg-input` | Form fields |
-| `--border` | All dividers and outlines |
-| `--text-primary` | Headings, primary copy |
-| `--text-muted` | Secondary copy, labels |
-| `--accent` | CTAs, active nav, links |
-| `--accent-hover` | Hover states |
+| Token            | Use                       |
+| ---------------- | ------------------------- |
+| `--bg-base`      | Page background           |
+| `--bg-raised`    | Panels, header            |
+| `--bg-input`     | Form fields               |
+| `--border`       | All dividers and outlines |
+| `--text-primary` | Headings, primary copy    |
+| `--text-muted`   | Secondary copy, labels    |
+| `--accent`       | CTAs, active nav, links   |
+| `--accent-hover` | Hover states              |
 | `--accent-muted` | Subtle accent backgrounds |
 
 Orange accent is scarce — primary actions and active states only.

@@ -1,10 +1,6 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
-import {
-  requirePetAsset,
-  requirePetOwner,
-  resolveAssetUrl,
-} from './lib/assets'
+import { requirePetAsset, requirePetOwner, resolveAssetUrl } from './lib/assets'
 import { requireUser } from './lib/requireUser'
 
 export const listByPet = query({

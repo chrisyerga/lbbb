@@ -14,12 +14,10 @@ function AppDashboard() {
   const pets = useQuery(api.pets.listMine)
 
   const queued =
-    jobs?.filter(
-      (j) => j.status === 'queued' || j.status === 'processing',
-    ).length ?? 0
-  const awaitingReview = jobs?.filter(
-    (j) => j.status === 'awaiting_review',
-  ).length ?? 0
+    jobs?.filter((j) => j.status === 'queued' || j.status === 'processing')
+      .length ?? 0
+  const awaitingReview =
+    jobs?.filter((j) => j.status === 'awaiting_review').length ?? 0
 
   return (
     <PageShell

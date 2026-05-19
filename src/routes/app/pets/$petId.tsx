@@ -222,7 +222,9 @@ function EditPetPage() {
               </Button>
             </>
           ) : (
-            <p className="text-[var(--text-muted)]">No blog row for this pet.</p>
+            <p className="text-[var(--text-muted)]">
+              No blog row for this pet.
+            </p>
           )}
         </form>
       </div>

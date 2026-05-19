@@ -93,9 +93,7 @@ export function PetAvatarSection({
               Remove profile photo
             </Button>
           ) : null}
-          {error ? (
-            <p className="m-0 text-xs text-red-400">{error}</p>
-          ) : null}
+          {error ? <p className="m-0 text-xs text-red-400">{error}</p> : null}
         </div>
       </div>
 

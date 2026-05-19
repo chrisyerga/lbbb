@@ -44,7 +44,7 @@ function AccountPage() {
   if (data === undefined) {
     return (
       <PageShell eyebrow="Account" title="Your profile">
-        <p className="text-sm text-[var(--text-muted)]">Loading…</p>
+        <p className="text-sm text-(--text-muted)">Loading…</p>
       </PageShell>
     )
   }
@@ -68,10 +68,15 @@ function AccountPage() {
       description="How you appear on LBBB. Pet names are edited per pet."
     >
       <div className="grid gap-8 lg:grid-cols-2">
-        <form onSubmit={(e) => void onSubmit(e)} className="panel grid gap-4 p-6 text-sm">
+        <form
+          onSubmit={(e) => void onSubmit(e)}
+          className="panel grid gap-4 p-6 text-sm"
+        >
           <div className="grid gap-1">
             <p className="section-label">Email</p>
-            <p className="m-0 text-[var(--text-primary)]">{user.email ?? '—'}</p>
+            <p className="m-0 text-[var(--text-primary)]">
+              {user.email ?? '—'}
+            </p>
             <p className="m-0 text-xs text-[var(--text-muted)]">
               Email comes from your sign-in provider and isn’t editable here.
             </p>
@@ -111,9 +116,11 @@ function AccountPage() {
 
         <div className="panel p-6 text-sm text-[var(--text-muted)]">
           <p className="mt-0 text-[var(--text-primary)]">
-            Convex stores an optional profile row for{' '}
-            <code>displayName</code> and <code>bio</code>
-            {profile ? ' (you have one).' : ' — save the form to create yours).'}
+            Convex stores an optional profile row for <code>displayName</code>{' '}
+            and <code>bio</code>
+            {profile
+              ? ' (you have one).'
+              : ' — save the form to create yours).'}
           </p>
           <p>
             To rename pets, open{' '}

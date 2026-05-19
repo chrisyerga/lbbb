@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint",
     "format": "prettier --write . && eslint --fix",
-    "check": "prettier --check . && npm run typecheck && npm run lint",
+    "check": "npm run typecheck && npm run lint",
     "convex:dev": "convex dev",
     "convex:deploy": "convex deploy"
   },

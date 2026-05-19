@@ -43,7 +43,9 @@ function PublicPetBlog() {
           {pet.name}
         </p>
         {blog.description ? (
-          <p className="max-w-2xl text-[var(--text-muted)]">{blog.description}</p>
+          <p className="max-w-2xl text-[var(--text-muted)]">
+            {blog.description}
+          </p>
         ) : (
           <p className="max-w-2xl text-[var(--text-muted)]">
             Stories and memories from {pet.name}
@@ -51,7 +53,9 @@ function PublicPetBlog() {
           </p>
         )}
         {pet.bio ? (
-          <p className="max-w-2xl text-sm text-[var(--text-muted)]">{pet.bio}</p>
+          <p className="max-w-2xl text-sm text-[var(--text-muted)]">
+            {pet.bio}
+          </p>
         ) : null}
         <a href={examplePost} className="mt-6 inline-flex font-semibold">
           Example post route (placeholder)

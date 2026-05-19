@@ -5,9 +5,7 @@ import type { Id } from '#convex/_generated/dataModel'
 import { allowedUploadTypes, defaultQuotas } from '#/lib/product'
 
 function validateFile(file: File) {
-  if (
-    !(allowedUploadTypes as readonly string[]).includes(file.type)
-  ) {
+  if (!(allowedUploadTypes as readonly string[]).includes(file.type)) {
     throw new Error('Use JPEG, PNG, or WebP images only.')
   }
   if (file.size > defaultQuotas.maxUploadBytes) {
@@ -49,8 +47,7 @@ export function usePhotoUpload(petId: Id<'pets'>) {
         })
         return result
       } catch (err) {
-        const message =
-          err instanceof Error ? err.message : 'Upload failed'
+        const message = err instanceof Error ? err.message : 'Upload failed'
         setError(message)
         throw err
       } finally {

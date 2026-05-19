@@ -25,11 +25,7 @@ function AdminPage() {
             detail="Provider spend drilldowns."
           />
         </Link>
-        <MetricCard
-          label="Posts"
-          value="Soon"
-          detail="Approve or unpublish."
-        />
+        <MetricCard label="Posts" value="Soon" detail="Approve or unpublish." />
         <MetricCard
           label="Assets"
           value="Soon"
