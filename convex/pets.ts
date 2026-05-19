@@ -216,7 +216,7 @@ export const update = mutation({
         .withIndex('by_pet', (q) => q.eq('petId', args.petId))
         .first()
       if (blog) {
-        const displayName = (patch.name as string) ?? pet.name
+        const displayName = patch.name as string
         await ctx.db.patch(blog._id, {
           title: `${displayName}'s blog`,
           updatedAt: now,

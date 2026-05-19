@@ -14,7 +14,7 @@ export default function Header() {
   const profile = useQuery(api.profiles.getMine)
 
   const display =
-    profile?.profile?.displayName ?? profile?.user?.name ?? profile?.user?.email
+    profile?.profile?.displayName ?? profile?.user.name ?? profile?.user.email
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--header-bg)] px-4">

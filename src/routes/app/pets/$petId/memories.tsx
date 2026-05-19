@@ -21,7 +21,7 @@ type PendingPhoto = {
 }
 
 function PetMemoriesPage() {
-  const { petId } = Route.useParams() as { petId: string }
+  const { petId } = Route.useParams()
   const parsedPetId = parsePetId(petId)
   const petData = useQuery(
     api.pets.getMineByPetId,

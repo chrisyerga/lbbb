@@ -16,7 +16,7 @@ export const Route = createFileRoute('/app/pets/$petId')({
 })
 
 function EditPetPage() {
-  const { petId } = Route.useParams() as { petId: string }
+  const { petId } = Route.useParams()
   const parsedPetId = parsePetId(petId)
   const data = useQuery(
     api.pets.getMineByPetId,
