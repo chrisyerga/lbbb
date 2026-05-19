@@ -4,6 +4,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useMutation, useQuery } from 'convex/react'
 import { PageShell } from '#/components/PageShell'
 import { Button } from '#/components/ui/Button'
+import { PetAvatarSection } from '#/components/PetAvatarSection'
 import { api } from '#convex/_generated/api'
 import type { Id } from '#convex/_generated/dataModel'
 import { publicRoutes } from '#/lib/product'
@@ -97,7 +98,7 @@ function EditPetPage() {
     )
   }
 
-  const { pet, blog } = data
+  const { pet, blog, avatarUrl } = data
   const publicUrl = blog ? publicRoutes.petBlog(blog.slug) : null
 
   return (
@@ -106,6 +107,23 @@ function EditPetPage() {
       title={`Edit ${pet.name}`}
       description="Pet name and bio are yours; the public URL slug stays stable."
     >
+      <PetAvatarSection
+        petId={pet._id}
+        petName={pet.name}
+        avatarUrl={avatarUrl}
+        avatarAssetId={pet.avatarAssetId}
+      />
+
+      <p className="mb-8 text-sm">
+        <Link
+          to="/app/pets/$petId/memories"
+          params={{ petId: pet._id }}
+          className="font-semibold no-underline"
+        >
+          Manage memories →
+        </Link>
+      </p>
+
       <div className="grid gap-8 lg:grid-cols-2">
         <form
           onSubmit={(e) => void onSavePet(e)}

@@ -35,23 +35,38 @@ function PetsPage() {
         </div>
       ) : (
         <ul className="m-0 grid list-none gap-0 border border-[var(--border)] p-0 sm:grid-cols-2">
-          {rows.map(({ pet, blog }) => (
+          {rows.map(({ pet, blog, avatarUrl }) => (
             <li
               key={pet._id}
               className="panel-interactive border-0 border-b border-r border-[var(--border)] p-5 text-sm last:border-b-0 sm:[&:nth-child(2n)]:border-r-0 sm:[&:nth-last-child(-n+2)]:border-b-0"
             >
-              <p className="m-0 text-lg font-semibold text-[var(--text-primary)]">
-                {pet.name}
-              </p>
-              <p className="mt-1 text-[var(--text-muted)]">
-                {[pet.species, pet.breed].filter(Boolean).join(' · ') ||
-                  'No species set'}
-              </p>
-              {blog ? (
-                <p className="mt-2 font-mono text-xs text-[var(--accent)]">
-                  /p/{blog.slug}
-                </p>
-              ) : null}
+              <div className="flex gap-4">
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt={`${pet.name} profile`}
+                    className="h-12 w-12 shrink-0 border border-[var(--border)] object-cover"
+                  />
+                ) : (
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center border border-[var(--border)] bg-[var(--bg-input)] text-sm font-bold text-[var(--text-muted)]">
+                    {pet.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="m-0 text-lg font-semibold text-[var(--text-primary)]">
+                    {pet.name}
+                  </p>
+                  <p className="mt-1 text-[var(--text-muted)]">
+                    {[pet.species, pet.breed].filter(Boolean).join(' · ') ||
+                      'No species set'}
+                  </p>
+                  {blog ? (
+                    <p className="mt-2 font-mono text-xs text-[var(--accent)]">
+                      /p/{blog.slug}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
               <div className="mt-4 flex flex-wrap gap-2">
                 <Link
                   to="/app/pets/$petId"

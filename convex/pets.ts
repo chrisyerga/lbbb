@@ -1,7 +1,8 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 import type { GenericQueryCtx } from 'convex/server'
-import type { DataModel } from './_generated/dataModel'
+import type { DataModel, Id } from './_generated/dataModel'
+import { requirePetAsset, resolveAssetUrl } from './lib/assets'
 import { optionalUser, requireUser } from './lib/requireUser'
 
 const RESERVED_SLUGS = new Set([
@@ -37,6 +38,16 @@ function petBlogBaseSlug(name: string) {
 
 type DbReader = Pick<GenericQueryCtx<DataModel>, 'db'>
 
+async function resolveAvatarUrl(
+  ctx: GenericQueryCtx<DataModel>,
+  avatarAssetId: Id<'assets'> | undefined,
+) {
+  if (!avatarAssetId) return null
+  const asset = await ctx.db.get(avatarAssetId)
+  if (!asset) return null
+  return await resolveAssetUrl(ctx, asset)
+}
+
 async function allocatePetBlogSlug(ctx: DbReader, baseSlug: string) {
   let candidate = baseSlug
   let n = 2
@@ -69,7 +80,8 @@ export const listMine = query({
           .query('petBlogs')
           .withIndex('by_pet', (q) => q.eq('petId', pet._id))
           .first()
-        return { pet, blog }
+        const avatarUrl = await resolveAvatarUrl(ctx, pet.avatarAssetId)
+        return { pet, blog, avatarUrl }
       }),
     )
     return withBlogs
@@ -89,7 +101,8 @@ export const getMineByPetId = query({
       .query('petBlogs')
       .withIndex('by_pet', (q) => q.eq('petId', pet._id))
       .first()
-    return { pet, blog }
+    const avatarUrl = await resolveAvatarUrl(ctx, pet.avatarAssetId)
+    return { pet, blog, avatarUrl }
   },
 })
 
@@ -242,6 +255,53 @@ export const updateBlogMeta = mutation({
     if (args.visibility !== undefined) patch.visibility = args.visibility
 
     await ctx.db.patch(blog._id, patch)
+    return null
+  },
+})
+
+export const setAvatar = mutation({
+  args: {
+    petId: v.id('pets'),
+    assetId: v.id('assets'),
+  },
+  handler: async (ctx, args) => {
+    const user = await requireUser(ctx)
+    await requirePetAsset(ctx, args.assetId, args.petId, user._id)
+
+    const pet = await ctx.db.get(args.petId)
+    if (!pet || pet.deletedAt !== undefined) {
+      throw new Error('Pet not found')
+    }
+    if (pet.ownerUserId !== user._id) {
+      throw new Error('Not allowed')
+    }
+
+    await ctx.db.patch(args.petId, {
+      avatarAssetId: args.assetId,
+      updatedAt: Date.now(),
+    })
+    return null
+  },
+})
+
+export const clearAvatar = mutation({
+  args: {
+    petId: v.id('pets'),
+  },
+  handler: async (ctx, args) => {
+    const user = await requireUser(ctx)
+    const pet = await ctx.db.get(args.petId)
+    if (!pet || pet.deletedAt !== undefined) {
+      throw new Error('Pet not found')
+    }
+    if (pet.ownerUserId !== user._id) {
+      throw new Error('Not allowed')
+    }
+
+    await ctx.db.patch(args.petId, {
+      avatarAssetId: undefined,
+      updatedAt: Date.now(),
+    })
     return null
   },
 })
