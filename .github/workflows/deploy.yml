@@ -43,7 +43,7 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           script: |
             set -eu
-            cd /opt/lbbb
+            cd /opt/cafezoe
             export WEB_IMAGE=ghcr.io/${{ github.repository }}:${{ github.sha }}
             export GIT_SHA=${{ github.sha }}
             docker compose pull web
