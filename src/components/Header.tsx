@@ -4,6 +4,7 @@ import { Link } from '@tanstack/react-router'
 import { useAuthActions, useConvexAuth } from '@convex-dev/auth/react'
 import { useQuery } from 'convex/react'
 import ThemeToggle from './ThemeToggle'
+import { UserAvatar, userDisplayName } from './UserAvatar'
 import { productShortName } from '#/lib/product'
 import { api } from '#convex/_generated/api'
 import { cn } from '#/lib/utils'
@@ -13,8 +14,15 @@ export default function Header() {
   const { signOut } = useAuthActions()
   const profile = useQuery(api.profiles.getMine)
 
-  const display =
-    profile?.profile?.displayName ?? profile?.user.name ?? profile?.user.email
+  const display = profile
+    ? userDisplayName({
+        displayName: profile.profile?.displayName,
+        name: profile.user.name,
+        email: profile.user.email,
+      })
+    : 'Account'
+
+  const imageUrl = profile?.user.image
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--header-bg)] px-4">
@@ -57,11 +65,14 @@ export default function Header() {
               <Link
                 to="/app/account"
                 className={cn(
-                  'nav-link hidden max-w-[10rem] truncate sm:inline-flex',
+                  'inline-flex items-center gap-2 no-underline hover:opacity-90',
                 )}
-                title={display ?? 'Account'}
+                title={display}
               >
-                {display ?? 'Account'}
+                <UserAvatar imageUrl={imageUrl} name={display} size="sm" />
+                <span className="nav-link hidden max-w-[10rem] truncate sm:inline">
+                  {display}
+                </span>
               </Link>
               <button
                 type="button"

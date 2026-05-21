@@ -3,6 +3,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useMutation, useQuery } from 'convex/react'
 import { PageShell } from '#/components/PageShell'
+import { UserAvatar, userDisplayName } from '#/components/UserAvatar'
 import { Button } from '#/components/ui/Button'
 import { api } from '#convex/_generated/api'
 import { useEffect, useState } from 'react'
@@ -44,7 +45,7 @@ function AccountPage() {
   if (data === undefined) {
     return (
       <PageShell eyebrow="Account" title="Your profile">
-        <p className="text-sm text-(--text-muted)">Loading…</p>
+        <p className="text-sm text-[var(--text-muted)]">Loading…</p>
       </PageShell>
     )
   }
@@ -60,6 +61,11 @@ function AccountPage() {
   }
 
   const { user, profile } = data
+  const display = userDisplayName({
+    displayName: profile?.displayName,
+    name: user.name,
+    email: user.email,
+  })
 
   return (
     <PageShell
@@ -67,6 +73,25 @@ function AccountPage() {
       title="Your profile"
       description="How you appear on LBBB. Pet names are edited per pet."
     >
+      <div className="mb-8 flex items-center gap-4 border-b border-[var(--border)] pb-8">
+        <UserAvatar imageUrl={user.image} name={display} size="lg" />
+        <div>
+          <p className="m-0 text-lg font-semibold text-[var(--text-primary)]">
+            {display}
+          </p>
+          {user.email ? (
+            <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">
+              {user.email}
+            </p>
+          ) : null}
+          {user.image ? (
+            <p className="m-0 mt-2 text-xs text-[var(--text-muted)]">
+              Profile photo from your sign-in provider.
+            </p>
+          ) : null}
+        </div>
+      </div>
+
       <div className="grid gap-8 lg:grid-cols-2">
         <form
           onSubmit={(e) => void onSubmit(e)}
