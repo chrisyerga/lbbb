@@ -244,3 +244,201 @@ body.landing-v1-active {
   background: color-mix(in srgb, var(--landing-soft) 40%, #fff);
 }
 
+/* --- Pets list --- */
+
+.landing-v1 .pets-header-band {
+  background: var(--landing-ink);
+  color: var(--landing-cream);
+  padding: 32px 0 28px;
+}
+
+.landing-v1 .pets-header-title {
+  animation: pets-title-in 0.45s ease;
+}
+
+@keyframes pets-title-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-v1 .pets-header-title {
+    animation: none;
+  }
+}
+
+.landing-v1 .pets-header-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  min-width: min(100%, 320px);
+  border: 1px solid color-mix(in srgb, var(--landing-cream) 18%, transparent);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.landing-v1 .pets-header-stat {
+  padding: 16px 14px;
+  border-left: 1px solid color-mix(in srgb, var(--landing-cream) 18%, transparent);
+}
+
+.landing-v1 .pets-header-stat:first-child {
+  border-left: none;
+}
+
+.landing-v1 .dismissible-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin: 24px auto 0;
+  width: min(1080px, calc(100% - 2rem));
+  padding: 18px 20px;
+  border: 1.5px solid var(--landing-border);
+  border-radius: 8px;
+  background: var(--landing-soft);
+}
+
+.landing-v1 .dismissible-tip-icon {
+  display: flex;
+  height: 44px;
+  width: 44px;
+  shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--landing-ink);
+  color: var(--landing-cream);
+  font-size: 22px;
+}
+
+.landing-v1 .pets-list-main {
+  width: min(1080px, calc(100% - 2rem));
+  margin-inline: auto;
+  padding: 28px 0 64px;
+}
+
+.landing-v1 .pets-list-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.landing-v1 .pet-row-card {
+  display: grid;
+  grid-template-columns: 132px 1.3fr 1.2fr auto;
+  gap: 24px 32px;
+  align-items: center;
+  padding: 24px;
+  border: 1.5px solid var(--landing-border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.landing-v1 .pet-photo {
+  border: 1.5px solid var(--landing-border);
+  border-radius: 6px;
+}
+
+.landing-v1 .slug-stamp {
+  display: inline-flex;
+  max-width: max-content;
+  cursor: pointer;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px 6px 12px;
+  border: 1px dashed color-mix(in srgb, var(--landing-primary) 40%, transparent);
+  border-radius: 6px;
+  background: #fff3f0;
+}
+
+.landing-v1 .slug-stamp-copy {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 10px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--landing-ink) 13%, transparent);
+  background: #fff;
+  color: var(--landing-ink);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.15s ease;
+}
+
+.landing-v1 .slug-stamp-copy.is-copied {
+  background: #3cb07a;
+  color: #fff;
+  border-color: #3cb07a;
+}
+
+.landing-v1 .status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.landing-v1 .stat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, var(--landing-ink) 12%, transparent);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.landing-v1 .pets-empty-slot {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 32px;
+  border: 2px dashed color-mix(in srgb, var(--landing-ink) 20%, transparent);
+  border-radius: 8px;
+  color: inherit;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.landing-v1 .pets-empty-slot:hover {
+  background: #fff;
+  border-color: var(--landing-border);
+}
+
+.landing-v1 .pets-empty-slot-icon {
+  display: flex;
+  height: 88px;
+  width: 88px;
+  shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px dashed color-mix(in srgb, var(--landing-ink) 33%, transparent);
+  border-radius: 6px;
+  font-size: 36px;
+  line-height: 1;
+  color: color-mix(in srgb, var(--landing-ink) 40%, transparent);
+}
+
+@media (max-width: 960px) {
+  .landing-v1 .pet-row-card {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .landing-v1 .pets-header-stats {
+    width: 100%;
+  }
+}
+

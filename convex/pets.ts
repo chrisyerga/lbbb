@@ -82,7 +82,37 @@ export const listMine = query({
           .withIndex('by_pet', (q) => q.eq('petId', pet._id))
           .first()
         const avatarUrl = await resolveAvatarUrl(ctx, pet.avatarAssetId)
-        return { pet, blog, avatarUrl }
+
+        const posts = await ctx.db
+          .query('generatedPosts')
+          .withIndex('by_pet', (q) => q.eq('petId', pet._id))
+          .collect()
+        const images = await ctx.db
+          .query('assets')
+          .withIndex('by_pet', (q) => q.eq('petId', pet._id))
+          .collect()
+        const imageCount = images.filter(
+          (a) => a.kind === 'generated_image',
+        ).length
+
+        const latestPost = posts.reduce<(typeof posts)[number] | null>(
+          (latest, post) => {
+            if (!latest || post.updatedAt > latest.updatedAt) return post
+            return latest
+          },
+          null,
+        )
+
+        return {
+          pet,
+          blog,
+          avatarUrl,
+          postCount: posts.length,
+          imageCount,
+          latestPost: latestPost
+            ? { title: latestPost.title, updatedAt: latestPost.updatedAt }
+            : null,
+        }
       }),
     )
     return withBlogs
