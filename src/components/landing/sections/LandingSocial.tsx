@@ -6,7 +6,7 @@ import { Pill } from '../primitives/Pill'
 const palette = getLandingPalette()
 
 function tileAccent(tile: (typeof ART_TILES)[number]) {
-  if ('accent' in tile && tile.accent) return tile.accent
+  if ('accent' in tile) return tile.accent
   if ('accentKey' in tile) {
     if (tile.accentKey === 'primary') return palette.primary
     if (tile.accentKey === 'accent') return palette.accent
