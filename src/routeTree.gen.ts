@@ -26,8 +26,11 @@ import { Route as AppPetsPetIdRouteImport } from './routes/app/pets/$petId'
 import { Route as AppGenerationsJobIdRouteImport } from './routes/app/generations.$jobId'
 import { Route as AppAdminJobsRouteImport } from './routes/app/admin/jobs'
 import { Route as AppAdminCostsRouteImport } from './routes/app/admin/costs'
+import { Route as AppPetsPetIdIndexRouteImport } from './routes/app/pets/$petId/index'
 import { Route as PPetSlugPostsPostSlugRouteImport } from './routes/p/$petSlug/posts/$postSlug'
-import { Route as AppPetsPetIdMemoriesRouteImport } from './routes/app/pets/$petId/memories'
+import { Route as AppPetsPetIdMemoriesRouteRouteImport } from './routes/app/pets/$petId/memories/route'
+import { Route as AppPetsPetIdMemoriesIndexRouteImport } from './routes/app/pets/$petId/memories/index'
+import { Route as AppPetsPetIdMemoriesNewRouteImport } from './routes/app/pets/$petId/memories/new'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -114,15 +117,32 @@ const AppAdminCostsRoute = AppAdminCostsRouteImport.update({
   path: '/costs',
   getParentRoute: () => AppAdminRouteRoute,
 } as any)
+const AppPetsPetIdIndexRoute = AppPetsPetIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppPetsPetIdRoute,
+} as any)
 const PPetSlugPostsPostSlugRoute = PPetSlugPostsPostSlugRouteImport.update({
   id: '/p/$petSlug/posts/$postSlug',
   path: '/p/$petSlug/posts/$postSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppPetsPetIdMemoriesRoute = AppPetsPetIdMemoriesRouteImport.update({
-  id: '/memories',
-  path: '/memories',
-  getParentRoute: () => AppPetsPetIdRoute,
+const AppPetsPetIdMemoriesRouteRoute =
+  AppPetsPetIdMemoriesRouteRouteImport.update({
+    id: '/memories',
+    path: '/memories',
+    getParentRoute: () => AppPetsPetIdRoute,
+  } as any)
+const AppPetsPetIdMemoriesIndexRoute =
+  AppPetsPetIdMemoriesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppPetsPetIdMemoriesRouteRoute,
+  } as any)
+const AppPetsPetIdMemoriesNewRoute = AppPetsPetIdMemoriesNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AppPetsPetIdMemoriesRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -143,8 +163,11 @@ export interface FileRoutesByFullPath {
   '/app/admin/': typeof AppAdminIndexRoute
   '/app/pets/': typeof AppPetsIndexRoute
   '/p/$petSlug/': typeof PPetSlugIndexRoute
-  '/app/pets/$petId/memories': typeof AppPetsPetIdMemoriesRoute
+  '/app/pets/$petId/memories': typeof AppPetsPetIdMemoriesRouteRouteWithChildren
   '/p/$petSlug/posts/$postSlug': typeof PPetSlugPostsPostSlugRoute
+  '/app/pets/$petId/': typeof AppPetsPetIdIndexRoute
+  '/app/pets/$petId/memories/new': typeof AppPetsPetIdMemoriesNewRoute
+  '/app/pets/$petId/memories/': typeof AppPetsPetIdMemoriesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -155,15 +178,16 @@ export interface FileRoutesByTo {
   '/app/admin/costs': typeof AppAdminCostsRoute
   '/app/admin/jobs': typeof AppAdminJobsRoute
   '/app/generations/$jobId': typeof AppGenerationsJobIdRoute
-  '/app/pets/$petId': typeof AppPetsPetIdRouteWithChildren
   '/app/pets/new': typeof AppPetsNewRoute
   '/p/$petSlug/about': typeof PPetSlugAboutRoute
   '/p/$petSlug/archive': typeof PPetSlugArchiveRoute
   '/app/admin': typeof AppAdminIndexRoute
   '/app/pets': typeof AppPetsIndexRoute
   '/p/$petSlug': typeof PPetSlugIndexRoute
-  '/app/pets/$petId/memories': typeof AppPetsPetIdMemoriesRoute
   '/p/$petSlug/posts/$postSlug': typeof PPetSlugPostsPostSlugRoute
+  '/app/pets/$petId': typeof AppPetsPetIdIndexRoute
+  '/app/pets/$petId/memories/new': typeof AppPetsPetIdMemoriesNewRoute
+  '/app/pets/$petId/memories': typeof AppPetsPetIdMemoriesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -184,8 +208,11 @@ export interface FileRoutesById {
   '/app/admin/': typeof AppAdminIndexRoute
   '/app/pets/': typeof AppPetsIndexRoute
   '/p/$petSlug/': typeof PPetSlugIndexRoute
-  '/app/pets/$petId/memories': typeof AppPetsPetIdMemoriesRoute
+  '/app/pets/$petId/memories': typeof AppPetsPetIdMemoriesRouteRouteWithChildren
   '/p/$petSlug/posts/$postSlug': typeof PPetSlugPostsPostSlugRoute
+  '/app/pets/$petId/': typeof AppPetsPetIdIndexRoute
+  '/app/pets/$petId/memories/new': typeof AppPetsPetIdMemoriesNewRoute
+  '/app/pets/$petId/memories/': typeof AppPetsPetIdMemoriesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -209,6 +236,9 @@ export interface FileRouteTypes {
     | '/p/$petSlug/'
     | '/app/pets/$petId/memories'
     | '/p/$petSlug/posts/$postSlug'
+    | '/app/pets/$petId/'
+    | '/app/pets/$petId/memories/new'
+    | '/app/pets/$petId/memories/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -219,15 +249,16 @@ export interface FileRouteTypes {
     | '/app/admin/costs'
     | '/app/admin/jobs'
     | '/app/generations/$jobId'
-    | '/app/pets/$petId'
     | '/app/pets/new'
     | '/p/$petSlug/about'
     | '/p/$petSlug/archive'
     | '/app/admin'
     | '/app/pets'
     | '/p/$petSlug'
-    | '/app/pets/$petId/memories'
     | '/p/$petSlug/posts/$postSlug'
+    | '/app/pets/$petId'
+    | '/app/pets/$petId/memories/new'
+    | '/app/pets/$petId/memories'
   id:
     | '__root__'
     | '/'
@@ -249,6 +280,9 @@ export interface FileRouteTypes {
     | '/p/$petSlug/'
     | '/app/pets/$petId/memories'
     | '/p/$petSlug/posts/$postSlug'
+    | '/app/pets/$petId/'
+    | '/app/pets/$petId/memories/new'
+    | '/app/pets/$petId/memories/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -383,6 +417,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminCostsRouteImport
       parentRoute: typeof AppAdminRouteRoute
     }
+    '/app/pets/$petId/': {
+      id: '/app/pets/$petId/'
+      path: '/'
+      fullPath: '/app/pets/$petId/'
+      preLoaderRoute: typeof AppPetsPetIdIndexRouteImport
+      parentRoute: typeof AppPetsPetIdRoute
+    }
     '/p/$petSlug/posts/$postSlug': {
       id: '/p/$petSlug/posts/$postSlug'
       path: '/p/$petSlug/posts/$postSlug'
@@ -394,8 +435,22 @@ declare module '@tanstack/react-router' {
       id: '/app/pets/$petId/memories'
       path: '/memories'
       fullPath: '/app/pets/$petId/memories'
-      preLoaderRoute: typeof AppPetsPetIdMemoriesRouteImport
+      preLoaderRoute: typeof AppPetsPetIdMemoriesRouteRouteImport
       parentRoute: typeof AppPetsPetIdRoute
+    }
+    '/app/pets/$petId/memories/': {
+      id: '/app/pets/$petId/memories/'
+      path: '/'
+      fullPath: '/app/pets/$petId/memories/'
+      preLoaderRoute: typeof AppPetsPetIdMemoriesIndexRouteImport
+      parentRoute: typeof AppPetsPetIdMemoriesRouteRoute
+    }
+    '/app/pets/$petId/memories/new': {
+      id: '/app/pets/$petId/memories/new'
+      path: '/new'
+      fullPath: '/app/pets/$petId/memories/new'
+      preLoaderRoute: typeof AppPetsPetIdMemoriesNewRouteImport
+      parentRoute: typeof AppPetsPetIdMemoriesRouteRoute
     }
   }
 }
@@ -416,12 +471,30 @@ const AppAdminRouteRouteWithChildren = AppAdminRouteRoute._addFileChildren(
   AppAdminRouteRouteChildren,
 )
 
+interface AppPetsPetIdMemoriesRouteRouteChildren {
+  AppPetsPetIdMemoriesNewRoute: typeof AppPetsPetIdMemoriesNewRoute
+  AppPetsPetIdMemoriesIndexRoute: typeof AppPetsPetIdMemoriesIndexRoute
+}
+
+const AppPetsPetIdMemoriesRouteRouteChildren: AppPetsPetIdMemoriesRouteRouteChildren =
+  {
+    AppPetsPetIdMemoriesNewRoute: AppPetsPetIdMemoriesNewRoute,
+    AppPetsPetIdMemoriesIndexRoute: AppPetsPetIdMemoriesIndexRoute,
+  }
+
+const AppPetsPetIdMemoriesRouteRouteWithChildren =
+  AppPetsPetIdMemoriesRouteRoute._addFileChildren(
+    AppPetsPetIdMemoriesRouteRouteChildren,
+  )
+
 interface AppPetsPetIdRouteChildren {
-  AppPetsPetIdMemoriesRoute: typeof AppPetsPetIdMemoriesRoute
+  AppPetsPetIdMemoriesRouteRoute: typeof AppPetsPetIdMemoriesRouteRouteWithChildren
+  AppPetsPetIdIndexRoute: typeof AppPetsPetIdIndexRoute
 }
 
 const AppPetsPetIdRouteChildren: AppPetsPetIdRouteChildren = {
-  AppPetsPetIdMemoriesRoute: AppPetsPetIdMemoriesRoute,
+  AppPetsPetIdMemoriesRouteRoute: AppPetsPetIdMemoriesRouteRouteWithChildren,
+  AppPetsPetIdIndexRoute: AppPetsPetIdIndexRoute,
 }
 
 const AppPetsPetIdRouteWithChildren = AppPetsPetIdRoute._addFileChildren(

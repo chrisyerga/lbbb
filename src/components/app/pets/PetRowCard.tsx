@@ -80,16 +80,14 @@ export function PetRowCard({ row }: { row: PetListRow }) {
         >
           Edit
         </StickerBtn>
-        {blog ? (
-          <StickerBtn
-            bg="var(--landing-primary)"
-            size="md"
-            to={`/p/${blog.slug}`}
-            className="w-full justify-center"
-          >
-            Public blog →
-          </StickerBtn>
-        ) : null}
+        <StickerBtn
+          bg="var(--landing-primary)"
+          size="md"
+          to={`/app/pets/${pet._id}/memories/new`}
+          className="w-full justify-center"
+        >
+          Add memory
+        </StickerBtn>
         <Link
           to="/app/pets/$petId/memories"
           params={{ petId: pet._id }}

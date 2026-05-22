@@ -13,6 +13,7 @@ type StickerBtnProps = PropsWithChildren<{
   to?: string
   onClick?: () => void
   type?: 'button' | 'submit'
+  disabled?: boolean
 }>
 
 export function StickerBtn({
@@ -25,11 +26,13 @@ export function StickerBtn({
   to,
   onClick,
   type = 'button',
+  disabled = false,
 }: StickerBtnProps) {
   const classes = cn(
     'inline-flex cursor-pointer items-center gap-2.5 border border-[#14100E] font-semibold transition-[transform,opacity] duration-100',
     size === 'lg' && 'rounded-2xl px-7 py-[18px] text-lg',
     size === 'md' && 'rounded-xl px-5 py-3 text-sm',
+    disabled && 'cursor-not-allowed opacity-50',
     className,
   )
   const inlineStyle = { background: bg, color, ...style }
@@ -65,6 +68,7 @@ export function StickerBtn({
       className={classes}
       style={inlineStyle}
       onClick={onClick}
+      disabled={disabled}
       {...pressHandlers}
     >
       {children}

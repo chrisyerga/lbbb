@@ -18,7 +18,7 @@ export const seedDefaultPrompt = mutation({
       version: 1,
       purpose: 'Generate a tasteful public blog post from a daily pet memory.',
       provider: 'openai',
-      model: process.env.OPENAI_TEXT_MODEL ?? 'gpt-5.1-mini',
+      model: process.env.OPENAI_TEXT_MODEL ?? 'gpt-5.4-mini',
       systemPrompt:
         'You write warm, specific, non-cringey pet blog posts. Preserve the owner voice, avoid baby talk, and keep posts suitable for public indexing.',
       userPromptTemplate:

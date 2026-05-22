@@ -3,6 +3,14 @@ import { v } from 'convex/values'
 import { requirePetAsset, requirePetOwner, resolveAssetUrl } from './lib/assets'
 import { requireUser } from './lib/requireUser'
 
+const vibeHintsValidator = v.object({
+  mood: v.array(v.string()),
+  style: v.array(v.string()),
+  voice: v.array(v.string()),
+  length: v.array(v.string()),
+  custom: v.array(v.string()),
+})
+
 export const listByPet = query({
   args: { petId: v.id('pets') },
   handler: async (ctx, args) => {
@@ -39,6 +47,46 @@ export const listByPet = query({
         }
       }),
     )
+  },
+})
+
+export const createDraft = mutation({
+  args: {
+    petId: v.id('pets'),
+    description: v.string(),
+    occurredOn: v.optional(v.string()),
+    sourceAssetIds: v.optional(v.array(v.id('assets'))),
+    vibeHints: vibeHintsValidator,
+  },
+  handler: async (ctx, args) => {
+    const user = await requireUser(ctx)
+    await requirePetOwner(ctx, args.petId, user._id)
+
+    const description = args.description.trim()
+    if (!description) {
+      throw new Error('Description is required')
+    }
+
+    const sourceAssetIds = args.sourceAssetIds ?? []
+    for (const assetId of sourceAssetIds) {
+      await requirePetAsset(ctx, assetId, args.petId, user._id)
+    }
+
+    const occurredOn =
+      args.occurredOn?.trim() ||
+      new Date().toISOString().slice(0, 10)
+
+    const memoryId = await ctx.db.insert('petMemories', {
+      ownerUserId: user._id,
+      petId: args.petId,
+      occurredOn,
+      description,
+      sourceAssetIds,
+      vibeHints: args.vibeHints,
+      createdAt: Date.now(),
+    })
+
+    return { memoryId }
   },
 })
 

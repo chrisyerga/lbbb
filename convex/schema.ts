@@ -134,6 +134,15 @@ export default defineSchema({
     occurredOn: v.string(),
     description: v.string(),
     sourceAssetIds: v.array(v.id('assets')),
+    vibeHints: v.optional(
+      v.object({
+        mood: v.array(v.string()),
+        style: v.array(v.string()),
+        voice: v.array(v.string()),
+        length: v.array(v.string()),
+        custom: v.array(v.string()),
+      }),
+    ),
     stylePresetId: v.optional(v.id('stylePresets')),
     createdAt: v.number(),
   })
@@ -182,6 +191,7 @@ export default defineSchema({
     provider: v.optional(v.union(v.literal('openai'), v.literal('openrouter'))),
     promptVersionId: v.optional(v.id('promptVersions')),
     stylePresetId: v.optional(v.id('stylePresets')),
+    inputSnapshot: v.optional(v.any()),
     attempt: v.number(),
     error: v.optional(v.string()),
     startedAt: v.optional(v.number()),

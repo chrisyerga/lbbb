@@ -4,6 +4,14 @@ import { requireStaff } from './lib/requireAccount'
 import { assertCanCreateGenerationJob } from './lib/quotaEnforcement'
 import { requireUser } from './lib/requireUser'
 
+const vibeHintsValidator = v.object({
+  mood: v.array(v.string()),
+  style: v.array(v.string()),
+  voice: v.array(v.string()),
+  length: v.array(v.string()),
+  custom: v.array(v.string()),
+})
+
 export const createGenerationJob = mutation({
   args: {
     petId: v.id('pets'),
@@ -43,6 +51,82 @@ export const createGenerationJob = mutation({
     })
 
     return jobId
+  },
+})
+
+export const startMemoryGeneration = mutation({
+  args: {
+    petId: v.id('pets'),
+    memoryId: v.id('petMemories'),
+    vibeHints: vibeHintsValidator,
+    description: v.string(),
+    petName: v.string(),
+    petSpecies: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const user = await requireUser(ctx)
+    await assertCanCreateGenerationJob(ctx, user._id, 'blog_post')
+
+    const memory = await ctx.db.get(args.memoryId)
+    if (!memory || memory.ownerUserId !== user._id) {
+      throw new Error('Memory not found')
+    }
+    if (memory.petId !== args.petId) {
+      throw new Error('Memory does not belong to this pet')
+    }
+
+    const now = Date.now()
+    const jobId = await ctx.db.insert('generationJobs', {
+      ownerUserId: user._id,
+      petId: args.petId,
+      memoryId: args.memoryId,
+      status: 'queued',
+      operation: 'blog_post',
+      provider: 'openai',
+      inputSnapshot: {
+        description: args.description.trim(),
+        vibeHints: args.vibeHints,
+        petName: args.petName,
+        petSpecies: args.petSpecies,
+      },
+      attempt: 0,
+      createdAt: now,
+      updatedAt: now,
+    })
+
+    await ctx.db.insert('generationEvents', {
+      jobId,
+      ownerUserId: user._id,
+      type: 'queued',
+      message: 'Memory generation queued.',
+      createdAt: now,
+    })
+
+    return jobId
+  },
+})
+
+export const getMineById = query({
+  args: { jobId: v.id('generationJobs') },
+  handler: async (ctx, args) => {
+    const user = await requireUser(ctx)
+    const job = await ctx.db.get(args.jobId)
+    if (!job || job.ownerUserId !== user._id) return null
+
+    const events = await ctx.db
+      .query('generationEvents')
+      .withIndex('by_job', (q) => q.eq('jobId', args.jobId))
+      .collect()
+
+    events.sort((a, b) => a.createdAt - b.createdAt)
+
+    const post = await ctx.db
+      .query('generatedPosts')
+      .withIndex('by_pet', (q) => q.eq('petId', job.petId))
+      .collect()
+    const draft = post.find((p) => p.jobId === args.jobId) ?? null
+
+    return { job, events, draft }
   },
 })
 

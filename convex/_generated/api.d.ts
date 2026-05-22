@@ -22,6 +22,7 @@ import type * as lib_quotaEnforcement from "../lib/quotaEnforcement.js";
 import type * as lib_requireAccount from "../lib/requireAccount.js";
 import type * as lib_requireUser from "../lib/requireUser.js";
 import type * as lib_userAccount from "../lib/userAccount.js";
+import type * as lib_vibeTags from "../lib/vibeTags.js";
 import type * as memories from "../memories.js";
 import type * as pets from "../pets.js";
 import type * as profiles from "../profiles.js";
@@ -49,6 +50,7 @@ declare const fullApi: ApiFromModules<{
   "lib/requireAccount": typeof lib_requireAccount;
   "lib/requireUser": typeof lib_requireUser;
   "lib/userAccount": typeof lib_userAccount;
+  "lib/vibeTags": typeof lib_vibeTags;
   memories: typeof memories;
   pets: typeof pets;
   profiles: typeof profiles;

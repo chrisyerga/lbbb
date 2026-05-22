@@ -11,7 +11,7 @@ import { api } from '#convex/_generated/api'
 import type { Id } from '#convex/_generated/dataModel'
 import { parsePetId } from '#/lib/convexIds'
 
-export const Route = createFileRoute('/app/pets/$petId/memories')({
+export const Route = createFileRoute('/app/pets/$petId/memories/')({
   component: PetMemoriesPage,
 })
 
@@ -93,6 +93,16 @@ function PetMemoriesPage() {
       title={`${pet.name}'s memories`}
       description="Capture daily moments with photos. These feed into blog generation later."
     >
+      <p className="mb-6 text-sm">
+        <Link
+          to="/app/pets/$petId/memories/new"
+          params={{ petId: pet._id }}
+          className="font-display text-lg font-extrabold tracking-tight no-underline"
+        >
+          Compose a memory with AI →
+        </Link>
+      </p>
+
       <form
         onSubmit={(e) => void onSubmit(e)}
         className="panel mb-8 grid gap-4 p-6 text-sm"
@@ -102,9 +112,7 @@ function PetMemoriesPage() {
         </h2>
 
         {error ? (
-          <p className="alert-error m-0 px-3 py-2">
-            {error}
-          </p>
+          <p className="alert-error m-0 px-3 py-2">{error}</p>
         ) : null}
 
         <label className="grid gap-2 text-[var(--text-primary)]">
