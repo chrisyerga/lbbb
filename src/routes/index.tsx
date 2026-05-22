@@ -2,11 +2,11 @@
 
 import { createFileRoute } from '@tanstack/react-router'
 import { LandingPage } from '#/components/landing/LandingPage'
-import { productName } from '#/lib/product'
+import { siteMeta } from '#/lib/siteMeta'
 
 export const Route = createFileRoute('/')({
   head: () => ({
-    meta: [{ title: `${productName} · Cafe Zoe` }],
+    meta: [{ title: siteMeta.title }],
   }),
   component: IndexRoute,
 })
