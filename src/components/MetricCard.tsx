@@ -10,7 +10,7 @@ export function MetricCard({
   return (
     <article className="bg-[var(--bg-raised)] p-5">
       <p className="section-label mb-2">{label}</p>
-      <p className="m-0 text-3xl font-bold text-[var(--text-primary)]">
+      <p className="font-display m-0 text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
         {value}
       </p>
       <p className="mt-2 text-sm text-[var(--text-muted)]">{detail}</p>

@@ -9,22 +9,56 @@ Two visual contexts — pick the right one:
 
 | Context | Route | Aesthetic |
 | ------- | ----- | --------- |
-| **App UI** | `/app/*`, `/login`, `/p/*` | Flat dark utilitarian |
+| **App UI** | `/app/*`, `/login` | V1 Sticker Pop (cream, Unbounded, sticker buttons) |
+| **Public blogs** | `/p/*` | Flat dark utilitarian (legacy) |
 | **Marketing landing** | `/` | V1 Sticker Pop scrapbook |
 
 ---
 
-## App UI
+## App UI (`/app/*`, `/login`)
 
-Flat, utilitarian, app-first UI. No decorative gradients, glass effects, or pill shapes.
+Uses the same V1 **Sticker Pop** system as the landing page, scoped via [`AppShell`](src/components/AppShell.tsx) and `.landing-v1` in [`landing-v1.css`](src/styles/landing-v1.css).
 
 ### Typography
 
-- **Font**: IBM Plex Sans only — never use serif or decorative fonts
-- **Page titles**: `text-3xl sm:text-4xl font-bold text-[var(--text-primary)]`
-- **Section labels**: `.section-label` — uppercase, tracked, muted, 11px
-- **Body**: `text-sm text-[var(--text-muted)]`
-- **Emphasis**: weight (`font-semibold`) or accent color — not font switching
+- **Display**: Unbounded (`.font-display`, auto on `h1`–`h3` inside `.landing-v1`)
+- **Body**: DM Sans
+- **Labels**: DM Mono (`.section-label`, `.font-mono`)
+- **Page titles**: `font-display text-3xl sm:text-4xl font-extrabold`
+
+### Color tokens
+
+Inside `.landing-v1`, existing app utility vars are bridged to landing palette:
+
+| Token | Maps to |
+| ----- | ------- |
+| `--bg-base` | `--landing-cream` |
+| `--bg-raised` | `#fff` |
+| `--text-primary` | `--landing-ink` |
+| `--accent` | `--landing-primary` |
+
+See [`landingPalette.ts`](src/components/landing/landingPalette.ts) for palette values.
+
+### Layout & components
+
+- **Panels**: 2px `#14100E` border, 18px radius (`.panel`, `.panel-interactive`)
+- **Inputs**: `.input-field` — 2px border, 12px radius, white fill
+- **Buttons**: `.btn` / `buttonClassName()` — sticker style (rounded-xl, ink border, primary red fill)
+- **PageShell**, **MetricCard**, **Header** — V1 typography and colors
+- **Header**: cafezoe wordmark + paw favicon; no theme toggle
+- **Errors**: `.alert-error` for form validation messages
+
+### Navigation
+
+- Logo → `/app`
+- `/` is the marketing landing (separate nav/footer)
+- Public blogs at `/p/:slug` keep legacy dark header with theme toggle
+
+---
+
+## Public blogs (`/p/*`) — legacy
+
+Flat, utilitarian UI. IBM Plex Sans, 1px borders, dark/light theme toggle.
 
 ### Color tokens
 
@@ -39,51 +73,42 @@ Defined in [`src/styles.css`](src/styles.css):
 | `--text-primary` | Headings, primary copy    |
 | `--text-muted`   | Secondary copy, labels    |
 | `--accent`       | CTAs, active nav, links   |
-| `--accent-hover` | Hover states              |
-| `--accent-muted` | Subtle accent backgrounds |
 
-Orange accent is scarce — primary actions and active states only.
+### Anti-patterns (legacy `/p/*` only)
 
-### Layout
+Do NOT use on public blog routes:
 
-- **Flat 2D**: 1px borders, rectangles, no shadows or blur
-- **Corner radius**: 0–2px max (`.input-field` uses 2px)
-- **Panels**: `.panel` for static containers, `.panel-interactive` for hoverable cards
-- **Grids**: `.metric-grid` for bordered stat cells with shared outer border
-- **Page width**: `.page-wrap` (max 1080px)
-- **Background**: subtle grid lines on `--bg-base` — no radial gradients
-
-### Components
-
-Reuse existing primitives:
-
-- [`PageShell`](src/components/PageShell.tsx) — page wrapper with label, title, divider
-- [`Button`](src/components/ui/Button.tsx) / `buttonClassName()` — primary (orange), secondary (bordered), ghost
-- [`MetricCard`](src/components/MetricCard.tsx) — stat cell inside `.metric-grid`
-- [`Header`](src/components/Header.tsx) — app nav: Dashboard, Pets, Admin, Account
-- `.input-field` — all form inputs
-- `.nav-link` — header links with orange bottom border when active
-
-### Navigation
-
-- Logo → `/app`
-- `/` is the marketing landing (no app header)
-- Public blogs at `/p/:slug` use same tokens but no extra nav items
-
-### Anti-patterns (app only)
-
-Do NOT use in app UI:
-
-- Fraunces, Inter, or generic AI aesthetics
-- `rounded-full`, large border-radius, pill buttons
-- Gradients, backdrop-blur, box-shadow, hover translate lifts
-- `.island-shell`, `.feature-card`, `.display-title`, `.island-kicker` (removed)
-- Coastal/teal/green palette (`--sea-ink`, `--lagoon`, etc.)
-- Page-load animations
+- Large border-radius pill buttons, scrapbook rotations, tape decorations
+- Forced cream palette
 
 ### Theme
 
-Dark-first CSS on `:root`. Light mode via `.light`, `data-theme='light'`, or system preference when auto. Theme toggle cycles light → dark → auto.
+Dark-first CSS on `:root`. Light mode via `.light`, `data-theme='light'`, or system preference when auto.
+
+---
+
+## Legacy app tokens (reference)
+
+The following applied before V1 migration; still active on `/p/*` via [`styles.css`](src/styles.css):
+
+### Typography (legacy)
+
+- **Font**: IBM Plex Sans only
+- **Section labels**: `.section-label` — uppercase, tracked, muted, 11px
+- **Body**: `text-sm text-[var(--text-muted)]`
+
+### Layout (legacy)
+
+- **Flat 2D**: 1px borders, rectangles, 0–2px radius
+- **Panels**: `.panel`, `.panel-interactive`
+- **Grids**: `.metric-grid`
+- **Page width**: `.page-wrap`
+
+### Components (legacy `/p/*`)
+
+- [`Button`](src/components/ui/Button.tsx) — orange accent, square corners (outside `.landing-v1`)
+- [`Header`](src/components/Header.tsx) — LBBB wordmark + theme toggle on non-app routes
+- `.nav-link` — underline active state
 
 ---
 
@@ -93,8 +118,8 @@ V1 **Sticker Pop** — scrapbook/sticker sheet aesthetic. Implemented in [`src/c
 
 ### When to use
 
-- Homepage and future marketing-only pages
-- Do **not** apply landing styles to `/app/*`
+- Homepage only (full marketing sections)
+- Do **not** duplicate landing nav on `/app/*` — app uses [`Header`](src/components/Header.tsx) instead
 
 ### Typography
 
@@ -129,7 +154,7 @@ Landing-specific primitives in [`src/components/landing/primitives/`](src/compon
 
 - `Pill`, `StickerBtn`, `Tape`, `Squiggle`, `SunBurst`, `Star`, `ArtTile`
 - Sections in [`src/components/landing/sections/`](src/components/landing/sections/)
-- `LandingLayout` wraps page, sets body class, loads landing CSS
+- `LandingLayout` wraps page, sets body class
 
 ### Chrome
 

@@ -100,3 +100,147 @@ body.landing-v1-active {
   background-image: none;
   color: var(--landing-ink, #1a1410);
 }
+
+/* --- App route token bridge (reuse existing utility class names) --- */
+
+.landing-v1 {
+  --bg-base: var(--landing-cream);
+  --bg-raised: #ffffff;
+  --bg-input: #ffffff;
+  --border: #14100e;
+  --text-primary: var(--landing-ink);
+  --text-muted: color-mix(in srgb, var(--landing-ink) 62%, transparent);
+  --accent: var(--landing-primary);
+  --accent-hover: #c42f26;
+  --accent-muted: rgba(224, 56, 46, 0.12);
+  --header-bg: var(--landing-cream);
+}
+
+.landing-v1 .panel,
+.landing-v1 .panel-interactive {
+  border: 2px solid var(--landing-border);
+  background: #fff;
+  border-radius: 18px;
+}
+
+.landing-v1 .panel-interactive:hover {
+  border-color: var(--landing-primary);
+}
+
+.landing-v1 .input-field {
+  border: 2px solid color-mix(in srgb, var(--landing-ink) 22%, transparent);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.landing-v1 .input-field:focus {
+  border-color: var(--landing-primary);
+}
+
+.landing-v1 .section-label {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  letter-spacing: 0.18em;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--landing-primary);
+}
+
+.landing-v1 .nav-link {
+  color: color-mix(in srgb, var(--landing-ink) 62%, transparent);
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+}
+
+.landing-v1 .nav-link:hover {
+  color: var(--landing-ink);
+  border-bottom-color: var(--landing-primary);
+}
+
+.landing-v1 .nav-link.is-active {
+  color: var(--landing-ink);
+  border-bottom-color: var(--landing-primary);
+}
+
+.landing-v1 .site-footer {
+  border-top: 2px solid color-mix(in srgb, var(--landing-ink) 22%, transparent);
+  background: var(--landing-cream);
+}
+
+.landing-v1 .metric-grid {
+  border: 2px solid var(--landing-border);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.landing-v1 .metric-grid > * {
+  border-color: color-mix(in srgb, var(--landing-ink) 22%, transparent);
+}
+
+.landing-v1 code {
+  border: 2px solid color-mix(in srgb, var(--landing-ink) 22%, transparent);
+  border-radius: 8px;
+  background: var(--landing-soft);
+  font-family: 'DM Mono', ui-monospace, monospace;
+}
+
+.landing-v1 .alert-error {
+  border: 2px solid var(--landing-border);
+  background: #fde8e6;
+  color: #8b1a12;
+}
+
+.landing-v1 .btn {
+  border: 1px solid var(--landing-border);
+  border-radius: 12px;
+  font-weight: 600;
+  transition:
+    transform 0.1s ease,
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.landing-v1 .btn:active {
+  transform: translateY(1px);
+}
+
+.landing-v1 .btn-primary {
+  background: var(--landing-primary);
+  border-color: var(--landing-border);
+  color: #fff;
+}
+
+.landing-v1 .btn-primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--landing-border);
+  color: #fff;
+}
+
+.landing-v1 .btn-secondary {
+  background: #fff;
+  color: var(--landing-ink);
+}
+
+.landing-v1 .btn-secondary:hover {
+  border-color: var(--landing-primary);
+  color: var(--landing-ink);
+}
+
+.landing-v1 h1,
+.landing-v1 h2,
+.landing-v1 h3 {
+  font-family: 'Unbounded', 'Bricolage Grotesque', system-ui, sans-serif;
+}
+
+.landing-v1 .app-header {
+  border-bottom: 2px solid color-mix(in srgb, var(--landing-ink) 22%, transparent);
+  background: var(--landing-cream);
+}
+
+.landing-v1 .login-panel-grid > * {
+  background: #fff;
+}
+
+.landing-v1 .login-panel-grid > *:first-child {
+  background: color-mix(in srgb, var(--landing-soft) 40%, #fff);
+}
+

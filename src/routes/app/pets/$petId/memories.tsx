@@ -102,7 +102,7 @@ function PetMemoriesPage() {
         </h2>
 
         {error ? (
-          <p className="m-0 border border-red-800 bg-red-950/40 px-3 py-2 text-red-200">
+          <p className="alert-error m-0 px-3 py-2">
             {error}
           </p>
         ) : null}

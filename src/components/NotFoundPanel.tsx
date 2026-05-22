@@ -25,14 +25,14 @@ export function NotFoundPanel({
     <main className="page-wrap px-4 pb-12 pt-8">
       <section className="panel p-6 sm:p-8">
         <p className="section-label mb-3">{code}</p>
-        <h1 className="m-0 text-4xl font-bold leading-tight tracking-tight text-[var(--text-primary)] sm:text-5xl">
+        <h1 className="font-display m-0 text-4xl font-extrabold leading-tight tracking-tight text-[var(--text-primary)] sm:text-5xl">
           {title}
         </h1>
         <p className="mt-4 max-w-xl text-sm text-[var(--text-muted)]">
           {description}
         </p>
         {subject ? (
-          <p className="mt-4 max-w-xl border border-[var(--border)] bg-[var(--bg-input)] px-3 py-2 font-mono text-xs text-[var(--text-muted)]">
+          <p className="font-mono mt-4 max-w-xl border border-[var(--border)] bg-[var(--bg-input)] px-3 py-2 text-xs text-[var(--text-muted)]">
             {subject}
           </p>
         ) : null}

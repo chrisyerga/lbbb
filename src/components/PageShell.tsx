@@ -15,7 +15,7 @@ export function PageShell({
     <main className="page-wrap px-4 pb-12 pt-8">
       <section className="panel p-6 sm:p-8">
         <p className="section-label mb-3">{eyebrow}</p>
-        <h1 className="m-0 max-w-3xl text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl">
+        <h1 className="font-display m-0 max-w-3xl text-3xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-4xl">
           {title}
         </h1>
         {description ? (

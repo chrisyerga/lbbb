@@ -16,8 +16,8 @@ function LoginPage() {
 
   return (
     <PageShell eyebrow="Sign in" title="Sign in to manage your pet blogs.">
-      <div className="grid gap-0 border border-[var(--border)] text-sm text-[var(--text-muted)] sm:grid-cols-2">
-        <div className="border-b border-[var(--border)] p-6 sm:border-b-0 sm:border-r">
+      <div className="login-panel-grid grid gap-0 overflow-hidden rounded-2xl border-2 border-[var(--border)] text-sm text-[var(--text-muted)] sm:grid-cols-2">
+        <div className="border-b border-[var(--border)] p-6 sm:border-r sm:border-b-0">
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">
             Google OAuth
           </h2>
