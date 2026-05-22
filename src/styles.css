@@ -117,6 +117,22 @@ pre code {
   background: var(--bg-raised);
 }
 
+.zoe-mascot-float {
+  float: left;
+  margin-left: -1.5rem;
+  margin-top: -1.5rem;
+  shape-outside: url('/images/zoe-mascot.png');
+  shape-margin: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .zoe-mascot-float {
+    margin-left: -2rem;
+    margin-top: -2rem;
+    shape-margin: 1rem;
+  }
+}
+
 .panel-interactive {
   border: 1px solid var(--border);
   background: var(--bg-raised);

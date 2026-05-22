@@ -28,7 +28,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--header-bg)] px-4">
       <nav className="page-wrap flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
         <Link
-          to="/app"
+          to="/"
           className="mr-2 text-sm font-bold tracking-tight text-[var(--text-primary)] no-underline hover:text-[var(--accent)]"
         >
           {productShortName}
