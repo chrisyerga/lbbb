@@ -1,5 +1,6 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import { requireStaff } from './lib/requireAccount'
 
 export const record = mutation({
   args: {
@@ -39,6 +40,7 @@ export const record = mutation({
 export const recent = query({
   args: { limit: v.optional(v.number()) },
   handler: async (ctx, args) => {
+    await requireStaff(ctx)
     return await ctx.db
       .query('generationCosts')
       .withIndex('by_created')

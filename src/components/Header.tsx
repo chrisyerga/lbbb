@@ -2,7 +2,8 @@
 
 import { Link, useRouterState } from '@tanstack/react-router'
 import { useAuthActions, useConvexAuth } from '@convex-dev/auth/react'
-import { useQuery } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
+import { useEffect } from 'react'
 import ThemeToggle from './ThemeToggle'
 import { UserAvatar, userDisplayName } from './UserAvatar'
 import { productShortName } from '#/lib/product'
@@ -19,6 +20,16 @@ export default function Header() {
   const { isAuthenticated, isLoading } = useConvexAuth()
   const { signOut } = useAuthActions()
   const profile = useQuery(api.profiles.getMine)
+  const account = useQuery(api.accounts.getMine)
+  const ensureAccount = useMutation(api.accounts.ensureAccount)
+
+  useEffect(() => {
+    if (isAuthenticated && account?.account === null) {
+      void ensureAccount()
+    }
+  }, [isAuthenticated, account?.account, ensureAccount])
+
+  const isStaff = account?.capabilities?.isStaff ?? false
 
   const display = profile
     ? userDisplayName({
@@ -81,13 +92,15 @@ export default function Header() {
           >
             Pets
           </Link>
-          <Link
-            to="/app/admin"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
-          >
-            Admin
-          </Link>
+          {isStaff ? (
+            <Link
+              to="/app/admin"
+              className="nav-link"
+              activeProps={{ className: 'nav-link is-active' }}
+            >
+              Admin
+            </Link>
+          ) : null}
         </div>
 
         <div className="ml-auto flex items-center gap-2">

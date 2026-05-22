@@ -11,11 +11,11 @@ import { useMutation, useQuery } from 'convex/react'
 import { useEffect } from 'react'
 import { api } from '#convex/_generated/api'
 
-export const Route = createFileRoute('/app')({
-  component: AppLayout,
+export const Route = createFileRoute('/app/admin')({
+  component: AdminLayout,
 })
 
-function AppLayout() {
+function AdminLayout() {
   const { isLoading, isAuthenticated } = useConvexAuth()
   const pathname = useRouterState({
     select: (s) => s.location.pathname,
@@ -29,7 +29,7 @@ function AppLayout() {
     }
   }, [isAuthenticated, account?.account, ensureAccount])
 
-  if (isLoading) {
+  if (isLoading || (isAuthenticated && account === undefined)) {
     return (
       <div className="page-wrap px-4 py-12 text-sm text-[var(--text-muted)]">
         Loading…
@@ -39,6 +39,10 @@ function AppLayout() {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" search={{ redirect: pathname }} />
+  }
+
+  if (!account?.capabilities?.isStaff) {
+    return <Navigate to="/app" />
   }
 
   return <Outlet />

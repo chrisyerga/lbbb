@@ -1,5 +1,7 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import { requireStaff } from './lib/requireAccount'
+import { assertCanCreateGenerationJob } from './lib/quotaEnforcement'
 import { requireUser } from './lib/requireUser'
 
 export const createGenerationJob = mutation({
@@ -16,6 +18,7 @@ export const createGenerationJob = mutation({
   },
   handler: async (ctx, args) => {
     const user = await requireUser(ctx)
+    await assertCanCreateGenerationJob(ctx, user._id, args.operation)
 
     const now = Date.now()
     const jobId = await ctx.db.insert('generationJobs', {
@@ -43,9 +46,26 @@ export const createGenerationJob = mutation({
   },
 })
 
+export const recentMine = query({
+  args: { limit: v.optional(v.number()) },
+  handler: async (ctx, args) => {
+    const user = await requireUser(ctx)
+    const jobs = await ctx.db
+      .query('generationJobs')
+      .withIndex('by_owner', (q) => q.eq('ownerUserId', user._id))
+      .collect()
+
+    return jobs
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .slice(0, args.limit ?? 50)
+  },
+})
+
+/** Cross-user job feed for staff admin views. */
 export const recent = query({
   args: { limit: v.optional(v.number()) },
   handler: async (ctx, args) => {
+    await requireStaff(ctx)
     return await ctx.db
       .query('generationJobs')
       .withIndex('by_created')

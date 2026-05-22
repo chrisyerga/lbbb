@@ -29,9 +29,55 @@ const moderationStatus = v.union(
   v.literal('flagged'),
   v.literal('rejected'),
 )
+const accessRole = v.union(
+  v.literal('user'),
+  v.literal('site_admin'),
+  v.literal('moderator'),
+  v.literal('support'),
+)
+const planTier = v.union(
+  v.literal('pup'),
+  v.literal('top_dog'),
+  v.literal('the_pack'),
+)
+const planStatus = v.union(
+  v.literal('active'),
+  v.literal('trialing'),
+  v.literal('cancelled'),
+  v.literal('past_due'),
+)
 
 export default defineSchema({
   ...authTables,
+
+  userAccounts: defineTable({
+    userId: v.id('users'),
+    accessRole,
+    planTier,
+    planStatus,
+    planExpiresAt: v.optional(v.number()),
+    billing: v.optional(
+      v.object({
+        provider: v.literal('stripe'),
+        customerId: v.string(),
+        subscriptionId: v.optional(v.string()),
+        currentPeriodEnd: v.optional(v.number()),
+      }),
+    ),
+    quotaOverrides: v.optional(
+      v.object({
+        dailyTextGenerations: v.optional(v.number()),
+        dailyImageGenerations: v.optional(v.number()),
+        maxPets: v.optional(v.number()),
+      }),
+    ),
+    suspendedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_user', ['userId'])
+    .index('by_plan_tier', ['planTier'])
+    .index('by_access_role', ['accessRole']),
 
   userProfiles: defineTable({
     userId: v.id('users'),

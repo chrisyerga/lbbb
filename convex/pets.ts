@@ -4,6 +4,7 @@ import type { GenericQueryCtx } from 'convex/server'
 import type { DataModel, Id } from './_generated/dataModel'
 import { requirePetAsset, resolveAssetUrl } from './lib/assets'
 import { parsePetId } from './lib/ids'
+import { assertCanCreatePet } from './lib/quotaEnforcement'
 import { optionalUser, requireUser } from './lib/requireUser'
 
 const RESERVED_SLUGS = new Set([
@@ -170,6 +171,7 @@ export const create = mutation({
   },
   handler: async (ctx, args) => {
     const user = await requireUser(ctx)
+    await assertCanCreatePet(ctx, user._id)
     const name = args.name.trim()
     if (!name) throw new Error('Name is required')
 

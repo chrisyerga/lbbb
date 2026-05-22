@@ -1,10 +1,11 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 import {
-  assertUploadAllowed,
   requirePetOwner,
   resolveAssetUrl,
 } from './lib/assets'
+import { assertUploadWithinLimits } from './lib/quotaEnforcement'
+import { requireAccount } from './lib/requireAccount'
 import { requireUser } from './lib/requireUser'
 
 export const generateUploadUrl = mutation({
@@ -25,7 +26,8 @@ export const finalizeUpload = mutation({
   handler: async (ctx, args) => {
     const user = await requireUser(ctx)
     await requirePetOwner(ctx, args.petId, user._id)
-    assertUploadAllowed(args.contentType, args.byteSize)
+    const account = await requireAccount(ctx)
+    assertUploadWithinLimits(account, args.contentType, args.byteSize)
 
     const now = Date.now()
     const assetId = await ctx.db.insert('assets', {

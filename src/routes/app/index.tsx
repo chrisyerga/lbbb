@@ -10,7 +10,7 @@ import { api } from '#convex/_generated/api'
 export const Route = createFileRoute('/app/')({ component: AppDashboard })
 
 function AppDashboard() {
-  const jobs = useQuery(api.jobs.recent, { limit: 50 })
+  const jobs = useQuery(api.jobs.recentMine, { limit: 50 })
   const pets = useQuery(api.pets.listMine)
 
   const queued =

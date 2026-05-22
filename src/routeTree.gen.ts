@@ -15,6 +15,7 @@ import { Route as AppRouteRouteImport } from './routes/app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppAccountRouteImport } from './routes/app/account'
+import { Route as AppAdminRouteRouteImport } from './routes/app/admin/route'
 import { Route as PPetSlugIndexRouteImport } from './routes/p/$petSlug/index'
 import { Route as AppPetsIndexRouteImport } from './routes/app/pets/index'
 import { Route as AppAdminIndexRouteImport } from './routes/app/admin/index'
@@ -58,6 +59,11 @@ const AppAccountRoute = AppAccountRouteImport.update({
   path: '/account',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppAdminRouteRoute = AppAdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const PPetSlugIndexRoute = PPetSlugIndexRouteImport.update({
   id: '/p/$petSlug/',
   path: '/p/$petSlug/',
@@ -69,9 +75,9 @@ const AppPetsIndexRoute = AppPetsIndexRouteImport.update({
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppAdminIndexRoute = AppAdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => AppRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppAdminRouteRoute,
 } as any)
 const PPetSlugArchiveRoute = PPetSlugArchiveRouteImport.update({
   id: '/p/$petSlug/archive',
@@ -99,14 +105,14 @@ const AppGenerationsJobIdRoute = AppGenerationsJobIdRouteImport.update({
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppAdminJobsRoute = AppAdminJobsRouteImport.update({
-  id: '/admin/jobs',
-  path: '/admin/jobs',
-  getParentRoute: () => AppRouteRoute,
+  id: '/jobs',
+  path: '/jobs',
+  getParentRoute: () => AppAdminRouteRoute,
 } as any)
 const AppAdminCostsRoute = AppAdminCostsRouteImport.update({
-  id: '/admin/costs',
-  path: '/admin/costs',
-  getParentRoute: () => AppRouteRoute,
+  id: '/costs',
+  path: '/costs',
+  getParentRoute: () => AppAdminRouteRoute,
 } as any)
 const PPetSlugPostsPostSlugRoute = PPetSlugPostsPostSlugRouteImport.update({
   id: '/p/$petSlug/posts/$postSlug',
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/app/admin': typeof AppAdminRouteRouteWithChildren
   '/app/account': typeof AppAccountRoute
   '/app/': typeof AppIndexRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
@@ -164,6 +171,7 @@ export interface FileRoutesById {
   '/app': typeof AppRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/app/admin': typeof AppAdminRouteRouteWithChildren
   '/app/account': typeof AppAccountRoute
   '/app/': typeof AppIndexRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
@@ -186,6 +194,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/about'
     | '/login'
+    | '/app/admin'
     | '/app/account'
     | '/app/'
     | '/app/admin/costs'
@@ -225,6 +234,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/about'
     | '/login'
+    | '/app/admin'
     | '/app/account'
     | '/app/'
     | '/app/admin/costs'
@@ -296,6 +306,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAccountRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/app/admin': {
+      id: '/app/admin'
+      path: '/admin'
+      fullPath: '/app/admin'
+      preLoaderRoute: typeof AppAdminRouteRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/p/$petSlug/': {
       id: '/p/$petSlug/'
       path: '/p/$petSlug'
@@ -312,10 +329,10 @@ declare module '@tanstack/react-router' {
     }
     '/app/admin/': {
       id: '/app/admin/'
-      path: '/admin'
+      path: '/'
       fullPath: '/app/admin/'
       preLoaderRoute: typeof AppAdminIndexRouteImport
-      parentRoute: typeof AppRouteRoute
+      parentRoute: typeof AppAdminRouteRoute
     }
     '/p/$petSlug/archive': {
       id: '/p/$petSlug/archive'
@@ -354,17 +371,17 @@ declare module '@tanstack/react-router' {
     }
     '/app/admin/jobs': {
       id: '/app/admin/jobs'
-      path: '/admin/jobs'
+      path: '/jobs'
       fullPath: '/app/admin/jobs'
       preLoaderRoute: typeof AppAdminJobsRouteImport
-      parentRoute: typeof AppRouteRoute
+      parentRoute: typeof AppAdminRouteRoute
     }
     '/app/admin/costs': {
       id: '/app/admin/costs'
-      path: '/admin/costs'
+      path: '/costs'
       fullPath: '/app/admin/costs'
       preLoaderRoute: typeof AppAdminCostsRouteImport
-      parentRoute: typeof AppRouteRoute
+      parentRoute: typeof AppAdminRouteRoute
     }
     '/p/$petSlug/posts/$postSlug': {
       id: '/p/$petSlug/posts/$postSlug'
@@ -383,6 +400,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppAdminRouteRouteChildren {
+  AppAdminCostsRoute: typeof AppAdminCostsRoute
+  AppAdminJobsRoute: typeof AppAdminJobsRoute
+  AppAdminIndexRoute: typeof AppAdminIndexRoute
+}
+
+const AppAdminRouteRouteChildren: AppAdminRouteRouteChildren = {
+  AppAdminCostsRoute: AppAdminCostsRoute,
+  AppAdminJobsRoute: AppAdminJobsRoute,
+  AppAdminIndexRoute: AppAdminIndexRoute,
+}
+
+const AppAdminRouteRouteWithChildren = AppAdminRouteRoute._addFileChildren(
+  AppAdminRouteRouteChildren,
+)
+
 interface AppPetsPetIdRouteChildren {
   AppPetsPetIdMemoriesRoute: typeof AppPetsPetIdMemoriesRoute
 }
@@ -396,26 +429,22 @@ const AppPetsPetIdRouteWithChildren = AppPetsPetIdRoute._addFileChildren(
 )
 
 interface AppRouteRouteChildren {
+  AppAdminRouteRoute: typeof AppAdminRouteRouteWithChildren
   AppAccountRoute: typeof AppAccountRoute
   AppIndexRoute: typeof AppIndexRoute
-  AppAdminCostsRoute: typeof AppAdminCostsRoute
-  AppAdminJobsRoute: typeof AppAdminJobsRoute
   AppGenerationsJobIdRoute: typeof AppGenerationsJobIdRoute
   AppPetsPetIdRoute: typeof AppPetsPetIdRouteWithChildren
   AppPetsNewRoute: typeof AppPetsNewRoute
-  AppAdminIndexRoute: typeof AppAdminIndexRoute
   AppPetsIndexRoute: typeof AppPetsIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppAdminRouteRoute: AppAdminRouteRouteWithChildren,
   AppAccountRoute: AppAccountRoute,
   AppIndexRoute: AppIndexRoute,
-  AppAdminCostsRoute: AppAdminCostsRoute,
-  AppAdminJobsRoute: AppAdminJobsRoute,
   AppGenerationsJobIdRoute: AppGenerationsJobIdRoute,
   AppPetsPetIdRoute: AppPetsPetIdRouteWithChildren,
   AppPetsNewRoute: AppPetsNewRoute,
-  AppAdminIndexRoute: AppAdminIndexRoute,
   AppPetsIndexRoute: AppPetsIndexRoute,
 }
 
