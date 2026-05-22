@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@400;500&family=Caveat:wght@500;700&display=swap');
+
+.landing-v1 {
+  --landing-cream: #fbf1de;
+  --landing-ink: #1a1410;
+  --landing-primary: #e0382e;
+  --landing-accent: #f2a02e;
+  --landing-soft: #f5e1b4;
+  --landing-border: #14100e;
+
+  color: var(--landing-ink);
+  background-color: var(--landing-cream);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  min-height: 100vh;
+  color-scheme: light;
+}
+
+.landing-v1 .font-display {
+  font-family: 'Unbounded', 'Bricolage Grotesque', system-ui, sans-serif;
+}
+
+.landing-v1 .font-hand {
+  font-family: 'Caveat', 'Comic Sans MS', cursive;
+}
+
+.landing-v1 .font-mono {
+  font-family: 'DM Mono', ui-monospace, monospace;
+}
+
+@keyframes v1-bob {
+  0%,
+  100% {
+    transform: rotate(-3deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-1deg) translateY(-8px);
+  }
+}
+
+@keyframes v1-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes v1-marq {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes v1-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes v1-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.landing-v1 .animate-v1-bob {
+  animation: v1-bob 6s ease-in-out infinite;
+}
+
+.landing-v1 .animate-v1-spin {
+  animation: v1-spin 26s linear infinite;
+}
+
+.landing-v1 .animate-v1-marq {
+  animation: v1-marq 32s linear infinite;
+}
+
+.landing-v1 .animate-v1-blink {
+  animation: v1-blink 1s steps(2) infinite;
+}
+
+.landing-v1 .animate-v1-pulse {
+  animation: v1-pulse 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-v1 .animate-v1-bob,
+  .landing-v1 .animate-v1-spin,
+  .landing-v1 .animate-v1-marq,
+  .landing-v1 .animate-v1-blink,
+  .landing-v1 .animate-v1-pulse {
+    animation: none !important;
+  }
+}
+
+body.landing-v1-active {
+  background-color: var(--landing-cream, #fbf1de);
+  background-image: none;
+  color: var(--landing-ink, #1a1410);
+}
