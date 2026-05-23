@@ -3,14 +3,6 @@ import { v } from 'convex/values'
 import { requirePetAsset, requirePetOwner, resolveAssetUrl } from './lib/assets'
 import { requireUser } from './lib/requireUser'
 
-const vibeHintsValidator = v.object({
-  mood: v.array(v.string()),
-  style: v.array(v.string()),
-  voice: v.array(v.string()),
-  length: v.array(v.string()),
-  custom: v.array(v.string()),
-})
-
 export const listByPet = query({
   args: { petId: v.id('pets') },
   handler: async (ctx, args) => {
@@ -57,7 +49,6 @@ export const createDraft = mutation({
     occurredOn: v.optional(v.string()),
     sourceAssetIds: v.optional(v.array(v.id('assets'))),
     narratorId: v.id('narrators'),
-    vibeHints: v.optional(vibeHintsValidator),
   },
   handler: async (ctx, args) => {
     const user = await requireUser(ctx)
@@ -89,7 +80,6 @@ export const createDraft = mutation({
       description,
       sourceAssetIds,
       narratorId: args.narratorId,
-      vibeHints: args.vibeHints,
       createdAt: Date.now(),
     })
 

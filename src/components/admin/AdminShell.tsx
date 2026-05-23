@@ -48,6 +48,16 @@ export function AdminShell({ children }: PropsWithChildren) {
           Narrators
         </Link>
         <Link
+          to="/app/admin/art-styles"
+          className={
+            pathname.startsWith('/app/admin/art-styles')
+              ? 'admin-nav-link is-active'
+              : 'admin-nav-link'
+          }
+        >
+          Art styles
+        </Link>
+        <Link
           to="/app/admin/traits"
           className={
             pathname.startsWith('/app/admin/traits')

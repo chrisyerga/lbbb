@@ -29,6 +29,7 @@ import { Route as AppAdminNarratorsRouteImport } from './routes/app/admin/narrat
 import { Route as AppAdminModerationRouteImport } from './routes/app/admin/moderation'
 import { Route as AppAdminJobsRouteImport } from './routes/app/admin/jobs'
 import { Route as AppAdminCostsRouteImport } from './routes/app/admin/costs'
+import { Route as AppAdminArtStylesRouteImport } from './routes/app/admin/art-styles'
 import { Route as AppPetsPetIdIndexRouteImport } from './routes/app/pets/$petId/index'
 import { Route as PPetSlugPostsPostSlugRouteImport } from './routes/p/$petSlug/posts/$postSlug'
 import { Route as AppPetsPetIdMemoriesRouteRouteImport } from './routes/app/pets/$petId/memories/route'
@@ -135,6 +136,11 @@ const AppAdminCostsRoute = AppAdminCostsRouteImport.update({
   path: '/costs',
   getParentRoute: () => AppAdminRouteRoute,
 } as any)
+const AppAdminArtStylesRoute = AppAdminArtStylesRouteImport.update({
+  id: '/art-styles',
+  path: '/art-styles',
+  getParentRoute: () => AppAdminRouteRoute,
+} as any)
 const AppPetsPetIdIndexRoute = AppPetsPetIdIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -171,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/app/admin': typeof AppAdminRouteRouteWithChildren
   '/app/account': typeof AppAccountRoute
   '/app/': typeof AppIndexRoute
+  '/app/admin/art-styles': typeof AppAdminArtStylesRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
   '/app/admin/jobs': typeof AppAdminJobsRoute
   '/app/admin/moderation': typeof AppAdminModerationRoute
@@ -196,6 +203,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/app/account': typeof AppAccountRoute
   '/app': typeof AppIndexRoute
+  '/app/admin/art-styles': typeof AppAdminArtStylesRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
   '/app/admin/jobs': typeof AppAdminJobsRoute
   '/app/admin/moderation': typeof AppAdminModerationRoute
@@ -222,6 +230,7 @@ export interface FileRoutesById {
   '/app/admin': typeof AppAdminRouteRouteWithChildren
   '/app/account': typeof AppAccountRoute
   '/app/': typeof AppIndexRoute
+  '/app/admin/art-styles': typeof AppAdminArtStylesRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
   '/app/admin/jobs': typeof AppAdminJobsRoute
   '/app/admin/moderation': typeof AppAdminModerationRoute
@@ -251,6 +260,7 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/account'
     | '/app/'
+    | '/app/admin/art-styles'
     | '/app/admin/costs'
     | '/app/admin/jobs'
     | '/app/admin/moderation'
@@ -276,6 +286,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/app/account'
     | '/app'
+    | '/app/admin/art-styles'
     | '/app/admin/costs'
     | '/app/admin/jobs'
     | '/app/admin/moderation'
@@ -301,6 +312,7 @@ export interface FileRouteTypes {
     | '/app/admin'
     | '/app/account'
     | '/app/'
+    | '/app/admin/art-styles'
     | '/app/admin/costs'
     | '/app/admin/jobs'
     | '/app/admin/moderation'
@@ -474,6 +486,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminCostsRouteImport
       parentRoute: typeof AppAdminRouteRoute
     }
+    '/app/admin/art-styles': {
+      id: '/app/admin/art-styles'
+      path: '/art-styles'
+      fullPath: '/app/admin/art-styles'
+      preLoaderRoute: typeof AppAdminArtStylesRouteImport
+      parentRoute: typeof AppAdminRouteRoute
+    }
     '/app/pets/$petId/': {
       id: '/app/pets/$petId/'
       path: '/'
@@ -513,6 +532,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppAdminRouteRouteChildren {
+  AppAdminArtStylesRoute: typeof AppAdminArtStylesRoute
   AppAdminCostsRoute: typeof AppAdminCostsRoute
   AppAdminJobsRoute: typeof AppAdminJobsRoute
   AppAdminModerationRoute: typeof AppAdminModerationRoute
@@ -522,6 +542,7 @@ interface AppAdminRouteRouteChildren {
 }
 
 const AppAdminRouteRouteChildren: AppAdminRouteRouteChildren = {
+  AppAdminArtStylesRoute: AppAdminArtStylesRoute,
   AppAdminCostsRoute: AppAdminCostsRoute,
   AppAdminJobsRoute: AppAdminJobsRoute,
   AppAdminModerationRoute: AppAdminModerationRoute,

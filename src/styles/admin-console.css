@@ -926,6 +926,24 @@
   width: 300px;
 }
 
+.admin-console .admin-inspector-rail-wide {
+  flex: 1;
+  max-width: 480px;
+  width: auto;
+}
+
+.admin-console .admin-art-style-swatch-sm {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.admin-console .admin-art-style-swatch-lg {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
 .admin-console .admin-editor-tabs {
   display: flex;
   gap: 4px;

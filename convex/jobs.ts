@@ -5,21 +5,6 @@ import { resolveGenerationPlan } from './lib/generationPlan'
 import { assertCanCreateGenerationJob } from './lib/quotaEnforcement'
 import { requireUser } from './lib/requireUser'
 
-const vibeHintsValidator = v.object({
-  mood: v.array(v.string()),
-  style: v.array(v.string()),
-  voice: v.array(v.string()),
-  length: v.array(v.string()),
-  custom: v.array(v.string()),
-})
-
-const advancedOverridesValidator = v.object({
-  mood: v.optional(v.array(v.string())),
-  artStyleId: v.optional(v.id('artStyles')),
-  wordTarget: v.optional(v.number()),
-  customHints: v.optional(v.array(v.string())),
-})
-
 export const createGenerationJob = mutation({
   args: {
     petId: v.id('pets'),
@@ -30,7 +15,6 @@ export const createGenerationJob = mutation({
       v.literal('regeneration'),
     ),
     provider: v.optional(v.union(v.literal('openai'), v.literal('openrouter'))),
-    stylePresetId: v.optional(v.id('stylePresets')),
     narratorId: v.optional(v.id('narrators')),
   },
   handler: async (ctx, args) => {
@@ -45,7 +29,6 @@ export const createGenerationJob = mutation({
       status: 'queued',
       operation: args.operation,
       provider: args.provider ?? 'openai',
-      stylePresetId: args.stylePresetId,
       narratorId: args.narratorId,
       attempt: 0,
       createdAt: now,
@@ -72,8 +55,6 @@ export const startMemoryGeneration = mutation({
     description: v.string(),
     petName: v.string(),
     petSpecies: v.optional(v.string()),
-    advancedOverrides: v.optional(advancedOverridesValidator),
-    vibeHints: v.optional(vibeHintsValidator),
   },
   handler: async (ctx, args) => {
     const user = await requireUser(ctx)
@@ -92,8 +73,6 @@ export const startMemoryGeneration = mutation({
       memoryDescription: args.description,
       petName: args.petName,
       petSpecies: args.petSpecies,
-      advancedOverrides: args.advancedOverrides,
-      vibeHints: args.vibeHints,
     })
 
     const now = Date.now()
@@ -114,8 +93,6 @@ export const startMemoryGeneration = mutation({
         petSpecies: args.petSpecies,
         narratorId: args.narratorId,
         generationPlan,
-        advancedOverrides: args.advancedOverrides,
-        vibeHints: args.vibeHints,
       },
       attempt: 0,
       createdAt: now,

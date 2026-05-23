@@ -163,17 +163,7 @@ export default defineSchema({
     occurredOn: v.string(),
     description: v.string(),
     sourceAssetIds: v.array(v.id('assets')),
-    vibeHints: v.optional(
-      v.object({
-        mood: v.array(v.string()),
-        style: v.array(v.string()),
-        voice: v.array(v.string()),
-        length: v.array(v.string()),
-        custom: v.array(v.string()),
-      }),
-    ),
     narratorId: v.optional(v.id('narrators')),
-    stylePresetId: v.optional(v.id('stylePresets')),
     createdAt: v.number(),
   })
     .index('by_pet', ['petId'])
@@ -222,7 +212,6 @@ export default defineSchema({
     provider: v.optional(v.union(v.literal('openai'), v.literal('openrouter'))),
     promptVersionId: v.optional(v.id('promptVersions')),
     narratorId: v.optional(v.id('narrators')),
-    stylePresetId: v.optional(v.id('stylePresets')),
     inputSnapshot: v.optional(v.any()),
     attempt: v.number(),
     error: v.optional(v.string()),
@@ -384,19 +373,6 @@ export default defineSchema({
     .index('by_key', ['key'])
     .index('by_key_version', ['key', 'version'])
     .index('by_active', ['key', 'active']),
-
-  stylePresets: defineTable({
-    ownerUserId: v.optional(v.id('users')),
-    name: v.string(),
-    slug: v.string(),
-    description: v.string(),
-    imagePromptSuffix: v.string(),
-    public: v.boolean(),
-    createdAt: v.number(),
-  })
-    .index('by_slug', ['slug'])
-    .index('by_owner', ['ownerUserId'])
-    .index('by_public', ['public']),
 
   moderationEvents: defineTable({
     ownerUserId: v.id('users'),

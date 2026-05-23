@@ -14,23 +14,18 @@ import {
   CatalogStatusChip,
 } from '#/components/admin/form'
 import { MonoLabel } from '#/components/admin/jobs/primitives'
-import {
-  TRAIT_CATEGORIES,
-  slugify
-} from '#/lib/adminCatalogUi'
+import { artStyleColor, slugify } from '#/lib/adminCatalogUi'
 
-import type { TraitCategory } from '#/lib/adminCatalogUi'
+type ArtStyleDoc = Doc<'artStyles'>
 
-type TraitDoc = Doc<'narratorTraits'>
-
-function emptyTrait(category: TraitCategory, sortOrder: number): TraitDoc {
+function emptyArtStyle(sortOrder: number): ArtStyleDoc {
   return {
-    _id: '' as Id<'narratorTraits'>,
+    _id: '' as Id<'artStyles'>,
     _creationTime: 0,
     slug: '',
-    label: '',
-    category,
-    promptFragment: '',
+    name: '',
+    description: '',
+    imagePromptSuffix: '',
     sortOrder,
     status: 'active',
     createdAt: Date.now(),
@@ -38,69 +33,58 @@ function emptyTrait(category: TraitCategory, sortOrder: number): TraitDoc {
   }
 }
 
-export function AdminTraitsPage({
-  selectedTraitId,
+export function AdminArtStylesPage({
+  selectedStyleId,
 }: {
-  selectedTraitId: Id<'narratorTraits'> | null
+  selectedStyleId: Id<'artStyles'> | null
 }) {
   const navigate = useNavigate()
-  const traits = useQuery(api.adminNarrators.listTraits)
-  const usage = useQuery(api.adminNarrators.traitUsage)
+  const styles = useQuery(api.adminNarrators.listArtStyles)
+  const usage = useQuery(api.adminNarrators.artStyleUsage)
   const account = useQuery(api.accounts.getMine)
-  const upsertTrait = useMutation(api.adminNarrators.upsertTrait)
+  const upsertArtStyle = useMutation(api.adminNarrators.upsertArtStyle)
 
   const canEdit = account?.capabilities?.isSiteAdmin ?? false
 
-  const [category, setCategory] = useState<TraitCategory | 'all'>('all')
   const [search, setSearch] = useState('')
-  const [draft, setDraft] = useState<TraitDoc | null>(null)
+  const [draft, setDraft] = useState<ArtStyleDoc | null>(null)
   const [isNew, setIsNew] = useState(false)
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
 
   const filtered = useMemo(() => {
-    if (!traits) return []
-    return traits.filter((t) => {
-      if (category !== 'all' && t.category !== category) return false
+    if (!styles) return []
+    return styles.filter((s) => {
       if (!search.trim()) return true
       const q = search.toLowerCase()
       return (
-        t.label.toLowerCase().includes(q) ||
-        t.slug.toLowerCase().includes(q) ||
-        t.promptFragment.toLowerCase().includes(q)
+        s.name.toLowerCase().includes(q) ||
+        s.slug.toLowerCase().includes(q) ||
+        s.description.toLowerCase().includes(q) ||
+        s.imagePromptSuffix.toLowerCase().includes(q)
       )
     })
-  }, [traits, category, search])
+  }, [styles, search])
 
-  const counts = useMemo(() => {
-    const map: Record<string, number> = { all: traits?.length ?? 0 }
-    for (const cat of TRAIT_CATEGORIES) {
-      if (cat.id === 'all') continue
-      map[cat.id] = traits?.filter((t) => t.category === cat.id).length ?? 0
-    }
-    return map
-  }, [traits])
-
-  const effectiveId = selectedTraitId ?? filtered.at(0)?._id ?? null
+  const effectiveId = selectedStyleId ?? filtered.at(0)?._id ?? null
 
   useEffect(() => {
     if (isNew) return
-    const found = traits?.find((t) => t._id === effectiveId)
+    const found = styles?.find((s) => s._id === effectiveId)
     if (found) setDraft({ ...found })
-  }, [traits, effectiveId, isNew])
+  }, [styles, effectiveId, isNew])
 
-  function selectTrait(id: Id<'narratorTraits'>) {
+  function selectStyle(id: Id<'artStyles'>) {
     setIsNew(false)
-    void navigate({ to: '/app/admin/traits', search: { trait: id } })
+    void navigate({ to: '/app/admin/art-styles', search: { style: id } })
   }
 
   function startNew() {
-    const cat = category === 'all' ? 'personality' : category
     const maxOrder =
-      traits?.reduce((m, t) => Math.max(m, t.sortOrder), 0) ?? 0
+      styles?.reduce((m, s) => Math.max(m, s.sortOrder), 0) ?? 0
     setIsNew(true)
-    setDraft(emptyTrait(cat, maxOrder + 10))
-    void navigate({ to: '/app/admin/traits', search: {} })
+    setDraft(emptyArtStyle(maxOrder + 10))
+    void navigate({ to: '/app/admin/art-styles', search: {} })
   }
 
   async function save() {
@@ -108,29 +92,24 @@ export function AdminTraitsPage({
     setBusy(true)
     setMessage(null)
     try {
-      const slug = draft.slug.trim() || slugify(draft.label)
-      const id = await upsertTrait({
-        traitId: isNew ? undefined : draft._id,
+      const slug = draft.slug.trim() || slugify(draft.name)
+      const id = await upsertArtStyle({
+        artStyleId: isNew ? undefined : draft._id,
         slug,
-        label: draft.label.trim(),
-        category: draft.category,
-        promptFragment: draft.promptFragment.trim(),
+        name: draft.name.trim(),
+        description: draft.description.trim(),
+        imagePromptSuffix: draft.imagePromptSuffix.trim(),
         sortOrder: draft.sortOrder,
         status: draft.status,
       })
       setIsNew(false)
       setMessage('Saved')
-      void navigate({ to: '/app/admin/traits', search: { trait: id } })
+      void navigate({ to: '/app/admin/art-styles', search: { style: id } })
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Save failed')
     } finally {
       setBusy(false)
     }
-  }
-
-  async function archive() {
-    if (!draft || !canEdit || isNew) return
-    setDraft({ ...draft, status: 'archived' })
   }
 
   const usedBy = draft ? (usage?.[draft._id as string] ?? []) : []
@@ -139,15 +118,15 @@ export function AdminTraitsPage({
     <div className="admin-queue-page">
       <header className="admin-catalog-topbar">
         <div>
-          <h1 className="admin-catalog-title">Narrator traits</h1>
-          <MonoLabel>Voice fragments for persona composition</MonoLabel>
+          <h1 className="admin-catalog-title">Art styles</h1>
+          <MonoLabel>Image generation look &amp; prompt suffixes</MonoLabel>
         </div>
         <div className="admin-catalog-topbar-actions">
           {message ? (
             <span className="admin-mono admin-save-message">{message}</span>
           ) : null}
           <AdminBtnPrimary onClick={startNew} disabled={!canEdit}>
-            New trait
+            New style
           </AdminBtnPrimary>
           <AdminBtnPrimary
             onClick={() => void save()}
@@ -159,127 +138,99 @@ export function AdminTraitsPage({
       </header>
 
       <div className="admin-catalog-layout">
-        <aside className="admin-category-rail">
-          {TRAIT_CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              className={
-                category === cat.id
-                  ? 'admin-category-item is-active'
-                  : 'admin-category-item'
-              }
-              style={
-                category === cat.id
-                  ? { borderLeftColor: cat.color }
-                  : undefined
-              }
-              onClick={() => setCategory(cat.id)}
-            >
-              <span className="admin-category-dot" style={{ background: cat.color }} />
-              <span className="admin-category-label">{cat.label}</span>
-              <span className="admin-mono admin-category-count">
-                {counts[cat.id] ?? 0}
-              </span>
-              {cat.helper ? (
-                <span className="admin-mono admin-category-helper">
-                  {cat.helper}
-                </span>
-              ) : null}
-            </button>
-          ))}
-        </aside>
-
         <section className="admin-trait-list-panel">
           <div className="admin-queue-list-head">
             <input
               className="admin-queue-search"
-              placeholder="Search traits…"
+              placeholder="Search art styles…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <div className="admin-trait-rows">
-            {filtered.map((trait) => (
+            {filtered.map((style) => (
               <button
-                key={trait._id}
+                key={style._id}
                 type="button"
                 className={
-                  trait._id === effectiveId && !isNew
+                  style._id === effectiveId && !isNew
                     ? 'admin-trait-row is-active'
                     : 'admin-trait-row'
                 }
-                onClick={() => selectTrait(trait._id)}
+                onClick={() => selectStyle(style._id)}
               >
                 <span
-                  className="admin-category-dot"
-                  style={{
-                    background:
-                      TRAIT_CATEGORIES.find((c) => c.id === trait.category)
-                        ?.color ?? '#666',
-                  }}
+                  className="admin-art-style-swatch admin-art-style-swatch-sm"
+                  style={{ background: artStyleColor(style.slug) }}
                 />
                 <span className="admin-trait-row-copy">
-                  <span className="admin-trait-row-label">{trait.label}</span>
+                  <span className="admin-trait-row-label">{style.name}</span>
                   <span className="admin-mono admin-trait-row-slug">
-                    {trait.slug}
+                    {style.slug}
                   </span>
                 </span>
-                <CatalogStatusChip status={trait.status} />
+                <CatalogStatusChip status={style.status} />
                 <span className="admin-mono admin-trait-row-used">
-                  {(usage?.[trait._id as string] ?? []).length} narrators
+                  {(usage?.[style._id as string] ?? []).length} narrators
                 </span>
               </button>
             ))}
           </div>
         </section>
 
-        <aside className="admin-inspector-rail">
+        <aside className="admin-inspector-rail admin-inspector-rail-wide">
           {!draft ? (
-            <div className="admin-empty-state">Select a trait to inspect.</div>
+            <div className="admin-empty-state">Select an art style to edit.</div>
           ) : (
             <>
               <div className="admin-inspector-section">
                 <div className="admin-inspector-head">
-                  <h2 className="admin-inspector-title">
-                    {isNew ? 'New trait' : draft.label || 'Untitled'}
-                  </h2>
-                  {!isNew ? <CatalogStatusChip status={draft.status} /> : null}
+                  <span
+                    className="admin-art-style-swatch admin-art-style-swatch-lg"
+                    style={{ background: artStyleColor(draft.slug) }}
+                  />
+                  <div>
+                    <h2 className="admin-inspector-title">
+                      {isNew ? 'New art style' : draft.name || 'Untitled'}
+                    </h2>
+                    {!isNew ? <CatalogStatusChip status={draft.status} /> : null}
+                  </div>
                 </div>
                 {!canEdit ? (
                   <p className="admin-readonly-note">
                     Site admin required to edit catalog.
                   </p>
                 ) : null}
+                {!isNew && usedBy.length > 0 && draft.status === 'archived' ? (
+                  <p className="admin-readonly-note">
+                    Still referenced by {usedBy.length} narrator
+                    {usedBy.length === 1 ? '' : 's'}.
+                  </p>
+                ) : null}
               </div>
 
               <div className="admin-inspector-section admin-inspector-form">
-                <AdminField label="Label">
+                <AdminField label="Name">
                   <AdminInput
-                    value={draft.label}
+                    value={draft.name}
                     disabled={!canEdit}
-                    onChange={(label) => setDraft({ ...draft, label })}
+                    onChange={(name) => setDraft({ ...draft, name })}
                   />
                 </AdminField>
                 <AdminField label="Slug">
                   <AdminInput
                     value={draft.slug}
                     disabled={!canEdit}
-                    placeholder={slugify(draft.label)}
+                    placeholder={slugify(draft.name)}
                     onChange={(slug) => setDraft({ ...draft, slug })}
                   />
                 </AdminField>
-                <AdminField label="Category">
-                  <AdminSelect
-                    value={draft.category}
+                <AdminField label="Description">
+                  <AdminTextarea
+                    rows={3}
+                    value={draft.description}
                     disabled={!canEdit}
-                    options={TRAIT_CATEGORIES.filter(
-                      (c) => c.id !== 'all',
-                    ).map((c) => ({
-                      value: c.id as TraitCategory,
-                      label: c.label,
-                    }))}
-                    onChange={(selectedCategory) => setDraft({ ...draft, category: selectedCategory })}
+                    onChange={(description) => setDraft({ ...draft, description })}
                   />
                 </AdminField>
                 <AdminField label="Sort order">
@@ -306,15 +257,15 @@ export function AdminTraitsPage({
                   />
                 </AdminField>
                 <AdminField
-                  label="Prompt fragment"
-                  helper="injected into narrator persona"
+                  label="Image prompt suffix"
+                  helper="appended to scene prompts for image generation"
                 >
                   <AdminTextarea
-                    rows={8}
-                    value={draft.promptFragment}
+                    rows={6}
+                    value={draft.imagePromptSuffix}
                     disabled={!canEdit}
-                    onChange={(promptFragment) =>
-                      setDraft({ ...draft, promptFragment })
+                    onChange={(imagePromptSuffix) =>
+                      setDraft({ ...draft, imagePromptSuffix })
                     }
                   />
                 </AdminField>
@@ -322,7 +273,7 @@ export function AdminTraitsPage({
 
               {!isNew && usedBy.length > 0 ? (
                 <div className="admin-inspector-section">
-                  <MonoLabel>Used by narrators</MonoLabel>
+                  <MonoLabel>Default for narrators</MonoLabel>
                   <ul className="admin-used-by-list">
                     {usedBy.map((name) => (
                       <li key={name}>{name}</li>
@@ -336,7 +287,7 @@ export function AdminTraitsPage({
                   <button
                     type="button"
                     className="admin-btn-secondary"
-                    onClick={() => void archive()}
+                    onClick={() => setDraft({ ...draft, status: 'archived' })}
                   >
                     Mark archived
                   </button>

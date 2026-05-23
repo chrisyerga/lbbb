@@ -31,6 +31,13 @@ function AdminPage() {
             Create and edit AI personas.
           </span>
         </Link>
+        <Link to="/app/admin/art-styles" className="admin-overview-card">
+          <span className="admin-mono admin-overview-label">Art styles</span>
+          <span className="admin-overview-value">Looks</span>
+          <span className="admin-overview-detail">
+            Image prompt suffixes and catalog status.
+          </span>
+        </Link>
         <Link to="/app/admin/traits" className="admin-overview-card">
           <span className="admin-mono admin-overview-label">Traits</span>
           <span className="admin-overview-value">Fragments</span>

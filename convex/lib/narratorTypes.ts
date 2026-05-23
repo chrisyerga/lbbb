@@ -44,13 +44,6 @@ export type ArtStyleSnapshot = {
   imagePromptSuffix: string
 }
 
-export type AdvancedOverrides = {
-  mood?: Array<string>
-  artStyleId?: Id<'artStyles'>
-  wordTarget?: number
-  customHints?: Array<string>
-}
-
 export type GenerationPlan = {
   narratorId: Id<'narrators'>
   narratorSnapshot: NarratorSnapshot
@@ -78,15 +71,6 @@ export type MemoryJobInputSnapshot = {
   petSpecies?: string
   narratorId: Id<'narrators'>
   generationPlan: GenerationPlan
-  advancedOverrides?: AdvancedOverrides
-  /** Legacy advanced-mode vibe tags */
-  vibeHints?: {
-    mood: Array<string>
-    style: Array<string>
-    voice: Array<string>
-    length: Array<string>
-    custom: Array<string>
-  }
 }
 
 export type CatalogNarrator = {

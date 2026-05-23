@@ -1,22 +1,14 @@
 import type { GenericQueryCtx } from 'convex/server'
 import type { DataModel, Doc, Id } from '../_generated/dataModel'
 import {
+  imagePromptVariants,
+  resolveBaseImagePrompt,
+} from './imagePrompt'
+import {
   artStyleSnapshotFromDoc,
   narratorSnapshotFromDoc,
 } from './narratorTypes'
-import type {
-  AdvancedOverrides,
-  GenerationPlan,
-  TextParameters,
-} from './narratorTypes'
-import {
-  buildStyleDescription,
-  imagePromptVariants,
-  resolveBaseImagePrompt,
-  resolveTagLabels,
-  wordTargetForVibe,
-} from './vibeTags'
-import type { VibeHints } from './vibeTags'
+import type { GenerationPlan, TextParameters } from './narratorTypes'
 
 type Ctx = GenericQueryCtx<DataModel>
 
@@ -64,9 +56,8 @@ export function composePersonaPrompt(args: {
   return parts.join('\n')
 }
 
-function moodBlock(moodHints: Array<string>, customHints: Array<string>) {
-  const labels = moodHints.map((h) => resolveTagLabels([h])[0] ?? h)
-  const all = [...labels, ...customHints].filter(Boolean)
+function moodBlock(moodHints: Array<string>) {
+  const all = moodHints.filter(Boolean)
   if (!all.length) return ''
   return `Mood and scene tone: ${all.join(', ')}`
 }
@@ -121,20 +112,10 @@ export async function resolveGenerationPlan(
     memoryDescription: string
     petName: string
     petSpecies?: string
-    advancedOverrides?: AdvancedOverrides
-    vibeHints?: VibeHints
   },
 ): Promise<GenerationPlan> {
   const { narrator, artStyle, traits, promptVersion } =
     await loadNarratorBundle(ctx, args.narratorId)
-
-  let resolvedArtStyle = artStyle
-  if (args.advancedOverrides?.artStyleId) {
-    const overrideStyle = await ctx.db.get(args.advancedOverrides.artStyleId)
-    if (overrideStyle && overrideStyle.status === 'active') {
-      resolvedArtStyle = overrideStyle
-    }
-  }
 
   const personaBlock = composePersonaPrompt({
     traits,
@@ -142,24 +123,8 @@ export async function resolveGenerationPlan(
     systemPromptAddon: narrator.systemPromptAddon,
   })
 
-  const moodHints = [
-    ...(narrator.defaultMoodHints ?? []),
-    ...(args.advancedOverrides?.mood ?? []),
-    ...(args.vibeHints?.mood ?? []),
-  ]
-
-  const customHints = [
-    ...(args.advancedOverrides?.customHints ?? []),
-    ...(args.vibeHints?.custom ?? []),
-  ]
-
-  let wordTarget =
-    args.advancedOverrides?.wordTarget ??
-    (args.vibeHints ? wordTargetForVibe(args.vibeHints) : narrator.wordTarget)
-
-  if (args.vibeHints?.length.length && !args.advancedOverrides?.wordTarget) {
-    wordTarget = wordTargetForVibe(args.vibeHints)
-  }
+  const moodHints = narrator.defaultMoodHints ?? []
+  const wordTarget = narrator.wordTarget
 
   const systemPrompt = [
     promptVersion?.systemPrompt ?? DEFAULT_SYSTEM_PROMPT,
@@ -172,11 +137,8 @@ export async function resolveGenerationPlan(
   const userPrompt = interpolateTemplate(userTemplate, {
     petName: `${args.petName}${args.petSpecies ? ` (${args.petSpecies})` : ''}`,
     memoryDescription: args.memoryDescription.trim(),
-    styleDescription: args.vibeHints
-      ? buildStyleDescription(args.vibeHints)
-      : '',
     personaBlock,
-    moodBlock: moodBlock(moodHints, customHints),
+    moodBlock: moodBlock(moodHints),
     wordTarget: String(wordTarget),
   })
 
@@ -189,7 +151,7 @@ export async function resolveGenerationPlan(
     maxTokens: narrator.textParameters?.maxTokens,
   }
 
-  const imagePromptSuffix = resolveImagePromptSuffix(resolvedArtStyle, narrator)
+  const imagePromptSuffix = resolveImagePromptSuffix(artStyle, narrator)
 
   return {
     narratorId: narrator._id,
@@ -208,7 +170,7 @@ export async function resolveGenerationPlan(
       strategy: narrator.generationStrategy,
     },
     image: {
-      artStyle: artStyleSnapshotFromDoc(resolvedArtStyle),
+      artStyle: artStyleSnapshotFromDoc(artStyle),
       promptSuffix: imagePromptSuffix,
       model:
         narrator.imageModel ??
@@ -233,20 +195,14 @@ export function buildImagePromptsFromPlan(args: {
   }
   petName: string
   memoryDescription: string
-  vibeHints?: VibeHints
+  moodHints?: Array<string>
 }) {
   const artStyleLabel = args.plan.image.artStyle.name
   const baseImagePrompt = resolveBaseImagePrompt({
     textResult: args.textResult,
     petName: args.petName,
     memoryDescription: args.memoryDescription,
-    vibe: args.vibeHints ?? {
-      mood: [],
-      style: [args.plan.image.artStyle.slug],
-      voice: [],
-      length: [],
-      custom: [],
-    },
+    moodHints: args.moodHints,
   })
 
   const suffix = args.plan.image.promptSuffix

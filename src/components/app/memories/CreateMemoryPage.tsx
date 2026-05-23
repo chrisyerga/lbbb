@@ -24,18 +24,6 @@ import { PetNotFound } from '#/components/NotFoundPanel'
 import { api } from '#convex/_generated/api'
 import type { Id } from '#convex/_generated/dataModel'
 import { parsePetId } from '#/lib/convexIds'
-import {
-  DEFAULT_VIBE_SELECTION,
-  VIBE_TAG_GROUPS,
-  artStyleLabel,
-  artTileLabel,
-  countSelectedTags,
-  moodSummary,
-  paragraphCountForLength,
-  toggleVibeTag,
-  vibeSelectionToHints,
-} from '#/lib/vibeTags'
-import type { VibeSelection } from '#/lib/vibeTags'
 
 type PendingPhoto = {
   assetId: Id<'assets'>
@@ -57,27 +45,6 @@ function StepLabel({
       <span className="memory-step-title">{title}</span>
       {helper ? <span className="memory-step-helper">↳ {helper}</span> : null}
     </div>
-  )
-}
-
-function TagPill({
-  label,
-  selected,
-  onClick,
-}: {
-  label: string
-  selected: boolean
-  onClick: () => void
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={selected ? 'memory-tag-pill is-selected' : 'memory-tag-pill'}
-    >
-      {selected ? <span className="memory-tag-check">✓</span> : null}
-      {label}
-    </button>
   )
 }
 
@@ -132,38 +99,6 @@ function NarratorPicker({
           </button>
         )
       })}
-    </div>
-  )
-}
-
-function TagGroup({
-  group,
-  selected,
-  onToggle,
-}: {
-  group: (typeof VIBE_TAG_GROUPS)[number]
-  selected: Array<string>
-  onToggle: (tagId: string) => void
-}) {
-  return (
-    <div className="memory-tag-group">
-      <div className="memory-tag-group-head">
-        <span className="memory-tag-group-title">{group.label}</span>
-        <span className="memory-tag-group-helper">
-          {group.helper}
-          {group.single ? ' · radio' : ''}
-        </span>
-      </div>
-      <div className="memory-tag-row">
-        {group.tags.map((tag) => (
-          <TagPill
-            key={tag.id}
-            label={tag.label}
-            selected={selected.includes(tag.id)}
-            onClick={() => onToggle(tag.id)}
-          />
-        ))}
-      </div>
     </div>
   )
 }
@@ -305,78 +240,11 @@ function Composer({
   )
 }
 
-function CustomVibeInput({
-  customHints,
-  onAdd,
-  onRemove,
-}: {
-  customHints: Array<string>
-  onAdd: (hint: string) => void
-  onRemove: (hint: string) => void
-}) {
-  const [draft, setDraft] = useState('')
-
-  function submitHint() {
-    const hint = draft.trim()
-    if (!hint) return
-    onAdd(hint)
-    setDraft('')
-  }
-
-  return (
-    <div className="memory-custom-vibes">
-      <div className="memory-tag-group-head">
-        <span className="memory-tag-group-title">Your hints</span>
-        <span className="memory-tag-group-helper">add your own</span>
-      </div>
-      <div className="memory-custom-vibes-row">
-        <input
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault()
-              submitHint()
-            }
-          }}
-          placeholder="e.g. rainy afternoon, vet visit, birthday..."
-          className="memory-custom-vibes-input"
-        />
-        <button
-          type="button"
-          className="memory-custom-vibes-add"
-          onClick={submitHint}
-          disabled={!draft.trim()}
-        >
-          Add
-        </button>
-      </div>
-      {customHints.length > 0 ? (
-        <div className="memory-tag-row">
-          {customHints.map((hint) => (
-            <TagPill
-              key={hint}
-              label={hint}
-              selected
-              onClick={() => onRemove(hint)}
-            />
-          ))}
-        </div>
-      ) : null}
-      {customHints.length > 0 ? (
-        <p className="memory-custom-vibes-note">
-          Tap a custom hint to remove it.
-        </p>
-      ) : null}
-    </div>
-  )
-}
-
 function GeneratedArtPreview({
-  styleId,
+  artStyleLabel,
   imageUrls,
 }: {
-  styleId: string | undefined
+  artStyleLabel: string
   imageUrls: Array<string | null>
 }) {
   const palette = getLandingPalette(DEFAULT_PALETTE_KEY)
@@ -386,7 +254,6 @@ function GeneratedArtPreview({
     palette.ink,
     '#3CB07A',
   ] as const
-  const label = artTileLabel(styleId)
 
   return (
     <div className="memory-art-grid">
@@ -408,7 +275,7 @@ function GeneratedArtPreview({
             key={i}
             palette={palette}
             accent={accents[i]}
-            label={label}
+            label={artStyleLabel}
             rotate={[-1, 1.2, 0.8, -1.4][i]}
             style={{ aspectRatio: '1', width: '100%' }}
           />
@@ -419,7 +286,6 @@ function GeneratedArtPreview({
 }
 
 function PreviewCard({
-  selection,
   blogSlug,
   description,
   generatedTitle,
@@ -428,7 +294,6 @@ function PreviewCard({
   narratorName,
   artStyleName,
 }: {
-  selection: VibeSelection
   blogSlug: string | null
   description: string
   generatedTitle: string | null
@@ -438,11 +303,10 @@ function PreviewCard({
   artStyleName?: string | null
 }) {
   const palette = getLandingPalette(DEFAULT_PALETTE_KEY)
-  const styleId = selection.style[0]
-  const paraCount = paragraphCountForLength(selection)
-  const previewMeta = narratorName
-    ? `${narratorName}${artStyleName ? ` · ${artStyleName}` : ''}`
-    : moodSummary(selection)
+  const previewMeta =
+    narratorName && artStyleName
+      ? `${narratorName} · ${artStyleName}`
+      : narratorName ?? 'Pick a narrator'
   const previewTitle =
     generatedTitle ||
     (description.trim()
@@ -450,11 +314,11 @@ function PreviewCard({
         (description.trim().length > 48 ? '…' : '')
       : 'Your post title')
   const previewParagraphs = generatedBody
-    ? generatedBody.split(/\n\n+/).filter(Boolean).slice(0, paraCount)
+    ? generatedBody.split(/\n\n+/).filter(Boolean).slice(0, 3)
     : description.trim()
       ? [description.trim()]
       : [
-          'Your story will land here once you generate — or keep typing to see the vibe shift.',
+          'Your story will land here once you generate — keep typing to preview the draft.',
         ]
 
   return (
@@ -483,10 +347,13 @@ function PreviewCard({
           </span>
         </div>
 
-        <GeneratedArtPreview styleId={styleId} imageUrls={imageUrls} />
+        <GeneratedArtPreview
+          artStyleLabel={artStyleName ?? 'art preview'}
+          imageUrls={imageUrls}
+        />
 
         <div className="memory-preview-meta">
-          today · {Math.round(paraCount * 1.5)} min · {previewMeta}
+          today · ~3 min · {previewMeta}
         </div>
 
         <h3 className="memory-preview-title">{previewTitle}</h3>
@@ -510,9 +377,7 @@ function PreviewCard({
         </div>
       </div>
 
-      <p className="memory-preview-note">
-        ← updates live as you {narratorName ? 'write' : 'tag'}
-      </p>
+      <p className="memory-preview-note">← updates live as you write</p>
     </div>
   )
 }
@@ -521,12 +386,10 @@ function MemoryHeader({
   petName,
   avatarUrl,
   blogSlug,
-  advancedMode,
 }: {
   petName: string
   avatarUrl: string | null
   blogSlug: string | null
-  advancedMode: boolean
 }) {
   const palette = getLandingPalette(DEFAULT_PALETTE_KEY)
 
@@ -568,9 +431,8 @@ function MemoryHeader({
               </span>
             </h1>
             <p className="memory-header-lede">
-              {advancedMode
-                ? "Advanced mode — fine-tune mood, art, and length on top of your narrator."
-                : "Pick a narrator, dump the memory, and we'll write the post and paint the art."}
+              Pick a narrator, dump the memory, and we&apos;ll write the post and
+              paint the art.
             </p>
           </div>
 
@@ -608,12 +470,8 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
 
   const [text, setText] = useState('')
   const [dictating, setDictating] = useState(false)
-  const [advancedMode, setAdvancedMode] = useState(false)
   const [selectedNarratorId, setSelectedNarratorId] =
     useState<Id<'narrators'> | null>(null)
-  const [selection, setSelection] = useState<VibeSelection>(
-    DEFAULT_VIBE_SELECTION,
-  )
   const [pendingPhotos, setPendingPhotos] = useState<Array<PendingPhoto>>([])
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -629,38 +487,12 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
     [narrators, selectedNarratorId],
   )
 
-  const tagCount = useMemo(() => countSelectedTags(selection), [selection])
-
   function onPhotoUploaded(assetId: Id<'assets'>, url: string | null) {
     setPendingPhotos((prev) => [...prev, { assetId, url }])
   }
 
   function removePendingPhoto(assetId: Id<'assets'>) {
     setPendingPhotos((prev) => prev.filter((p) => p.assetId !== assetId))
-  }
-
-  function onToggleTag(
-    groupId: keyof Omit<VibeSelection, 'custom'>,
-    tagId: string,
-    single?: boolean,
-  ) {
-    setSelection((current) =>
-      toggleVibeTag(current, groupId, tagId, Boolean(single)),
-    )
-  }
-
-  function addCustomHint(hint: string) {
-    setSelection((current) => {
-      if (current.custom.includes(hint)) return current
-      return { ...current, custom: [...current.custom, hint] }
-    })
-  }
-
-  function removeCustomHint(hint: string) {
-    setSelection((current) => ({
-      ...current,
-      custom: current.custom.filter((h) => h !== hint),
-    }))
   }
 
   async function onSaveDraft() {
@@ -673,7 +505,6 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
         description: text,
         sourceAssetIds: pendingPhotos.map((p) => p.assetId),
         narratorId: selectedNarratorId,
-        vibeHints: advancedMode ? vibeSelectionToHints(selection) : undefined,
       })
       await navigate({
         to: '/app/pets/$petId/memories',
@@ -691,13 +522,11 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
     setError(null)
     setSubmitting(true)
     try {
-      const vibeHints = advancedMode ? vibeSelectionToHints(selection) : undefined
       const { memoryId } = await createDraft({
         petId: parsedPetId,
         description: text,
         sourceAssetIds: pendingPhotos.map((p) => p.assetId),
         narratorId: selectedNarratorId,
-        vibeHints,
       })
 
       const jobId = await startGeneration({
@@ -707,7 +536,6 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
         description: text,
         petName: petData.pet.name,
         petSpecies: petData.pet.species,
-        vibeHints,
       })
 
       void runGeneration({ jobId }).catch(() => {
@@ -752,7 +580,6 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
         petName={pet.name}
         avatarUrl={avatarUrl}
         blogSlug={blog?.slug ?? null}
-        advancedMode={advancedMode}
       />
 
       <main className="memory-main page-wrap px-4">
@@ -786,44 +613,6 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
               pendingPhotos={pendingPhotos}
               onRemovePhoto={removePendingPhoto}
             />
-
-            <div className="memory-advanced-toggle-row">
-              <button
-                type="button"
-                className="memory-advanced-toggle"
-                onClick={() => setAdvancedMode((mode) => !mode)}
-              >
-                {advancedMode ? 'Hide advanced options' : 'Advanced options'}
-              </button>
-            </div>
-
-            {advancedMode ? (
-              <>
-                <div className="memory-section-gap" />
-                <StepLabel
-                  n={3}
-                  title="Overrides"
-                  helper={`${tagCount} tags`}
-                />
-                <div className="memory-vibe-panel">
-                  {VIBE_TAG_GROUPS.map((group) => (
-                    <TagGroup
-                      key={group.id}
-                      group={group}
-                      selected={selection[group.id]}
-                      onToggle={(tagId) =>
-                        onToggleTag(group.id, tagId, group.single)
-                      }
-                    />
-                  ))}
-                  <CustomVibeInput
-                    customHints={selection.custom}
-                    onAdd={addCustomHint}
-                    onRemove={removeCustomHint}
-                  />
-                </div>
-              </>
-            ) : null}
 
             {error ? <p className="alert-error mt-4 px-3 py-2">{error}</p> : null}
 
@@ -864,27 +653,22 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
             </div>
 
             <p className="memory-style-note">
-              {advancedMode
-                ? `Art style preview: ${artStyleLabel(selection)}`
-                : selectedNarrator
-                  ? `Narrator: ${selectedNarrator.name} · Art: ${selectedNarrator.defaultArtStyle.name}`
-                  : 'Pick a narrator to preview style'}
+              {selectedNarrator
+                ? `Narrator: ${selectedNarrator.name} · Art: ${selectedNarrator.defaultArtStyle.name}`
+                : 'Pick a narrator to preview style'}
             </p>
           </div>
 
           <div className="memory-preview-column">
-            <StepLabel n={advancedMode ? 4 : 3} title="The post" helper="updates live" />
+            <StepLabel n={3} title="The post" helper="updates live" />
             <PreviewCard
-              selection={selection}
               blogSlug={blog?.slug ?? null}
               description={text}
               generatedTitle={null}
               generatedBody={null}
               imageUrls={[]}
-              narratorName={advancedMode ? null : selectedNarrator?.name}
-              artStyleName={
-                advancedMode ? null : selectedNarrator?.defaultArtStyle.name
-              }
+              narratorName={selectedNarrator?.name}
+              artStyleName={selectedNarrator?.defaultArtStyle.name}
             />
           </div>
         </div>

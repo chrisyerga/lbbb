@@ -12,13 +12,6 @@ import {
   buildTextPromptFromPlan,
 } from './lib/generationPlan'
 import type { MemoryJobInputSnapshot } from './lib/narratorTypes'
-import {
-  buildMemoryPrompt,
-  imagePromptVariants,
-  resolveBaseImagePrompt,
-  resolveTagLabels,
-} from './lib/vibeTags'
-import type { VibeHints } from './lib/vibeTags'
 
 type TextGenerationResult = {
   title: string
@@ -50,13 +43,6 @@ function normalizeTextResult(raw: Record<string, unknown>): TextGenerationResult
       : [],
     imagePrompt,
   }
-}
-
-type LegacyJobInputSnapshot = {
-  description: string
-  vibeHints: VibeHints
-  petName: string
-  petSpecies?: string
 }
 
 function isMemoryJobInput(
@@ -453,51 +439,23 @@ export const runMemoryGeneration = action({
         jobId: args.jobId,
       })
 
-      if (isMemoryJobInput(rawInput)) {
-        const input = rawInput
-        const plan = input.generationPlan
-        textModel = plan.text.model
-        imageModel = plan.image.model
-        prompt = buildTextPromptFromPlan(plan)
-
-        const textResult = await callOpenAIText(prompt)
-        imagePrompts = buildImagePromptsFromPlan({
-          plan,
-          textResult,
-          petName: input.petName,
-          memoryDescription: input.description,
-          vibeHints: input.vibeHints,
-        })
-
-        await finishGeneration(ctx, {
-          jobId: args.jobId,
-          job,
-          textModel,
-          imageModel,
-          textResult,
-          imagePrompts,
-          baseImagePrompt: textResult.imagePrompt ?? input.description,
-        })
-        return { jobId: args.jobId, status: 'awaiting_review' as const }
+      if (!isMemoryJobInput(rawInput)) {
+        throw new Error('Job input snapshot is missing generation plan')
       }
 
-      const input = rawInput as LegacyJobInputSnapshot
-      prompt = buildMemoryPrompt({
-        petName: input.petName,
-        petSpecies: input.petSpecies,
-        memoryDescription: input.description,
-        vibe: input.vibeHints,
-      })
+      const input = rawInput
+      const plan = input.generationPlan
+      textModel = plan.text.model
+      imageModel = plan.image.model
+      prompt = buildTextPromptFromPlan(plan)
 
       const textResult = await callOpenAIText(prompt)
-      const artStyle = resolveTagLabels(input.vibeHints.style).join(', ')
-      const baseImagePrompt = resolveBaseImagePrompt({
+      imagePrompts = buildImagePromptsFromPlan({
+        plan,
         textResult,
         petName: input.petName,
         memoryDescription: input.description,
-        vibe: input.vibeHints,
       })
-      imagePrompts = imagePromptVariants(baseImagePrompt, artStyle, 4)
 
       await finishGeneration(ctx, {
         jobId: args.jobId,
@@ -506,9 +464,8 @@ export const runMemoryGeneration = action({
         imageModel,
         textResult,
         imagePrompts,
-        baseImagePrompt,
+        baseImagePrompt: textResult.imagePrompt ?? input.description,
       })
-
       return { jobId: args.jobId, status: 'awaiting_review' as const }
     } catch (error) {
       const message =

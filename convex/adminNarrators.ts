@@ -75,6 +75,23 @@ export const traitUsage = query({
   },
 })
 
+export const artStyleUsage = query({
+  args: {},
+  handler: async (ctx) => {
+    await requireStaff(ctx)
+    const narrators = await ctx.db.query('narrators').collect()
+    const usage: Record<string, Array<string>> = {}
+
+    for (const narrator of narrators) {
+      const key = narrator.defaultArtStyleId as string
+      usage[key] ??= []
+      usage[key].push(narrator.name)
+    }
+
+    return usage
+  },
+})
+
 export const upsertTrait = mutation({
   args: {
     traitId: v.optional(v.id('narratorTraits')),
