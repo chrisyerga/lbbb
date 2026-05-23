@@ -4,6 +4,14 @@
 
 - [ ] **Presubmit checks** -- Catching too many typecheck and eslint errors in Github actions. We need to run these before submit
 
+## Generation Queue UI
+
+- [ ] Monitor jobs and events
+
+## Convex Debugger
+
+- [ ] Set breakpoints and inspect variables/properties in backend
+
 ## Costs
 
 - [ ] Actual costs are missing from the cost tracking. Somehow not picking these up from the API
