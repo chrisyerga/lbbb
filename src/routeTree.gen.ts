@@ -24,6 +24,9 @@ import { Route as PPetSlugAboutRouteImport } from './routes/p/$petSlug/about'
 import { Route as AppPetsNewRouteImport } from './routes/app/pets/new'
 import { Route as AppPetsPetIdRouteImport } from './routes/app/pets/$petId'
 import { Route as AppGenerationsJobIdRouteImport } from './routes/app/generations.$jobId'
+import { Route as AppAdminTraitsRouteImport } from './routes/app/admin/traits'
+import { Route as AppAdminNarratorsRouteImport } from './routes/app/admin/narrators'
+import { Route as AppAdminModerationRouteImport } from './routes/app/admin/moderation'
 import { Route as AppAdminJobsRouteImport } from './routes/app/admin/jobs'
 import { Route as AppAdminCostsRouteImport } from './routes/app/admin/costs'
 import { Route as AppPetsPetIdIndexRouteImport } from './routes/app/pets/$petId/index'
@@ -107,6 +110,21 @@ const AppGenerationsJobIdRoute = AppGenerationsJobIdRouteImport.update({
   path: '/generations/$jobId',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppAdminTraitsRoute = AppAdminTraitsRouteImport.update({
+  id: '/traits',
+  path: '/traits',
+  getParentRoute: () => AppAdminRouteRoute,
+} as any)
+const AppAdminNarratorsRoute = AppAdminNarratorsRouteImport.update({
+  id: '/narrators',
+  path: '/narrators',
+  getParentRoute: () => AppAdminRouteRoute,
+} as any)
+const AppAdminModerationRoute = AppAdminModerationRouteImport.update({
+  id: '/moderation',
+  path: '/moderation',
+  getParentRoute: () => AppAdminRouteRoute,
+} as any)
 const AppAdminJobsRoute = AppAdminJobsRouteImport.update({
   id: '/jobs',
   path: '/jobs',
@@ -155,6 +173,9 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
   '/app/admin/jobs': typeof AppAdminJobsRoute
+  '/app/admin/moderation': typeof AppAdminModerationRoute
+  '/app/admin/narrators': typeof AppAdminNarratorsRoute
+  '/app/admin/traits': typeof AppAdminTraitsRoute
   '/app/generations/$jobId': typeof AppGenerationsJobIdRoute
   '/app/pets/$petId': typeof AppPetsPetIdRouteWithChildren
   '/app/pets/new': typeof AppPetsNewRoute
@@ -177,6 +198,9 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
   '/app/admin/jobs': typeof AppAdminJobsRoute
+  '/app/admin/moderation': typeof AppAdminModerationRoute
+  '/app/admin/narrators': typeof AppAdminNarratorsRoute
+  '/app/admin/traits': typeof AppAdminTraitsRoute
   '/app/generations/$jobId': typeof AppGenerationsJobIdRoute
   '/app/pets/new': typeof AppPetsNewRoute
   '/p/$petSlug/about': typeof PPetSlugAboutRoute
@@ -200,6 +224,9 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
   '/app/admin/jobs': typeof AppAdminJobsRoute
+  '/app/admin/moderation': typeof AppAdminModerationRoute
+  '/app/admin/narrators': typeof AppAdminNarratorsRoute
+  '/app/admin/traits': typeof AppAdminTraitsRoute
   '/app/generations/$jobId': typeof AppGenerationsJobIdRoute
   '/app/pets/$petId': typeof AppPetsPetIdRouteWithChildren
   '/app/pets/new': typeof AppPetsNewRoute
@@ -226,6 +253,9 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/admin/costs'
     | '/app/admin/jobs'
+    | '/app/admin/moderation'
+    | '/app/admin/narrators'
+    | '/app/admin/traits'
     | '/app/generations/$jobId'
     | '/app/pets/$petId'
     | '/app/pets/new'
@@ -248,6 +278,9 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/admin/costs'
     | '/app/admin/jobs'
+    | '/app/admin/moderation'
+    | '/app/admin/narrators'
+    | '/app/admin/traits'
     | '/app/generations/$jobId'
     | '/app/pets/new'
     | '/p/$petSlug/about'
@@ -270,6 +303,9 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/admin/costs'
     | '/app/admin/jobs'
+    | '/app/admin/moderation'
+    | '/app/admin/narrators'
+    | '/app/admin/traits'
     | '/app/generations/$jobId'
     | '/app/pets/$petId'
     | '/app/pets/new'
@@ -403,6 +439,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppGenerationsJobIdRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/app/admin/traits': {
+      id: '/app/admin/traits'
+      path: '/traits'
+      fullPath: '/app/admin/traits'
+      preLoaderRoute: typeof AppAdminTraitsRouteImport
+      parentRoute: typeof AppAdminRouteRoute
+    }
+    '/app/admin/narrators': {
+      id: '/app/admin/narrators'
+      path: '/narrators'
+      fullPath: '/app/admin/narrators'
+      preLoaderRoute: typeof AppAdminNarratorsRouteImport
+      parentRoute: typeof AppAdminRouteRoute
+    }
+    '/app/admin/moderation': {
+      id: '/app/admin/moderation'
+      path: '/moderation'
+      fullPath: '/app/admin/moderation'
+      preLoaderRoute: typeof AppAdminModerationRouteImport
+      parentRoute: typeof AppAdminRouteRoute
+    }
     '/app/admin/jobs': {
       id: '/app/admin/jobs'
       path: '/jobs'
@@ -458,12 +515,18 @@ declare module '@tanstack/react-router' {
 interface AppAdminRouteRouteChildren {
   AppAdminCostsRoute: typeof AppAdminCostsRoute
   AppAdminJobsRoute: typeof AppAdminJobsRoute
+  AppAdminModerationRoute: typeof AppAdminModerationRoute
+  AppAdminNarratorsRoute: typeof AppAdminNarratorsRoute
+  AppAdminTraitsRoute: typeof AppAdminTraitsRoute
   AppAdminIndexRoute: typeof AppAdminIndexRoute
 }
 
 const AppAdminRouteRouteChildren: AppAdminRouteRouteChildren = {
   AppAdminCostsRoute: AppAdminCostsRoute,
   AppAdminJobsRoute: AppAdminJobsRoute,
+  AppAdminModerationRoute: AppAdminModerationRoute,
+  AppAdminNarratorsRoute: AppAdminNarratorsRoute,
+  AppAdminTraitsRoute: AppAdminTraitsRoute,
   AppAdminIndexRoute: AppAdminIndexRoute,
 }
 

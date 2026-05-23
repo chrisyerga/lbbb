@@ -46,6 +46,35 @@ const planStatus = v.union(
   v.literal('cancelled'),
   v.literal('past_due'),
 )
+const traitCategory = v.union(
+  v.literal('personality'),
+  v.literal('tone'),
+  v.literal('register'),
+  v.literal('cultural'),
+  v.literal('pacing'),
+)
+const catalogStatus = v.union(
+  v.literal('active'),
+  v.literal('archived'),
+)
+const narratorStatus = v.union(
+  v.literal('draft'),
+  v.literal('published'),
+  v.literal('archived'),
+)
+const generationStrategy = v.union(
+  v.literal('single_shot'),
+  v.literal('draft_critique'),
+)
+const textParameters = v.object({
+  temperature: v.optional(v.number()),
+  maxTokens: v.optional(v.number()),
+})
+const speechProfile = v.object({
+  provider: v.literal('elevenlabs'),
+  voiceId: v.string(),
+  settings: v.optional(v.any()),
+})
 
 export default defineSchema({
   ...authTables,
@@ -143,12 +172,14 @@ export default defineSchema({
         custom: v.array(v.string()),
       }),
     ),
+    narratorId: v.optional(v.id('narrators')),
     stylePresetId: v.optional(v.id('stylePresets')),
     createdAt: v.number(),
   })
     .index('by_pet', ['petId'])
     .index('by_owner', ['ownerUserId'])
-    .index('by_pet_date', ['petId', 'occurredOn']),
+    .index('by_pet_date', ['petId', 'occurredOn'])
+    .index('by_narrator', ['narratorId']),
 
   assets: defineTable({
     ownerUserId: v.id('users'),
@@ -190,6 +221,7 @@ export default defineSchema({
     imageModel: v.optional(v.string()),
     provider: v.optional(v.union(v.literal('openai'), v.literal('openrouter'))),
     promptVersionId: v.optional(v.id('promptVersions')),
+    narratorId: v.optional(v.id('narrators')),
     stylePresetId: v.optional(v.id('stylePresets')),
     inputSnapshot: v.optional(v.any()),
     attempt: v.number(),
@@ -260,6 +292,7 @@ export default defineSchema({
     status: postStatus,
     moderationStatus,
     promptVersionId: v.optional(v.id('promptVersions')),
+    narratorId: v.optional(v.id('narrators')),
     inputSnapshot: v.optional(v.any()),
     outputSnapshot: v.optional(v.any()),
     imageAssetIds: v.array(v.id('assets')),
@@ -270,7 +303,69 @@ export default defineSchema({
     .index('by_pet', ['petId'])
     .index('by_pet_slug', ['petId', 'slug'])
     .index('by_status', ['status'])
-    .index('by_owner', ['ownerUserId']),
+    .index('by_owner', ['ownerUserId'])
+    .index('by_narrator', ['narratorId']),
+
+  narratorTraits: defineTable({
+    slug: v.string(),
+    label: v.string(),
+    category: traitCategory,
+    promptFragment: v.string(),
+    sortOrder: v.number(),
+    status: catalogStatus,
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_slug', ['slug'])
+    .index('by_category', ['category'])
+    .index('by_status', ['status']),
+
+  artStyles: defineTable({
+    slug: v.string(),
+    name: v.string(),
+    description: v.string(),
+    imagePromptSuffix: v.string(),
+    previewAssetId: v.optional(v.id('assets')),
+    sortOrder: v.number(),
+    status: catalogStatus,
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_slug', ['slug'])
+    .index('by_status', ['status']),
+
+  narrators: defineTable({
+    slug: v.string(),
+    name: v.string(),
+    tagline: v.string(),
+    description: v.optional(v.string()),
+    exampleExcerpt: v.optional(v.string()),
+    avatarAssetId: v.optional(v.id('assets')),
+    traitIds: v.array(v.id('narratorTraits')),
+    specializationPrompt: v.string(),
+    promptVersionKey: v.string(),
+    systemPromptAddon: v.optional(v.string()),
+    defaultMoodHints: v.optional(v.array(v.string())),
+    wordTarget: v.number(),
+    textModel: v.optional(v.string()),
+    textParameters: v.optional(textParameters),
+    defaultArtStyleId: v.id('artStyles'),
+    imageModel: v.optional(v.string()),
+    imagePromptSuffix: v.optional(v.string()),
+    generationStrategy,
+    speechProfile: v.optional(speechProfile),
+    public: v.boolean(),
+    featured: v.boolean(),
+    minPlanTier: v.optional(planTier),
+    sortOrder: v.number(),
+    status: narratorStatus,
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_slug', ['slug'])
+    .index('by_status', ['status'])
+    .index('by_public', ['public', 'status'])
+    .index('by_featured', ['featured', 'status']),
 
   promptVersions: defineTable({
     key: v.string(),

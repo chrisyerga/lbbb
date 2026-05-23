@@ -28,6 +28,36 @@ export function AdminShell({ children }: PropsWithChildren) {
           Jobs
         </Link>
         <Link
+          to="/app/admin/moderation"
+          className={
+            pathname.startsWith('/app/admin/moderation')
+              ? 'admin-nav-link is-active'
+              : 'admin-nav-link'
+          }
+        >
+          Moderation
+        </Link>
+        <Link
+          to="/app/admin/narrators"
+          className={
+            pathname.startsWith('/app/admin/narrators')
+              ? 'admin-nav-link is-active'
+              : 'admin-nav-link'
+          }
+        >
+          Narrators
+        </Link>
+        <Link
+          to="/app/admin/traits"
+          className={
+            pathname.startsWith('/app/admin/traits')
+              ? 'admin-nav-link is-active'
+              : 'admin-nav-link'
+          }
+        >
+          Traits
+        </Link>
+        <Link
           to="/app/admin/costs"
           className={
             pathname.startsWith('/app/admin/costs')

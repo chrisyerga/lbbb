@@ -810,6 +810,103 @@ body.landing-v1-active {
   background: var(--landing-soft);
 }
 
+.landing-v1 .memory-narrator-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.landing-v1 .memory-narrator-card {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #14100e;
+  border-radius: 18px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.landing-v1 .memory-narrator-card.is-selected {
+  background: color-mix(in srgb, var(--landing-primary) 8%, #fff);
+  box-shadow: 3px 3px 0 #14100e;
+  transform: rotate(-0.5deg);
+}
+
+.landing-v1 .memory-narrator-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border: 1.5px solid #14100e;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--landing-soft);
+  font-family: Unbounded, system-ui, sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--landing-primary);
+}
+
+.landing-v1 .memory-narrator-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.landing-v1 .memory-narrator-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.landing-v1 .memory-narrator-name {
+  font-family: Unbounded, system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--landing-ink);
+}
+
+.landing-v1 .memory-narrator-tagline {
+  font-size: 14px;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--landing-ink) 72%, transparent);
+}
+
+.landing-v1 .memory-narrator-excerpt {
+  font-size: 13px;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--landing-ink) 58%, transparent);
+}
+
+.landing-v1 .memory-narrator-art {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--landing-ink) 45%, transparent);
+}
+
+.landing-v1 .memory-advanced-toggle-row {
+  margin-top: 16px;
+}
+
+.landing-v1 .memory-advanced-toggle {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--landing-primary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .landing-v1 .memory-tag-group {
   margin-bottom: 22px;
 }

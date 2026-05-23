@@ -3,9 +3,15 @@ import {
   internalMutation,
   internalQuery,
 } from './_generated/server'
+import type { ActionCtx } from './_generated/server'
 import { v } from 'convex/values'
 import { internal } from './_generated/api'
-import type { Id } from './_generated/dataModel'
+import type { Doc, Id } from './_generated/dataModel'
+import {
+  buildImagePromptsFromPlan,
+  buildTextPromptFromPlan,
+} from './lib/generationPlan'
+import type { MemoryJobInputSnapshot } from './lib/narratorTypes'
 import {
   buildMemoryPrompt,
   imagePromptVariants,
@@ -46,11 +52,22 @@ function normalizeTextResult(raw: Record<string, unknown>): TextGenerationResult
   }
 }
 
-type JobInputSnapshot = {
+type LegacyJobInputSnapshot = {
   description: string
   vibeHints: VibeHints
   petName: string
   petSpecies?: string
+}
+
+function isMemoryJobInput(
+  input: unknown,
+): input is MemoryJobInputSnapshot {
+  return (
+    typeof input === 'object' &&
+    input !== null &&
+    'generationPlan' in input &&
+    typeof (input as MemoryJobInputSnapshot).generationPlan === 'object'
+  )
 }
 
 async function callOpenAIText(prompt: string): Promise<TextGenerationResult> {
@@ -66,8 +83,8 @@ async function callOpenAIText(prompt: string): Promise<TextGenerationResult> {
     },
     body: JSON.stringify({
       model,
-      input: prompt,
-      text: { format: { type: 'json_object' } },
+      input: prompt
+//      text: { format: { type: 'json_object' } },
     }),
   })
 
@@ -79,10 +96,13 @@ async function callOpenAIText(prompt: string): Promise<TextGenerationResult> {
   }
 
   const json = await response.json()
+  console.log('json', json)
   const outputText = json.output_text ?? '{}'
+  console.log('outputText', outputText)
   const parsed = normalizeTextResult(JSON.parse(outputText) as Record<string, unknown>)
+  console.log('parsed', parsed)
 
-  return {
+  const result = {
     ...parsed,
     usage: {
       inputTokens: json.usage?.input_tokens,
@@ -90,6 +110,8 @@ async function callOpenAIText(prompt: string): Promise<TextGenerationResult> {
     },
     providerRequestId: response.headers.get('x-request-id') ?? undefined,
   }
+  console.log('result', result)
+  return result;
 }
 
 async function callOpenAIImage(prompt: string): Promise<{
@@ -266,6 +288,7 @@ export const completeWithDraft = internalMutation({
       status: 'awaiting_moderation',
       moderationStatus: 'pending',
       promptVersionId: job.promptVersionId,
+      narratorId: job.narratorId,
       inputSnapshot: job.inputSnapshot,
       outputSnapshot: args.outputSnapshot,
       imageAssetIds: args.imageAssetIds,
@@ -318,6 +341,14 @@ export const completeWithDraft = internalMutation({
   },
 })
 
+export const atest_openai_text = action({
+  args: { prompt: v.string() },
+  handler: async (_ctx, args) => {
+    const result = await callOpenAIText(args.prompt)
+    return result
+  },
+})
+
 export const processJob = action({
   args: { jobId: v.id('generationJobs'), prompt: v.string() },
   handler: async (_ctx, args) => {
@@ -334,6 +365,73 @@ export const processJob = action({
   },
 })
 
+async function finishGeneration(
+  ctx: ActionCtx,
+  args: {
+    jobId: Id<'generationJobs'>
+    job: Doc<'generationJobs'>
+    textModel: string
+    imageModel: string
+    textResult: TextGenerationResult
+    imagePrompts: Array<string>
+    baseImagePrompt: string
+  },
+) {
+  const imageAssetIds: Array<Id<'assets'>> = []
+  const imageCosts: Array<{
+    model: string
+    estimatedCostUsd: number
+    providerRequestId?: string
+  }> = []
+
+  for (const imagePrompt of args.imagePrompts) {
+    const { blob, providerRequestId } = await callOpenAIImage(imagePrompt)
+    const storageId = await ctx.storage.store(blob)
+    const assetId = await ctx.runMutation(
+      internal.generation.storeGeneratedImage,
+      {
+        jobId: args.jobId,
+        petId: args.job.petId,
+        ownerUserId: args.job.ownerUserId,
+        storageId,
+        byteSize: blob.size,
+        contentType: blob.type || 'image/png',
+      },
+    )
+    imageAssetIds.push(assetId)
+    imageCosts.push({
+      model: args.imageModel,
+      estimatedCostUsd: estimateImageCostUsd(),
+      providerRequestId,
+    })
+  }
+
+  await ctx.runMutation(internal.generation.completeWithDraft, {
+    jobId: args.jobId,
+    title: args.textResult.title,
+    excerpt: args.textResult.excerpt,
+    bodyMarkdown: args.textResult.bodyMarkdown,
+    outputSnapshot: {
+      tags: args.textResult.tags,
+      imagePrompt: args.baseImagePrompt,
+      imagePromptFromModel: args.textResult.imagePrompt,
+      imagePrompts: args.imagePrompts,
+    },
+    imageAssetIds,
+    cost: {
+      model: args.textModel,
+      inputTokens: args.textResult.usage?.inputTokens,
+      outputTokens: args.textResult.usage?.outputTokens,
+      estimatedCostUsd: estimateTextCostUsd(
+        args.textResult.usage?.inputTokens,
+        args.textResult.usage?.outputTokens,
+      ),
+      providerRequestId: args.textResult.providerRequestId,
+    },
+    imageCosts,
+  })
+}
+
 export const runMemoryGeneration = action({
   args: { jobId: v.id('generationJobs') },
   handler: async (ctx, args) => {
@@ -343,16 +441,48 @@ export const runMemoryGeneration = action({
     if (!job) throw new Error('Job not found')
     if (!job.inputSnapshot) throw new Error('Job is missing input snapshot')
 
-    const input = job.inputSnapshot as JobInputSnapshot
-    const textModel = process.env.OPENAI_TEXT_MODEL ?? 'gpt-5.4-mini'
-    const imageModel = process.env.OPENAI_IMAGE_MODEL ?? 'gpt-image-2'
+    const rawInput = job.inputSnapshot
+
+    let textModel = process.env.OPENAI_TEXT_MODEL ?? 'gpt-5.4-mini'
+    let imageModel = process.env.OPENAI_IMAGE_MODEL ?? 'gpt-image-2'
+    let prompt: string
+    let imagePrompts: Array<string>
 
     try {
       await ctx.runMutation(internal.generation.markProcessing, {
         jobId: args.jobId,
       })
 
-      const prompt = buildMemoryPrompt({
+      if (isMemoryJobInput(rawInput)) {
+        const input = rawInput
+        const plan = input.generationPlan
+        textModel = plan.text.model
+        imageModel = plan.image.model
+        prompt = buildTextPromptFromPlan(plan)
+
+        const textResult = await callOpenAIText(prompt)
+        imagePrompts = buildImagePromptsFromPlan({
+          plan,
+          textResult,
+          petName: input.petName,
+          memoryDescription: input.description,
+          vibeHints: input.vibeHints,
+        })
+
+        await finishGeneration(ctx, {
+          jobId: args.jobId,
+          job,
+          textModel,
+          imageModel,
+          textResult,
+          imagePrompts,
+          baseImagePrompt: textResult.imagePrompt ?? input.description,
+        })
+        return { jobId: args.jobId, status: 'awaiting_review' as const }
+      }
+
+      const input = rawInput as LegacyJobInputSnapshot
+      prompt = buildMemoryPrompt({
         petName: input.petName,
         petSpecies: input.petSpecies,
         memoryDescription: input.description,
@@ -367,59 +497,16 @@ export const runMemoryGeneration = action({
         memoryDescription: input.description,
         vibe: input.vibeHints,
       })
-      const imagePrompts = imagePromptVariants(baseImagePrompt, artStyle, 4)
-      const imageAssetIds: Array<Id<'assets'>> = []
-      const imageCosts: Array<{
-        model: string
-        estimatedCostUsd: number
-        providerRequestId?: string
-      }> = []
+      imagePrompts = imagePromptVariants(baseImagePrompt, artStyle, 4)
 
-      for (const imagePrompt of imagePrompts) {
-        const { blob, providerRequestId } = await callOpenAIImage(imagePrompt)
-        const storageId = await ctx.storage.store(blob)
-        const assetId = await ctx.runMutation(
-          internal.generation.storeGeneratedImage,
-          {
-            jobId: args.jobId,
-            petId: job.petId,
-            ownerUserId: job.ownerUserId,
-            storageId,
-            byteSize: blob.size,
-            contentType: blob.type || 'image/png',
-          },
-        )
-        imageAssetIds.push(assetId)
-        imageCosts.push({
-          model: imageModel,
-          estimatedCostUsd: estimateImageCostUsd(),
-          providerRequestId,
-        })
-      }
-
-      await ctx.runMutation(internal.generation.completeWithDraft, {
+      await finishGeneration(ctx, {
         jobId: args.jobId,
-        title: textResult.title,
-        excerpt: textResult.excerpt,
-        bodyMarkdown: textResult.bodyMarkdown,
-        outputSnapshot: {
-          tags: textResult.tags,
-          imagePrompt: baseImagePrompt,
-          imagePromptFromModel: textResult.imagePrompt,
-          imagePrompts,
-        },
-        imageAssetIds,
-        cost: {
-          model: textModel,
-          inputTokens: textResult.usage?.inputTokens,
-          outputTokens: textResult.usage?.outputTokens,
-          estimatedCostUsd: estimateTextCostUsd(
-            textResult.usage?.inputTokens,
-            textResult.usage?.outputTokens,
-          ),
-          providerRequestId: textResult.providerRequestId,
-        },
-        imageCosts,
+        job,
+        textModel,
+        imageModel,
+        textResult,
+        imagePrompts,
+        baseImagePrompt,
       })
 
       return { jobId: args.jobId, status: 'awaiting_review' as const }

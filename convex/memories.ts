@@ -56,11 +56,17 @@ export const createDraft = mutation({
     description: v.string(),
     occurredOn: v.optional(v.string()),
     sourceAssetIds: v.optional(v.array(v.id('assets'))),
-    vibeHints: vibeHintsValidator,
+    narratorId: v.id('narrators'),
+    vibeHints: v.optional(vibeHintsValidator),
   },
   handler: async (ctx, args) => {
     const user = await requireUser(ctx)
     await requirePetOwner(ctx, args.petId, user._id)
+
+    const narrator = await ctx.db.get(args.narratorId)
+    if (!narrator || narrator.status !== 'published' || !narrator.public) {
+      throw new Error('Narrator not found')
+    }
 
     const description = args.description.trim()
     if (!description) {
@@ -82,6 +88,7 @@ export const createDraft = mutation({
       occurredOn,
       description,
       sourceAssetIds,
+      narratorId: args.narratorId,
       vibeHints: args.vibeHints,
       createdAt: Date.now(),
     })

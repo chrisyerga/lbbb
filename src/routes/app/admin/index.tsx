@@ -1,37 +1,49 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { MetricCard } from '#/components/MetricCard'
-import { PageShell } from '#/components/PageShell'
 
 export const Route = createFileRoute('/app/admin/')({ component: AdminPage })
 
 function AdminPage() {
   return (
-    <PageShell
-      eyebrow="Admin"
-      title="Operate jobs, costs, moderation, and assets."
-    >
-      <div className="metric-grid sm:grid-cols-2 lg:grid-cols-4">
-        <Link to="/app/admin/jobs" className="no-underline">
-          <MetricCard
-            label="Jobs"
-            value="View"
-            detail="Inspect, retry, cancel."
-          />
+    <div className="admin-overview">
+      <header className="admin-overview-head">
+        <h1 className="admin-catalog-title">Overview</h1>
+        <p className="admin-overview-lead">
+          Operate jobs, moderation, narrator catalog, and costs.
+        </p>
+      </header>
+      <div className="admin-overview-grid">
+        <Link to="/app/admin/jobs" className="admin-overview-card">
+          <span className="admin-mono admin-overview-label">Jobs</span>
+          <span className="admin-overview-value">Queue</span>
+          <span className="admin-overview-detail">Inspect, retry, cancel.</span>
         </Link>
-        <Link to="/app/admin/costs" className="no-underline">
-          <MetricCard
-            label="Costs"
-            value="View"
-            detail="Provider spend drilldowns."
-          />
+        <Link to="/app/admin/moderation" className="admin-overview-card">
+          <span className="admin-mono admin-overview-label">Moderation</span>
+          <span className="admin-overview-value">Review</span>
+          <span className="admin-overview-detail">
+            Approve or reject generated posts &amp; images.
+          </span>
         </Link>
-        <MetricCard label="Posts" value="Soon" detail="Approve or unpublish." />
-        <MetricCard
-          label="Assets"
-          value="Soon"
-          detail="Audit storage and visibility."
-        />
+        <Link to="/app/admin/narrators" className="admin-overview-card">
+          <span className="admin-mono admin-overview-label">Narrators</span>
+          <span className="admin-overview-value">Catalog</span>
+          <span className="admin-overview-detail">
+            Create and edit AI personas.
+          </span>
+        </Link>
+        <Link to="/app/admin/traits" className="admin-overview-card">
+          <span className="admin-mono admin-overview-label">Traits</span>
+          <span className="admin-overview-value">Fragments</span>
+          <span className="admin-overview-detail">
+            Voice fragments for narrator prompts.
+          </span>
+        </Link>
+        <Link to="/app/admin/costs" className="admin-overview-card">
+          <span className="admin-mono admin-overview-label">Costs</span>
+          <span className="admin-overview-value">Spend</span>
+          <span className="admin-overview-detail">Provider spend drilldowns.</span>
+        </Link>
       </div>
-    </PageShell>
+    </div>
   )
 }

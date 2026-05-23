@@ -2,7 +2,7 @@
 
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useAction, useMutation, useQuery } from 'convex/react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { PhotoUpload } from '#/components/PhotoUpload'
 import { ArtTile } from '#/components/landing/primitives/ArtTile'
 import { Squiggle } from '#/components/landing/primitives/Squiggle'
@@ -78,6 +78,61 @@ function TagPill({
       {selected ? <span className="memory-tag-check">✓</span> : null}
       {label}
     </button>
+  )
+}
+
+function NarratorPicker({
+  narrators,
+  selectedId,
+  onSelect,
+}: {
+  narrators: Array<{
+    _id: Id<'narrators'>
+    name: string
+    tagline: string
+    exampleExcerpt?: string
+    avatarUrl: string | null
+    defaultArtStyle: { name: string }
+  }>
+  selectedId: Id<'narrators'> | null
+  onSelect: (id: Id<'narrators'>) => void
+}) {
+  return (
+    <div className="memory-narrator-grid">
+      {narrators.map((narrator) => {
+        const selected = selectedId === narrator._id
+        return (
+          <button
+            key={narrator._id}
+            type="button"
+            className={
+              selected ? 'memory-narrator-card is-selected' : 'memory-narrator-card'
+            }
+            onClick={() => onSelect(narrator._id)}
+          >
+            <div className="memory-narrator-avatar">
+              {narrator.avatarUrl ? (
+                <img src={narrator.avatarUrl} alt="" />
+              ) : (
+                <span>{narrator.name.slice(0, 1)}</span>
+              )}
+            </div>
+            <div className="memory-narrator-copy">
+              <span className="memory-narrator-name">{narrator.name}</span>
+              <span className="memory-narrator-tagline">{narrator.tagline}</span>
+              {narrator.exampleExcerpt ? (
+                <span className="memory-narrator-excerpt">
+                  “{narrator.exampleExcerpt}”
+                </span>
+              ) : null}
+              <span className="memory-narrator-art">
+                Art: {narrator.defaultArtStyle.name}
+              </span>
+            </div>
+          </button>
+        )
+      })}
+    </div>
   )
 }
 
@@ -370,6 +425,8 @@ function PreviewCard({
   generatedTitle,
   generatedBody,
   imageUrls,
+  narratorName,
+  artStyleName,
 }: {
   selection: VibeSelection
   blogSlug: string | null
@@ -377,10 +434,15 @@ function PreviewCard({
   generatedTitle: string | null
   generatedBody: string | null
   imageUrls: Array<string | null>
+  narratorName?: string | null
+  artStyleName?: string | null
 }) {
   const palette = getLandingPalette(DEFAULT_PALETTE_KEY)
   const styleId = selection.style[0]
   const paraCount = paragraphCountForLength(selection)
+  const previewMeta = narratorName
+    ? `${narratorName}${artStyleName ? ` · ${artStyleName}` : ''}`
+    : moodSummary(selection)
   const previewTitle =
     generatedTitle ||
     (description.trim()
@@ -424,7 +486,7 @@ function PreviewCard({
         <GeneratedArtPreview styleId={styleId} imageUrls={imageUrls} />
 
         <div className="memory-preview-meta">
-          today · {Math.round(paraCount * 1.5)} min · {moodSummary(selection)}
+          today · {Math.round(paraCount * 1.5)} min · {previewMeta}
         </div>
 
         <h3 className="memory-preview-title">{previewTitle}</h3>
@@ -448,7 +510,9 @@ function PreviewCard({
         </div>
       </div>
 
-      <p className="memory-preview-note">← updates live as you tag</p>
+      <p className="memory-preview-note">
+        ← updates live as you {narratorName ? 'write' : 'tag'}
+      </p>
     </div>
   )
 }
@@ -457,10 +521,12 @@ function MemoryHeader({
   petName,
   avatarUrl,
   blogSlug,
+  advancedMode,
 }: {
   petName: string
   avatarUrl: string | null
   blogSlug: string | null
+  advancedMode: boolean
 }) {
   const palette = getLandingPalette(DEFAULT_PALETTE_KEY)
 
@@ -502,8 +568,9 @@ function MemoryHeader({
               </span>
             </h1>
             <p className="memory-header-lede">
-              Type, dictate, or just dump words. Pick a vibe — add your own
-              hints too. We&apos;ll write the post and paint the art.
+              {advancedMode
+                ? "Advanced mode — fine-tune mood, art, and length on top of your narrator."
+                : "Pick a narrator, dump the memory, and we'll write the post and paint the art."}
             </p>
           </div>
 
@@ -532,6 +599,7 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
     api.pets.getMineByPetId,
     parsedPetId ? { petId } : 'skip',
   )
+  const narrators = useQuery(api.narrators.listPublished)
   const usage = useQuery(api.quotas.usageToday)
 
   const createDraft = useMutation(api.memories.createDraft)
@@ -540,12 +608,26 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
 
   const [text, setText] = useState('')
   const [dictating, setDictating] = useState(false)
+  const [advancedMode, setAdvancedMode] = useState(false)
+  const [selectedNarratorId, setSelectedNarratorId] =
+    useState<Id<'narrators'> | null>(null)
   const [selection, setSelection] = useState<VibeSelection>(
     DEFAULT_VIBE_SELECTION,
   )
   const [pendingPhotos, setPendingPhotos] = useState<Array<PendingPhoto>>([])
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!narrators?.length || selectedNarratorId) return
+    const featured = narrators.find((n) => n.featured) ?? narrators[0]
+    setSelectedNarratorId(featured._id)
+  }, [narrators, selectedNarratorId])
+
+  const selectedNarrator = useMemo(
+    () => narrators?.find((n) => n._id === selectedNarratorId) ?? null,
+    [narrators, selectedNarratorId],
+  )
 
   const tagCount = useMemo(() => countSelectedTags(selection), [selection])
 
@@ -582,7 +664,7 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
   }
 
   async function onSaveDraft() {
-    if (!petData || !parsedPetId || !text.trim()) return
+    if (!petData || !parsedPetId || !text.trim() || !selectedNarratorId) return
     setError(null)
     setSubmitting(true)
     try {
@@ -590,7 +672,8 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
         petId: parsedPetId,
         description: text,
         sourceAssetIds: pendingPhotos.map((p) => p.assetId),
-        vibeHints: vibeSelectionToHints(selection),
+        narratorId: selectedNarratorId,
+        vibeHints: advancedMode ? vibeSelectionToHints(selection) : undefined,
       })
       await navigate({
         to: '/app/pets/$petId/memories',
@@ -604,25 +687,27 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
   }
 
   async function onGenerate() {
-    if (!petData || !parsedPetId) return
+    if (!petData || !parsedPetId || !selectedNarratorId) return
     setError(null)
     setSubmitting(true)
     try {
-      const vibeHints = vibeSelectionToHints(selection)
+      const vibeHints = advancedMode ? vibeSelectionToHints(selection) : undefined
       const { memoryId } = await createDraft({
         petId: parsedPetId,
         description: text,
         sourceAssetIds: pendingPhotos.map((p) => p.assetId),
+        narratorId: selectedNarratorId,
         vibeHints,
       })
 
       const jobId = await startGeneration({
         petId: parsedPetId,
         memoryId,
-        vibeHints,
+        narratorId: selectedNarratorId,
         description: text,
         petName: petData.pet.name,
         petSpecies: petData.pet.species,
+        vibeHints,
       })
 
       void runGeneration({ jobId }).catch(() => {
@@ -658,7 +743,8 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
 
   const { pet, blog, avatarUrl } = petData
   const rendersRemaining = usage?.rendersRemaining
-  const canGenerate = text.trim().length > 0 && !submitting
+  const canGenerate =
+    text.trim().length > 0 && Boolean(selectedNarratorId) && !submitting
 
   return (
     <div className="create-memory-page">
@@ -666,12 +752,30 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
         petName={pet.name}
         avatarUrl={avatarUrl}
         blogSlug={blog?.slug ?? null}
+        advancedMode={advancedMode}
       />
 
       <main className="memory-main page-wrap px-4">
         <div className="memory-main-grid">
           <div>
-            <StepLabel n={1} title="The story" helper="type or dictate" />
+            <StepLabel n={1} title="Narrator" helper="who tells the story" />
+            {narrators === undefined ? (
+              <p className="text-sm text-[var(--text-muted)]">Loading narrators…</p>
+            ) : narrators.length === 0 ? (
+              <p className="text-sm text-[var(--text-muted)]">
+                No narrators published yet. Ask an admin to seed the catalog.
+              </p>
+            ) : (
+              <NarratorPicker
+                narrators={narrators}
+                selectedId={selectedNarratorId}
+                onSelect={setSelectedNarratorId}
+              />
+            )}
+
+            <div className="memory-section-gap" />
+
+            <StepLabel n={2} title="The story" helper="type or dictate" />
             <Composer
               value={text}
               onChange={setText}
@@ -683,30 +787,43 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
               onRemovePhoto={removePendingPhoto}
             />
 
-            <div className="memory-section-gap" />
-
-            <StepLabel
-              n={2}
-              title="The vibe"
-              helper={`${tagCount} tags`}
-            />
-            <div className="memory-vibe-panel">
-              {VIBE_TAG_GROUPS.map((group) => (
-                <TagGroup
-                  key={group.id}
-                  group={group}
-                  selected={selection[group.id]}
-                  onToggle={(tagId) =>
-                    onToggleTag(group.id, tagId, group.single)
-                  }
-                />
-              ))}
-              <CustomVibeInput
-                customHints={selection.custom}
-                onAdd={addCustomHint}
-                onRemove={removeCustomHint}
-              />
+            <div className="memory-advanced-toggle-row">
+              <button
+                type="button"
+                className="memory-advanced-toggle"
+                onClick={() => setAdvancedMode((mode) => !mode)}
+              >
+                {advancedMode ? 'Hide advanced options' : 'Advanced options'}
+              </button>
             </div>
+
+            {advancedMode ? (
+              <>
+                <div className="memory-section-gap" />
+                <StepLabel
+                  n={3}
+                  title="Overrides"
+                  helper={`${tagCount} tags`}
+                />
+                <div className="memory-vibe-panel">
+                  {VIBE_TAG_GROUPS.map((group) => (
+                    <TagGroup
+                      key={group.id}
+                      group={group}
+                      selected={selection[group.id]}
+                      onToggle={(tagId) =>
+                        onToggleTag(group.id, tagId, group.single)
+                      }
+                    />
+                  ))}
+                  <CustomVibeInput
+                    customHints={selection.custom}
+                    onAdd={addCustomHint}
+                    onRemove={removeCustomHint}
+                  />
+                </div>
+              </>
+            ) : null}
 
             {error ? <p className="alert-error mt-4 px-3 py-2">{error}</p> : null}
 
@@ -747,12 +864,16 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
             </div>
 
             <p className="memory-style-note">
-              Art style preview: {artStyleLabel(selection)}
+              {advancedMode
+                ? `Art style preview: ${artStyleLabel(selection)}`
+                : selectedNarrator
+                  ? `Narrator: ${selectedNarrator.name} · Art: ${selectedNarrator.defaultArtStyle.name}`
+                  : 'Pick a narrator to preview style'}
             </p>
           </div>
 
           <div className="memory-preview-column">
-            <StepLabel n={3} title="The post" helper="updates live" />
+            <StepLabel n={advancedMode ? 4 : 3} title="The post" helper="updates live" />
             <PreviewCard
               selection={selection}
               blogSlug={blog?.slug ?? null}
@@ -760,6 +881,10 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
               generatedTitle={null}
               generatedBody={null}
               imageUrls={[]}
+              narratorName={advancedMode ? null : selectedNarrator?.name}
+              artStyleName={
+                advancedMode ? null : selectedNarrator?.defaultArtStyle.name
+              }
             />
           </div>
         </div>

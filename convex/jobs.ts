@@ -1,6 +1,7 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 import { requireStaff } from './lib/requireAccount'
+import { resolveGenerationPlan } from './lib/generationPlan'
 import { assertCanCreateGenerationJob } from './lib/quotaEnforcement'
 import { requireUser } from './lib/requireUser'
 
@@ -10,6 +11,13 @@ const vibeHintsValidator = v.object({
   voice: v.array(v.string()),
   length: v.array(v.string()),
   custom: v.array(v.string()),
+})
+
+const advancedOverridesValidator = v.object({
+  mood: v.optional(v.array(v.string())),
+  artStyleId: v.optional(v.id('artStyles')),
+  wordTarget: v.optional(v.number()),
+  customHints: v.optional(v.array(v.string())),
 })
 
 export const createGenerationJob = mutation({
@@ -23,6 +31,7 @@ export const createGenerationJob = mutation({
     ),
     provider: v.optional(v.union(v.literal('openai'), v.literal('openrouter'))),
     stylePresetId: v.optional(v.id('stylePresets')),
+    narratorId: v.optional(v.id('narrators')),
   },
   handler: async (ctx, args) => {
     const user = await requireUser(ctx)
@@ -37,6 +46,7 @@ export const createGenerationJob = mutation({
       operation: args.operation,
       provider: args.provider ?? 'openai',
       stylePresetId: args.stylePresetId,
+      narratorId: args.narratorId,
       attempt: 0,
       createdAt: now,
       updatedAt: now,
@@ -58,10 +68,12 @@ export const startMemoryGeneration = mutation({
   args: {
     petId: v.id('pets'),
     memoryId: v.id('petMemories'),
-    vibeHints: vibeHintsValidator,
+    narratorId: v.id('narrators'),
     description: v.string(),
     petName: v.string(),
     petSpecies: v.optional(v.string()),
+    advancedOverrides: v.optional(advancedOverridesValidator),
+    vibeHints: v.optional(vibeHintsValidator),
   },
   handler: async (ctx, args) => {
     const user = await requireUser(ctx)
@@ -75,19 +87,35 @@ export const startMemoryGeneration = mutation({
       throw new Error('Memory does not belong to this pet')
     }
 
+    const generationPlan = await resolveGenerationPlan(ctx, {
+      narratorId: args.narratorId,
+      memoryDescription: args.description,
+      petName: args.petName,
+      petSpecies: args.petSpecies,
+      advancedOverrides: args.advancedOverrides,
+      vibeHints: args.vibeHints,
+    })
+
     const now = Date.now()
     const jobId = await ctx.db.insert('generationJobs', {
       ownerUserId: user._id,
       petId: args.petId,
       memoryId: args.memoryId,
+      narratorId: args.narratorId,
+      promptVersionId: generationPlan.promptVersionId,
+      textModel: generationPlan.text.model,
+      imageModel: generationPlan.image.model,
       status: 'queued',
       operation: 'blog_post',
       provider: 'openai',
       inputSnapshot: {
         description: args.description.trim(),
-        vibeHints: args.vibeHints,
         petName: args.petName,
         petSpecies: args.petSpecies,
+        narratorId: args.narratorId,
+        generationPlan,
+        advancedOverrides: args.advancedOverrides,
+        vibeHints: args.vibeHints,
       },
       attempt: 0,
       createdAt: now,
@@ -98,7 +126,7 @@ export const startMemoryGeneration = mutation({
       jobId,
       ownerUserId: user._id,
       type: 'queued',
-      message: 'Memory generation queued.',
+      message: `Memory generation queued with ${generationPlan.narratorSnapshot.name}.`,
       createdAt: now,
     })
 
