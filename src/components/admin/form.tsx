@@ -1,12 +1,15 @@
 import type { ReactNode } from 'react'
+import type {
+  CatalogStatus,
+  ModerationStatus,
+  NarratorStatus,
+} from '#/lib/adminCatalogUi'
 import {
   CATALOG_STATUS_TAX,
   MODERATION_STATUS_TAX,
   NARRATOR_STATUS_TAX,
-  type CatalogStatus,
-  type ModerationStatus,
-  type NarratorStatus,
 } from '#/lib/adminCatalogUi'
+
 import { MonoLabel } from './jobs/primitives'
 
 export function CatalogStatusChip({ status }: { status: CatalogStatus }) {

@@ -66,7 +66,7 @@ export const traitUsage = query({
     for (const narrator of narrators) {
       for (const traitId of narrator.traitIds) {
         const key = traitId as string
-        if (!usage[key]) usage[key] = []
+        usage[key] ??= []
         usage[key].push(narrator.name)
       }
     }

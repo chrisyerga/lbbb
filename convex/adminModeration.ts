@@ -56,9 +56,10 @@ export const queueList = query({
           .query('moderationEvents')
           .withIndex('by_post', (q) => q.eq('postId', post._id))
           .collect()
-          .then((events) =>
-            events.sort((a, b) => b.createdAt - a.createdAt)[0],
-          ),
+          .then((events) => {
+            const sorted = events.sort((a, b) => b.createdAt - a.createdAt)
+            return sorted.at(0) ?? null
+          })
       ])
 
       items.push({
@@ -83,9 +84,10 @@ export const queueList = query({
           .query('moderationEvents')
           .withIndex('by_asset', (q) => q.eq('assetId', asset._id))
           .collect()
-          .then((events) =>
-            events.sort((a, b) => b.createdAt - a.createdAt)[0],
-          ),
+          .then((events) => {
+            const sorted = events.sort((a, b) => b.createdAt - a.createdAt)
+            return sorted.at(0) ?? null
+          })
       ])
 
       items.push({

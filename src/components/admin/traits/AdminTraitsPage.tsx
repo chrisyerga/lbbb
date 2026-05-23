@@ -16,9 +16,10 @@ import {
 import { MonoLabel } from '#/components/admin/jobs/primitives'
 import {
   TRAIT_CATEGORIES,
-  slugify,
-  type TraitCategory,
+  slugify
 } from '#/lib/adminCatalogUi'
+
+import type { TraitCategory } from '#/lib/adminCatalogUi'
 
 type TraitDoc = Doc<'narratorTraits'>
 
@@ -80,7 +81,12 @@ export function AdminTraitsPage({
     return map
   }, [traits])
 
-  const effectiveId = selectedTraitId ?? filtered[0]?._id ?? null
+  if (!selectedTraitId) {
+    console.log('selectedTraitId is null, setting to first filtered trait. how dafuq')
+    const first = filtered.at(0)
+    if (first) selectedTraitId = first._id
+  }
+  const effectiveId = selectedTraitId;
 
   useEffect(() => {
     if (isNew) return
@@ -278,7 +284,7 @@ export function AdminTraitsPage({
                       value: c.id as TraitCategory,
                       label: c.label,
                     }))}
-                    onChange={(category) => setDraft({ ...draft, category })}
+                    onChange={(selectedCategory) => setDraft({ ...draft, category: selectedCategory })}
                   />
                 </AdminField>
                 <AdminField label="Sort order">

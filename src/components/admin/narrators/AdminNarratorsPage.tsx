@@ -20,9 +20,9 @@ import {
   artStyleColor,
   hashColor,
   narratorInitials,
-  slugify,
-  type NarratorStatus,
+  slugify
 } from '#/lib/adminCatalogUi'
+import type { NarratorStatus } from '#/lib/adminCatalogUi'
 import { relTime } from '#/lib/adminJobsUi'
 
 type NarratorDoc = Doc<'narrators'>
@@ -111,7 +111,12 @@ export function AdminNarratorsPage({
     return c
   }, [narrators])
 
-  const effectiveId = selectedNarratorId ?? filtered[0]?._id ?? null
+  if (!selectedNarratorId) {
+    console.log('selectedNarratorId is null, setting to first filtered narrator. how dafuq')
+    const first = filtered.at(0)
+    if (first) selectedNarratorId = first._id
+  }
+  const effectiveId = selectedNarratorId
 
   useEffect(() => {
     if (isNew || !defaultArtStyleId) return

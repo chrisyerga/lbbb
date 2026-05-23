@@ -12,8 +12,7 @@ import {
   ModerationStatusChip,
 } from '#/components/admin/form'
 import { MonoLabel } from '#/components/admin/jobs/primitives'
-import { MODERATION_STATUS_TAX } from '#/lib/adminCatalogUi'
-import { hashColor, narratorInitials } from '#/lib/adminCatalogUi'
+import { hashColor, narratorInitials, MODERATION_STATUS_TAX } from '#/lib/adminCatalogUi'
 import { relTime } from '#/lib/adminJobsUi'
 
 type ModFilter = 'all' | 'pending' | 'flagged'
