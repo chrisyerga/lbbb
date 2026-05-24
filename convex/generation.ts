@@ -455,6 +455,7 @@ export const runMemoryGeneration = action({
         textResult,
         petName: input.petName,
         memoryDescription: input.description,
+        castSnapshot: input.castSnapshot ?? [],
       })
 
       await finishGeneration(ctx, {

@@ -129,6 +129,27 @@ export default defineSchema({
     .index('by_owner', ['ownerUserId'])
     .index('by_owner_name', ['ownerUserId', 'name']),
 
+  castMembers: defineTable({
+    ownerUserId: v.id('users'),
+    linkedPetId: v.optional(v.id('pets')),
+    name: v.string(),
+    aliases: v.array(v.string()),
+    kind: v.union(v.literal('pet'), v.literal('person'), v.literal('animal')),
+    relationship: v.optional(v.string()),
+    species: v.optional(v.string()),
+    breed: v.optional(v.string()),
+    visualDescription: v.string(),
+    referenceAssetIds: v.array(v.id('assets')),
+    avatarAssetId: v.optional(v.id('assets')),
+    sortOrder: v.number(),
+    status: v.union(v.literal('active'), v.literal('archived')),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_owner', ['ownerUserId'])
+    .index('by_owner_status', ['ownerUserId', 'status'])
+    .index('by_linked_pet', ['linkedPetId']),
+
   petBlogs: defineTable({
     ownerUserId: v.id('users'),
     petId: v.id('pets'),
@@ -174,10 +195,12 @@ export default defineSchema({
   assets: defineTable({
     ownerUserId: v.id('users'),
     petId: v.optional(v.id('pets')),
+    castMemberId: v.optional(v.id('castMembers')),
     kind: v.union(
       v.literal('uploaded_photo'),
       v.literal('generated_image'),
       v.literal('og_image'),
+      v.literal('reference_photo'),
     ),
     storageProvider: v.union(v.literal('convex'), v.literal('do_spaces')),
     storageId: v.optional(v.id('_storage')),

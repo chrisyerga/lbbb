@@ -2,6 +2,8 @@ import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 import { requireStaff } from './lib/requireAccount'
 import { resolveGenerationPlan } from './lib/generationPlan'
+import { resolveCastSnapshot } from './lib/castContext'
+import { syncCastMemberFromPet } from './lib/castSync'
 import { assertCanCreateGenerationJob } from './lib/quotaEnforcement'
 import { requireUser } from './lib/requireUser'
 
@@ -68,11 +70,23 @@ export const startMemoryGeneration = mutation({
       throw new Error('Memory does not belong to this pet')
     }
 
+    const pet = await ctx.db.get(args.petId)
+    if (pet && pet.deletedAt === undefined) {
+      await syncCastMemberFromPet(ctx, pet)
+    }
+
+    const castSnapshot = await resolveCastSnapshot(ctx, {
+      ownerUserId: user._id,
+      subjectPetId: args.petId,
+      memoryDescription: args.description,
+    })
+
     const generationPlan = await resolveGenerationPlan(ctx, {
       narratorId: args.narratorId,
       memoryDescription: args.description,
       petName: args.petName,
       petSpecies: args.petSpecies,
+      castSnapshot,
     })
 
     const now = Date.now()
@@ -93,6 +107,7 @@ export const startMemoryGeneration = mutation({
         petSpecies: args.petSpecies,
         narratorId: args.narratorId,
         generationPlan,
+        castSnapshot,
       },
       attempt: 0,
       createdAt: now,

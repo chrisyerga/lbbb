@@ -1,6 +1,10 @@
 import type { GenericQueryCtx } from 'convex/server'
 import type { DataModel, Doc, Id } from '../_generated/dataModel'
 import {
+  buildCastBlock,
+  buildCastVisualSuffix,
+} from './castContext'
+import {
   imagePromptVariants,
   resolveBaseImagePrompt,
 } from './imagePrompt'
@@ -8,7 +12,11 @@ import {
   artStyleSnapshotFromDoc,
   narratorSnapshotFromDoc,
 } from './narratorTypes'
-import type { GenerationPlan, TextParameters } from './narratorTypes'
+import type {
+  CastSnapshotEntry,
+  GenerationPlan,
+  TextParameters,
+} from './narratorTypes'
 
 type Ctx = GenericQueryCtx<DataModel>
 
@@ -18,6 +26,7 @@ const DEFAULT_SYSTEM_PROMPT =
 const DEFAULT_USER_TEMPLATE = [
   'Pet: {{petName}}',
   'Memory: {{memoryDescription}}',
+  '{{castBlock}}',
   '{{personaBlock}}',
   '{{moodBlock}}',
   'Write a public blog post of about {{wordTarget}} words.',
@@ -112,6 +121,7 @@ export async function resolveGenerationPlan(
     memoryDescription: string
     petName: string
     petSpecies?: string
+    castSnapshot?: Array<CastSnapshotEntry>
   },
 ): Promise<GenerationPlan> {
   const { narrator, artStyle, traits, promptVersion } =
@@ -133,10 +143,13 @@ export async function resolveGenerationPlan(
     .filter(Boolean)
     .join('\n\n')
 
+  const castBlock = buildCastBlock(args.castSnapshot ?? [])
+
   const userTemplate = promptVersion?.userPromptTemplate ?? DEFAULT_USER_TEMPLATE
   const userPrompt = interpolateTemplate(userTemplate, {
     petName: `${args.petName}${args.petSpecies ? ` (${args.petSpecies})` : ''}`,
     memoryDescription: args.memoryDescription.trim(),
+    castBlock: castBlock ? `${castBlock}\n` : '',
     personaBlock,
     moodBlock: moodBlock(moodHints),
     wordTarget: String(wordTarget),
@@ -196,6 +209,7 @@ export function buildImagePromptsFromPlan(args: {
   petName: string
   memoryDescription: string
   moodHints?: Array<string>
+  castSnapshot?: Array<CastSnapshotEntry>
 }) {
   const artStyleLabel = args.plan.image.artStyle.name
   const baseImagePrompt = resolveBaseImagePrompt({
@@ -205,8 +219,11 @@ export function buildImagePromptsFromPlan(args: {
     moodHints: args.moodHints,
   })
 
+  const castSuffix = buildCastVisualSuffix(args.castSnapshot ?? [])
+  const withCast = castSuffix ? `${baseImagePrompt} ${castSuffix}` : baseImagePrompt
+
   const suffix = args.plan.image.promptSuffix
-  const styledBase = suffix ? `${baseImagePrompt} ${suffix}` : baseImagePrompt
+  const styledBase = suffix ? `${withCast} ${suffix}` : withCast
 
   return imagePromptVariants(
     styledBase,

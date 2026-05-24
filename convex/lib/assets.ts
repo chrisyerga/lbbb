@@ -51,6 +51,21 @@ export async function requirePetOwner(
   return pet
 }
 
+export async function requireCastMemberOwner(
+  ctx: Ctx,
+  castMemberId: Id<'castMembers'>,
+  userId: Id<'users'>,
+): Promise<Doc<'castMembers'>> {
+  const member = await ctx.db.get(castMemberId)
+  if (!member || member.status !== 'active') {
+    throw new Error('Cast member not found')
+  }
+  if (member.ownerUserId !== userId) {
+    throw new Error('Not allowed')
+  }
+  return member
+}
+
 export async function requirePetAsset(
   ctx: Ctx,
   assetId: Id<'assets'>,

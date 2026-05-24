@@ -1101,3 +1101,149 @@ body.landing-v1-active {
   }
 }
 
+.landing-v1 .memory-cast-note {
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.landing-v1 .cast-layout {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+}
+
+.landing-v1 .cast-list {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.landing-v1 .cast-card {
+  display: flex;
+  gap: 14px;
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #14100e;
+  border-radius: 16px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease;
+}
+
+.landing-v1 .cast-card:hover,
+.landing-v1 .cast-card--selected {
+  box-shadow: 4px 4px 0 #14100e;
+}
+
+.landing-v1 .cast-card-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  border: 2px solid #14100e;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.landing-v1 .cast-card-avatar--empty {
+  background: var(--landing-cream);
+}
+
+.landing-v1 .cast-card-body {
+  min-width: 0;
+}
+
+.landing-v1 .cast-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.landing-v1 .cast-card-name {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.landing-v1 .cast-kind-badge {
+  font-size: 11px;
+  font-family: var(--font-mono, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid #14100e;
+}
+
+.landing-v1 .cast-kind-badge--pet {
+  background: rgba(242, 160, 46, 0.25);
+}
+
+.landing-v1 .cast-kind-badge--person {
+  background: rgba(91, 141, 239, 0.2);
+}
+
+.landing-v1 .cast-kind-badge--animal {
+  background: rgba(120, 196, 107, 0.25);
+}
+
+.landing-v1 .cast-card-relationship,
+.landing-v1 .cast-card-sync {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.landing-v1 .cast-card-description {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.landing-v1 .cast-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 10px;
+}
+
+.landing-v1 .cast-photo-item {
+  display: grid;
+  gap: 6px;
+}
+
+.landing-v1 .cast-photo-thumb {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #14100e;
+}
+
+.landing-v1 .cast-photo-thumb--empty {
+  background: var(--landing-cream);
+}
+
+.landing-v1 .cast-photo-remove {
+  font-size: 11px;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+}
+
+.landing-v1 .cast-kind-picker {
+  min-width: 0;
+}
+
+@media (max-width: 960px) {
+  .landing-v1 .cast-layout {
+    grid-template-columns: 1fr;
+  }
+}
+

@@ -92,6 +92,13 @@ export default function Header() {
           >
             Pets
           </Link>
+          <Link
+            to="/app/cast"
+            className="nav-link"
+            activeProps={{ className: 'nav-link is-active' }}
+          >
+            Friends & family
+          </Link>
           {isStaff ? (
             <Link
               to="/app/admin"

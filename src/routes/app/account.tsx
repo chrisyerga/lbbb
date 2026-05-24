@@ -152,6 +152,10 @@ function AccountPage() {
             <Link to="/app/pets" className="font-semibold">
               Pets
             </Link>
+            . Manage people and pets in your stories on{' '}
+            <Link to="/app/cast" className="font-semibold">
+              Friends & family
+            </Link>
             .
           </p>
         </div>

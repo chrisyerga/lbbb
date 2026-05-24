@@ -3,6 +3,7 @@ import { v } from 'convex/values'
 import type { GenericQueryCtx } from 'convex/server'
 import type { DataModel, Id } from './_generated/dataModel'
 import { requirePetAsset, resolveAssetUrl } from './lib/assets'
+import { syncCastMemberFromPet } from './lib/castSync'
 import { parsePetId } from './lib/ids'
 import { assertCanCreatePet } from './lib/quotaEnforcement'
 import { optionalUser, requireUser } from './lib/requireUser'
@@ -209,6 +210,11 @@ export const create = mutation({
       createdAt: now,
     })
 
+    const pet = await ctx.db.get(petId)
+    if (pet) {
+      await syncCastMemberFromPet(ctx, pet)
+    }
+
     return { petId, slug }
   },
 })
@@ -241,6 +247,11 @@ export const update = mutation({
     if (args.bio !== undefined) patch.bio = args.bio.trim() || undefined
 
     await ctx.db.patch(args.petId, patch)
+
+    const updatedPet = await ctx.db.get(args.petId)
+    if (updatedPet) {
+      await syncCastMemberFromPet(ctx, updatedPet)
+    }
 
     if (args.name !== undefined) {
       const blog = await ctx.db
@@ -316,6 +327,11 @@ export const setAvatar = mutation({
       avatarAssetId: args.assetId,
       updatedAt: Date.now(),
     })
+
+    const updatedPet = await ctx.db.get(args.petId)
+    if (updatedPet) {
+      await syncCastMemberFromPet(ctx, updatedPet)
+    }
     return null
   },
 })
@@ -338,6 +354,11 @@ export const clearAvatar = mutation({
       avatarAssetId: undefined,
       updatedAt: Date.now(),
     })
+
+    const updatedPet = await ctx.db.get(args.petId)
+    if (updatedPet) {
+      await syncCastMemberFromPet(ctx, updatedPet)
+    }
     return null
   },
 })

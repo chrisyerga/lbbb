@@ -469,6 +469,10 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
   const runGeneration = useAction(api.generation.runMemoryGeneration)
 
   const [text, setText] = useState('')
+  const castMatches = useQuery(
+    api.castMembers.previewMatches,
+    text.trim().length > 0 ? { memoryDescription: text } : 'skip',
+  )
   const [dictating, setDictating] = useState(false)
   const [selectedNarratorId, setSelectedNarratorId] =
     useState<Id<'narrators'> | null>(null)
@@ -613,6 +617,19 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
               pendingPhotos={pendingPhotos}
               onRemovePhoto={removePendingPhoto}
             />
+
+            <p className="memory-cast-note">
+              {castMatches && castMatches.length > 0 ? (
+                <>
+                  {castMatches.map((match) => match.name).join(' and ')} may
+                  appear in your art.{' '}
+                </>
+              ) : null}
+              <Link to="/app/cast" className="font-semibold">
+                Manage friends & family
+              </Link>{' '}
+              so named people and pets match your illustrations.
+            </p>
 
             {error ? <p className="alert-error mt-4 px-3 py-2">{error}</p> : null}
 

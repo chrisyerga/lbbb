@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AppRouteRouteImport } from './routes/app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppCastRouteImport } from './routes/app/cast'
 import { Route as AppAccountRouteImport } from './routes/app/account'
 import { Route as AppAdminRouteRouteImport } from './routes/app/admin/route'
 import { Route as PPetSlugIndexRouteImport } from './routes/p/$petSlug/index'
@@ -59,6 +60,11 @@ const IndexRoute = IndexRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppCastRoute = AppCastRouteImport.update({
+  id: '/cast',
+  path: '/cast',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppAccountRoute = AppAccountRouteImport.update({
@@ -176,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/app/admin': typeof AppAdminRouteRouteWithChildren
   '/app/account': typeof AppAccountRoute
+  '/app/cast': typeof AppCastRoute
   '/app/': typeof AppIndexRoute
   '/app/admin/art-styles': typeof AppAdminArtStylesRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
@@ -202,6 +209,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/app/account': typeof AppAccountRoute
+  '/app/cast': typeof AppCastRoute
   '/app': typeof AppIndexRoute
   '/app/admin/art-styles': typeof AppAdminArtStylesRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
@@ -229,6 +237,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/app/admin': typeof AppAdminRouteRouteWithChildren
   '/app/account': typeof AppAccountRoute
+  '/app/cast': typeof AppCastRoute
   '/app/': typeof AppIndexRoute
   '/app/admin/art-styles': typeof AppAdminArtStylesRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
@@ -259,6 +268,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/app/admin'
     | '/app/account'
+    | '/app/cast'
     | '/app/'
     | '/app/admin/art-styles'
     | '/app/admin/costs'
@@ -285,6 +295,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/login'
     | '/app/account'
+    | '/app/cast'
     | '/app'
     | '/app/admin/art-styles'
     | '/app/admin/costs'
@@ -311,6 +322,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/app/admin'
     | '/app/account'
+    | '/app/cast'
     | '/app/'
     | '/app/admin/art-styles'
     | '/app/admin/costs'
@@ -379,6 +391,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/app/cast': {
+      id: '/app/cast'
+      path: '/cast'
+      fullPath: '/app/cast'
+      preLoaderRoute: typeof AppCastRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/app/account': {
@@ -588,6 +607,7 @@ const AppPetsPetIdRouteWithChildren = AppPetsPetIdRoute._addFileChildren(
 interface AppRouteRouteChildren {
   AppAdminRouteRoute: typeof AppAdminRouteRouteWithChildren
   AppAccountRoute: typeof AppAccountRoute
+  AppCastRoute: typeof AppCastRoute
   AppIndexRoute: typeof AppIndexRoute
   AppGenerationsJobIdRoute: typeof AppGenerationsJobIdRoute
   AppPetsPetIdRoute: typeof AppPetsPetIdRouteWithChildren
@@ -598,6 +618,7 @@ interface AppRouteRouteChildren {
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppAdminRouteRoute: AppAdminRouteRouteWithChildren,
   AppAccountRoute: AppAccountRoute,
+  AppCastRoute: AppCastRoute,
   AppIndexRoute: AppIndexRoute,
   AppGenerationsJobIdRoute: AppGenerationsJobIdRoute,
   AppPetsPetIdRoute: AppPetsPetIdRouteWithChildren,

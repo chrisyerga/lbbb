@@ -65,12 +65,22 @@ export type GenerationPlan = {
   speech?: SpeechProfile
 }
 
+export type CastSnapshotEntry = {
+  castMemberId: Id<'castMembers'>
+  name: string
+  kind: 'pet' | 'person' | 'animal'
+  visualDescription: string
+  matchedInMemory: boolean
+  referenceAssetIds: Array<Id<'assets'>>
+}
+
 export type MemoryJobInputSnapshot = {
   description: string
   petName: string
   petSpecies?: string
   narratorId: Id<'narrators'>
   generationPlan: GenerationPlan
+  castSnapshot?: Array<CastSnapshotEntry>
 }
 
 export type CatalogNarrator = {
