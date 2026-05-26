@@ -33,7 +33,7 @@ function GenerationPage() {
     )
   }
 
-  const { job, events, draft } = data
+  const { job, events, draft, imageUrls } = data
   const statusLabel = job.status.replace(/_/g, ' ')
 
   return (
@@ -55,7 +55,21 @@ function GenerationPage() {
             <div className="whitespace-pre-wrap text-[var(--text-primary)]">
               {draft.bodyMarkdown}
             </div>
-            {draft.imageAssetIds.length > 0 ? (
+            {imageUrls.filter(Boolean).length > 0 ? (
+              <div className="grid grid-cols-2 gap-3">
+                {imageUrls.map(
+                  (url, i) =>
+                    url ? (
+                      <img
+                        key={i}
+                        src={url}
+                        alt=""
+                        className="aspect-square w-full rounded object-cover"
+                      />
+                    ) : null,
+                )}
+              </div>
+            ) : draft.imageAssetIds.length > 0 ? (
               <p className="section-label m-0">
                 {draft.imageAssetIds.length} sample images generated
               </p>

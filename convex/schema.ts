@@ -238,6 +238,18 @@ export default defineSchema({
     inputSnapshot: v.optional(v.any()),
     attempt: v.number(),
     error: v.optional(v.string()),
+    streamId: v.optional(v.string()),
+    streamBody: v.optional(v.string()),
+    streamStatus: v.optional(
+      v.union(
+        v.literal('idle'),
+        v.literal('streaming_text'),
+        v.literal('text_done'),
+        v.literal('generating_images'),
+        v.literal('done'),
+        v.literal('failed'),
+      ),
+    ),
     startedAt: v.optional(v.number()),
     completedAt: v.optional(v.number()),
     createdAt: v.number(),
@@ -246,7 +258,8 @@ export default defineSchema({
     .index('by_owner', ['ownerUserId'])
     .index('by_pet', ['petId'])
     .index('by_status', ['status'])
-    .index('by_created', ['createdAt']),
+    .index('by_created', ['createdAt'])
+    .index('by_streamId', ['streamId']),
 
   generationEvents: defineTable({
     jobId: v.id('generationJobs'),
@@ -314,6 +327,7 @@ export default defineSchema({
   })
     .index('by_pet', ['petId'])
     .index('by_pet_slug', ['petId', 'slug'])
+    .index('by_job', ['jobId'])
     .index('by_status', ['status'])
     .index('by_owner', ['ownerUserId'])
     .index('by_narrator', ['narratorId']),

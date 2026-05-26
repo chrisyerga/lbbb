@@ -1,7 +1,7 @@
 'use client'
 
 import { Link, useNavigate } from '@tanstack/react-router'
-import { useAction, useMutation, useQuery } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
 import { useEffect, useMemo, useState } from 'react'
 import { PhotoUpload } from '#/components/PhotoUpload'
 import { ArtTile } from '#/components/landing/primitives/ArtTile'
@@ -24,6 +24,7 @@ import { PetNotFound } from '#/components/NotFoundPanel'
 import { api } from '#convex/_generated/api'
 import type { Id } from '#convex/_generated/dataModel'
 import { parsePetId } from '#/lib/convexIds'
+import { useMemoryGenerationStream } from '#/hooks/useMemoryGenerationStream'
 
 type PendingPhoto = {
   assetId: Id<'assets'>
@@ -130,6 +131,7 @@ function Composer({
   onPhotoUploaded,
   pendingPhotos,
   onRemovePhoto,
+  readOnly,
 }: {
   value: string
   onChange: (value: string) => void
@@ -139,6 +141,7 @@ function Composer({
   onPhotoUploaded: (assetId: Id<'assets'>, url: string | null) => void
   pendingPhotos: Array<PendingPhoto>
   onRemovePhoto: (assetId: Id<'assets'>) => void
+  readOnly?: boolean
 }) {
   const wordCount = value.trim() ? value.trim().split(/\s+/).length : 0
 
@@ -166,6 +169,8 @@ function Composer({
           placeholder="Today Zoe and I walked to the bakery and she made a new friend — a golden named Biscuit..."
           className="memory-composer-input"
           rows={8}
+          readOnly={readOnly}
+          disabled={readOnly}
         />
 
         <p className="memory-composer-marginalia">just dump it →</p>
@@ -293,6 +298,8 @@ function PreviewCard({
   imageUrls,
   narratorName,
   artStyleName,
+  isGenerating,
+  statusHint,
 }: {
   blogSlug: string | null
   description: string
@@ -301,6 +308,8 @@ function PreviewCard({
   imageUrls: Array<string | null>
   narratorName?: string | null
   artStyleName?: string | null
+  isGenerating?: boolean
+  statusHint?: string | null
 }) {
   const palette = getLandingPalette(DEFAULT_PALETTE_KEY)
   const previewMeta =
@@ -309,10 +318,12 @@ function PreviewCard({
       : narratorName ?? 'Pick a narrator'
   const previewTitle =
     generatedTitle ||
-    (description.trim()
-      ? description.trim().slice(0, 48) +
-        (description.trim().length > 48 ? '…' : '')
-      : 'Your post title')
+    (isGenerating
+      ? 'Writing your post…'
+      : description.trim()
+        ? description.trim().slice(0, 48) +
+          (description.trim().length > 48 ? '…' : '')
+        : 'Your post title')
   const previewParagraphs = generatedBody
     ? generatedBody.split(/\n\n+/).filter(Boolean).slice(0, 3)
     : description.trim()
@@ -343,7 +354,8 @@ function PreviewCard({
             live preview
           </span>
           <span className="memory-preview-url">
-            {blogSlug ? `cafezoe.app/p/${blogSlug}/draft` : 'draft preview'}
+            {statusHint ??
+              (blogSlug ? `cafezoe.app/p/${blogSlug}/draft` : 'draft preview')}
           </span>
         </div>
 
@@ -377,7 +389,11 @@ function PreviewCard({
         </div>
       </div>
 
-      <p className="memory-preview-note">← updates live as you write</p>
+      <p className="memory-preview-note">
+        {isGenerating
+          ? '← generating your post'
+          : '← updates live as you write'}
+      </p>
     </div>
   )
 }
@@ -466,7 +482,23 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
 
   const createDraft = useMutation(api.memories.createDraft)
   const startGeneration = useMutation(api.jobs.startMemoryGeneration)
-  const runGeneration = useAction(api.generation.runMemoryGeneration)
+  const attachStream = useMutation(api.memoryGenerationStream.attachStreamToJob)
+
+  const [activeJobId, setActiveJobId] = useState<Id<'generationJobs'> | null>(
+    null,
+  )
+  const [streamId, setStreamId] = useState<string | null>(null)
+  const [streamDriver, setStreamDriver] = useState(false)
+
+  const generationPreview = useQuery(
+    api.jobs.getMineById,
+    activeJobId ? { jobId: activeJobId } : 'skip',
+  )
+
+  const stream = useMemoryGenerationStream({
+    streamId,
+    driven: streamDriver,
+  })
 
   const [text, setText] = useState('')
   const castMatches = useQuery(
@@ -490,6 +522,12 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
     () => narrators?.find((n) => n._id === selectedNarratorId) ?? null,
     [narrators, selectedNarratorId],
   )
+
+  useEffect(() => {
+    if (generationPreview?.job.error) {
+      setError(generationPreview.job.error)
+    }
+  }, [generationPreview?.job.error])
 
   function onPhotoUploaded(assetId: Id<'assets'>, url: string | null) {
     setPendingPhotos((prev) => [...prev, { assetId, url }])
@@ -542,16 +580,15 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
         petSpecies: petData.pet.species,
       })
 
-      void runGeneration({ jobId }).catch(() => {
-        // Job page will surface failure state.
-      })
-
-      await navigate({
-        to: '/app/generations/$jobId',
-        params: { jobId },
-      })
+      const { streamId: newStreamId } = await attachStream({ jobId })
+      setActiveJobId(jobId)
+      setStreamId(newStreamId)
+      setStreamDriver(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Generation failed')
+      setActiveJobId(null)
+      setStreamId(null)
+      setStreamDriver(false)
     } finally {
       setSubmitting(false)
     }
@@ -575,8 +612,46 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
 
   const { pet, blog, avatarUrl } = petData
   const rendersRemaining = usage?.rendersRemaining
+  const isGenerating =
+    submitting ||
+    (activeJobId !== null &&
+      (generationPreview === undefined ||
+        (generationPreview !== null &&
+          generationPreview.job.status !== 'awaiting_review' &&
+          generationPreview.job.status !== 'failed')))
+
+  const previewStatusHint = (() => {
+    if (!activeJobId || !generationPreview) return null
+    const status = generationPreview.streamStatus
+    if (status === 'streaming_text' || stream.status === 'streaming') {
+      return 'Writing…'
+    }
+    if (status === 'text_done' || status === 'generating_images') {
+      const count = generationPreview.imageUrls.filter(Boolean).length
+      return `Painting sample art (${count}/4)…`
+    }
+    if (generationPreview.job.status === 'awaiting_review') {
+      return 'Draft ready'
+    }
+    if (generationPreview.job.error) return 'Generation failed'
+    return null
+  })()
+
+  const previewBody =
+    stream.text &&
+    (stream.status === 'streaming' ||
+      (stream.status === 'pending' && stream.text.length > 0))
+      ? stream.text
+      : (generationPreview?.draft?.bodyMarkdown ?? null)
+
+  const previewTitle = generationPreview?.draft?.title ?? null
+  const previewImages = generationPreview?.imageUrls ?? []
+
   const canGenerate =
-    text.trim().length > 0 && Boolean(selectedNarratorId) && !submitting
+    text.trim().length > 0 &&
+    Boolean(selectedNarratorId) &&
+    !submitting &&
+    !isGenerating
 
   return (
     <div className="create-memory-page">
@@ -616,6 +691,7 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
               onPhotoUploaded={onPhotoUploaded}
               pendingPhotos={pendingPhotos}
               onRemovePhoto={removePendingPhoto}
+              readOnly={isGenerating}
             />
 
             <p className="memory-cast-note">
@@ -681,11 +757,13 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
             <PreviewCard
               blogSlug={blog?.slug ?? null}
               description={text}
-              generatedTitle={null}
-              generatedBody={null}
-              imageUrls={[]}
+              generatedTitle={previewTitle}
+              generatedBody={previewBody ?? null}
+              imageUrls={previewImages}
               narratorName={selectedNarrator?.name}
               artStyleName={selectedNarrator?.defaultArtStyle.name}
+              isGenerating={isGenerating}
+              statusHint={previewStatusHint}
             />
           </div>
         </div>

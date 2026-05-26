@@ -27,17 +27,20 @@ import type * as lib_generationPlan from "../lib/generationPlan.js";
 import type * as lib_ids from "../lib/ids.js";
 import type * as lib_imagePrompt from "../lib/imagePrompt.js";
 import type * as lib_narratorTypes from "../lib/narratorTypes.js";
+import type * as lib_openaiImage from "../lib/openaiImage.js";
 import type * as lib_quotaEnforcement from "../lib/quotaEnforcement.js";
 import type * as lib_requireAccount from "../lib/requireAccount.js";
 import type * as lib_requireUser from "../lib/requireUser.js";
 import type * as lib_userAccount from "../lib/userAccount.js";
 import type * as memories from "../memories.js";
+import type * as memoryGenerationStream from "../memoryGenerationStream.js";
 import type * as narrators from "../narrators.js";
 import type * as pets from "../pets.js";
 import type * as profiles from "../profiles.js";
 import type * as prompts from "../prompts.js";
 import type * as quotas from "../quotas.js";
 import type * as seedNarrators from "../seedNarrators.js";
+import type * as test_helpers_generation from "../test/helpers/generation.js";
 
 import type {
   ApiFromModules,
@@ -65,17 +68,20 @@ declare const fullApi: ApiFromModules<{
   "lib/ids": typeof lib_ids;
   "lib/imagePrompt": typeof lib_imagePrompt;
   "lib/narratorTypes": typeof lib_narratorTypes;
+  "lib/openaiImage": typeof lib_openaiImage;
   "lib/quotaEnforcement": typeof lib_quotaEnforcement;
   "lib/requireAccount": typeof lib_requireAccount;
   "lib/requireUser": typeof lib_requireUser;
   "lib/userAccount": typeof lib_userAccount;
   memories: typeof memories;
+  memoryGenerationStream: typeof memoryGenerationStream;
   narrators: typeof narrators;
   pets: typeof pets;
   profiles: typeof profiles;
   prompts: typeof prompts;
   quotas: typeof quotas;
   seedNarrators: typeof seedNarrators;
+  "test/helpers/generation": typeof test_helpers_generation;
 }>;
 
 /**
@@ -104,4 +110,6 @@ export declare const internal: FilterApi<
   FunctionReference<any, "internal">
 >;
 
-export declare const components: {};
+export declare const components: {
+  persistentTextStreaming: import("@convex-dev/persistent-text-streaming/_generated/component.js").ComponentApi<"persistentTextStreaming">;
+};

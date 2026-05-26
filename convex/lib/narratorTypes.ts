@@ -51,6 +51,8 @@ export type GenerationPlan = {
   text: {
     systemPrompt: string
     userPrompt: string
+    streamUserPrompt: string
+    metadataUserPrompt: string
     model: string
     parameters: TextParameters
     wordTarget: number
@@ -74,6 +76,14 @@ export type CastSnapshotEntry = {
   referenceAssetIds: Array<Id<'assets'>>
 }
 
+export type MemoryJobPromptVars = {
+  petName: string
+  memoryDescription: string
+  castBlock: string
+  personaBlock: string
+  moodBlock: string
+}
+
 export type MemoryJobInputSnapshot = {
   description: string
   petName: string
@@ -81,6 +91,7 @@ export type MemoryJobInputSnapshot = {
   narratorId: Id<'narrators'>
   generationPlan: GenerationPlan
   castSnapshot?: Array<CastSnapshotEntry>
+  promptVars: MemoryJobPromptVars
 }
 
 export type CatalogNarrator = {

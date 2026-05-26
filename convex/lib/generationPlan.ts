@@ -34,6 +34,25 @@ const DEFAULT_USER_TEMPLATE = [
   'imagePrompt must be a vivid single-scene description for an illustration of this memory.',
 ].join('\n')
 
+const DEFAULT_STREAM_USER_TEMPLATE = [
+  'Pet: {{petName}}',
+  'Memory: {{memoryDescription}}',
+  '{{castBlock}}',
+  '{{personaBlock}}',
+  '{{moodBlock}}',
+  'Write a public blog post of about {{wordTarget}} words in Markdown.',
+  'Output only the post body in Markdown (headings and paragraphs). Do not include JSON or a title line.',
+].join('\n')
+
+const DEFAULT_METADATA_USER_TEMPLATE = [
+  'Pet: {{petName}}',
+  'Memory: {{memoryDescription}}',
+  'Blog post body (Markdown):',
+  '{{bodyMarkdown}}',
+  'Return JSON with exactly these keys: title, excerpt, tags (string array), imagePrompt.',
+  'imagePrompt must be a vivid single-scene description for an illustration of this memory.',
+].join('\n')
+
 function interpolateTemplate(
   template: string,
   vars: Record<string, string>,
@@ -145,15 +164,38 @@ export async function resolveGenerationPlan(
 
   const castBlock = buildCastBlock(args.castSnapshot ?? [])
 
-  const userTemplate = promptVersion?.userPromptTemplate ?? DEFAULT_USER_TEMPLATE
-  const userPrompt = interpolateTemplate(userTemplate, {
+  console.log('castBlock', castBlock)
+  console.log('personaBlock', personaBlock)
+  console.log('moodBlock', moodBlock(moodHints))
+  console.log('wordTarget', wordTarget)
+  console.log('promptVersion?.userPromptTemplate', promptVersion?.userPromptTemplate)
+  console.log('DEFAULT_USER_TEMPLATE', DEFAULT_USER_TEMPLATE)
+  console.log('args.petName', args.petName)
+  console.log('args.petSpecies', args.petSpecies)
+  console.log('args.memoryDescription', args.memoryDescription)
+  console.log('args.castSnapshot', args.castSnapshot)
+  console.log('narrator.textParameters', narrator.textParameters)
+  console.log('promptVersion.parameters', promptVersion?.parameters)
+  console.log('narrator.textModel', narrator.textModel)
+  const templateVars = {
     petName: `${args.petName}${args.petSpecies ? ` (${args.petSpecies})` : ''}`,
     memoryDescription: args.memoryDescription.trim(),
     castBlock: castBlock ? `${castBlock}\n` : '',
     personaBlock,
     moodBlock: moodBlock(moodHints),
     wordTarget: String(wordTarget),
-  })
+    bodyMarkdown: '',
+  }
+
+  const userTemplate = promptVersion?.userPromptTemplate ?? DEFAULT_USER_TEMPLATE
+  const userPrompt = interpolateTemplate(userTemplate, templateVars)
+  const streamUserPrompt = interpolateTemplate(
+    DEFAULT_STREAM_USER_TEMPLATE,
+    templateVars,
+  )
+  const metadataUserPrompt = DEFAULT_METADATA_USER_TEMPLATE
+
+  console.log('userPrompt', userPrompt)
 
   const textParameters: TextParameters = {
     temperature:
@@ -166,6 +208,9 @@ export async function resolveGenerationPlan(
 
   const imagePromptSuffix = resolveImagePromptSuffix(artStyle, narrator)
 
+  console.log('textParameters', textParameters)
+  console.log('imagePromptSuffix', imagePromptSuffix)
+
   return {
     narratorId: narrator._id,
     narratorSnapshot: narratorSnapshotFromDoc(narrator),
@@ -173,6 +218,8 @@ export async function resolveGenerationPlan(
     text: {
       systemPrompt,
       userPrompt,
+      streamUserPrompt,
+      metadataUserPrompt,
       model:
         narrator.textModel ??
         promptVersion?.model ??
@@ -197,6 +244,38 @@ export async function resolveGenerationPlan(
 
 export function buildTextPromptFromPlan(plan: GenerationPlan) {
   return `${plan.text.systemPrompt}\n\n${plan.text.userPrompt}`
+}
+
+export function buildStreamMessagesFromPlan(plan: GenerationPlan) {
+  return {
+    systemPrompt: plan.text.systemPrompt,
+    userPrompt: plan.text.streamUserPrompt,
+    model: plan.text.model,
+    parameters: plan.text.parameters,
+  }
+}
+
+export function buildMetadataPromptFromPlan(
+  plan: GenerationPlan,
+  vars: {
+    petName: string
+    memoryDescription: string
+    castBlock: string
+    personaBlock: string
+    moodBlock: string
+    bodyMarkdown: string
+  },
+) {
+  const userPrompt = interpolateTemplate(plan.text.metadataUserPrompt, {
+    petName: vars.petName,
+    memoryDescription: vars.memoryDescription,
+    castBlock: vars.castBlock ? `${vars.castBlock}\n` : '',
+    personaBlock: vars.personaBlock,
+    moodBlock: vars.moodBlock,
+    wordTarget: String(plan.text.wordTarget),
+    bodyMarkdown: vars.bodyMarkdown,
+  })
+  return `${plan.text.systemPrompt}\n\n${userPrompt}`
 }
 
 export function buildImagePromptsFromPlan(args: {

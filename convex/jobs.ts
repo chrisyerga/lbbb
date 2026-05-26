@@ -1,11 +1,17 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 import { requireStaff } from './lib/requireAccount'
-import { resolveGenerationPlan } from './lib/generationPlan'
+import {
+  composePersonaPrompt,
+  loadNarratorBundle,
+  resolveGenerationPlan,
+} from './lib/generationPlan'
+import { buildCastBlock } from './lib/castContext'
 import { resolveCastSnapshot } from './lib/castContext'
 import { syncCastMemberFromPet } from './lib/castSync'
 import { assertCanCreateGenerationJob } from './lib/quotaEnforcement'
 import { requireUser } from './lib/requireUser'
+import { resolveAssetUrl } from './lib/assets'
 
 export const createGenerationJob = mutation({
   args: {
@@ -89,6 +95,27 @@ export const startMemoryGeneration = mutation({
       castSnapshot,
     })
 
+    const { narrator, traits } = await loadNarratorBundle(ctx, args.narratorId)
+
+    const personaBlock = composePersonaPrompt({
+      traits,
+      specializationPrompt: narrator.specializationPrompt,
+      systemPromptAddon: narrator.systemPromptAddon,
+    })
+    const moodHints = narrator.defaultMoodHints ?? []
+    const moodBlock =
+      moodHints.length > 0
+        ? `Mood and scene tone: ${moodHints.filter(Boolean).join(', ')}`
+        : ''
+
+    const promptVars = {
+      petName: `${args.petName}${args.petSpecies ? ` (${args.petSpecies})` : ''}`,
+      memoryDescription: args.description.trim(),
+      castBlock: buildCastBlock(castSnapshot),
+      personaBlock,
+      moodBlock,
+    }
+
     const now = Date.now()
     const jobId = await ctx.db.insert('generationJobs', {
       ownerUserId: user._id,
@@ -108,7 +135,9 @@ export const startMemoryGeneration = mutation({
         narratorId: args.narratorId,
         generationPlan,
         castSnapshot,
+        promptVars,
       },
+      streamStatus: 'idle',
       attempt: 0,
       createdAt: now,
       updatedAt: now,
@@ -140,13 +169,30 @@ export const getMineById = query({
 
     events.sort((a, b) => a.createdAt - b.createdAt)
 
-    const post = await ctx.db
+    const draft = await ctx.db
       .query('generatedPosts')
-      .withIndex('by_pet', (q) => q.eq('petId', job.petId))
-      .collect()
-    const draft = post.find((p) => p.jobId === args.jobId) ?? null
+      .withIndex('by_job', (q) => q.eq('jobId', args.jobId))
+      .first()
 
-    return { job, events, draft }
+    const imageUrls = draft
+      ? await Promise.all(
+          draft.imageAssetIds.map(async (assetId) => {
+            const asset = await ctx.db.get(assetId)
+            if (!asset) return null
+            return await resolveAssetUrl(ctx, asset)
+          }),
+        )
+      : []
+
+    return {
+      job,
+      events,
+      draft,
+      imageUrls,
+      streamBody: job.streamBody ?? null,
+      streamStatus: job.streamStatus ?? null,
+      streamId: job.streamId ?? null,
+    }
   },
 })
 
