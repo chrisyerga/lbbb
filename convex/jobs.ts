@@ -6,8 +6,7 @@ import {
   loadNarratorBundle,
   resolveGenerationPlan,
 } from './lib/generationPlan'
-import { buildCastBlock } from './lib/castContext'
-import { resolveCastSnapshot } from './lib/castContext'
+import { buildCastBlock, resolveCastSnapshot } from './lib/castContext'
 import { syncCastMemberFromPet } from './lib/castSync'
 import { assertCanCreateGenerationJob } from './lib/quotaEnforcement'
 import { requireUser } from './lib/requireUser'

@@ -41,9 +41,9 @@ export function stubOpenAIFetch() {
       }
 
       if (url.includes('/v1/chat/completions')) {
-        const init = initArg as RequestInit | undefined
+        const init = initArg ?? {}
         const body =
-          typeof init?.body === 'string' ? JSON.parse(init.body) : {}
+          typeof init.body === 'string' ? JSON.parse(init.body) : {}
         if (body.stream) {
           const encoder = new TextEncoder()
           const chunks = ['## A busy afternoon\n\n', 'Mabel went full zoomies.']

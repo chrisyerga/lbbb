@@ -8,9 +8,9 @@ import {
 import { v } from 'convex/values'
 import { components, internal } from './_generated/api'
 import {
-  PersistentTextStreaming,
-  type StreamId,
+  PersistentTextStreaming
 } from '@convex-dev/persistent-text-streaming'
+import type { StreamId } from '@convex-dev/persistent-text-streaming'
 import { getAuthUserId } from '@convex-dev/auth/server'
 import {
   buildImagePromptsFromPlan,
@@ -382,9 +382,9 @@ export const runMemoryGenerationImages = internalAction({
       title: draft.title,
       excerpt: draft.excerpt ?? '',
       bodyMarkdown: draft.bodyMarkdown,
-      tags: (draft.outputSnapshot as { tags?: Array<string> })?.tags ?? [],
+      tags: (draft.outputSnapshot as { tags?: Array<string> }).tags ?? [],
       imagePrompt:
-        (draft.outputSnapshot as { imagePrompt?: string })?.imagePrompt ??
+        (draft.outputSnapshot as { imagePrompt?: string }).imagePrompt ??
         input.description,
     }
 
@@ -449,9 +449,10 @@ export const runMemoryGenerationImages = internalAction({
       })
     }
 
-    await ctx.runMutation(internal.generation.finalizeGenerationJob, {
+      await ctx.runMutation(internal.generation.finalizeGenerationJob, {
       jobId: args.jobId,
       imagePrompts,
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       baseImagePrompt: textResult.imagePrompt ?? input.description,
       imageCosts,
     })

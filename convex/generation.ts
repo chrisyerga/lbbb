@@ -624,6 +624,7 @@ export const runMemoryGeneration = action({
     })
     if (!job) throw new Error('Job not found')
     if (job.streamId) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
       return { jobId: args.jobId, status: job.status as Doc<'generationJobs'>['status'] }
     }
     if (!job.inputSnapshot) throw new Error('Job is missing input snapshot')
