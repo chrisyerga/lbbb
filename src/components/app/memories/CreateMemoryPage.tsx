@@ -482,7 +482,6 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
 
   const createDraft = useMutation(api.memories.createDraft)
   const startGeneration = useMutation(api.jobs.startMemoryGeneration)
-  const attachStream = useMutation(api.memoryGenerationStream.attachStreamToJob)
 
   const [activeJobId, setActiveJobId] = useState<Id<'generationJobs'> | null>(
     null,
@@ -571,7 +570,7 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
         narratorId: selectedNarratorId,
       })
 
-      const jobId = await startGeneration({
+      const { jobId, streamId: newStreamId } = await startGeneration({
         petId: parsedPetId,
         memoryId,
         narratorId: selectedNarratorId,
@@ -579,8 +578,6 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
         petName: petData.pet.name,
         petSpecies: petData.pet.species,
       })
-
-      const { streamId: newStreamId } = await attachStream({ jobId })
       setActiveJobId(jobId)
       setStreamId(newStreamId)
       setStreamDriver(true)

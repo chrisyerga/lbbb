@@ -16,21 +16,38 @@ export const queueList = query({
     await requireStaff(ctx)
     const limit = args.limit ?? 50
 
-    const posts = await ctx.db
-      .query('generatedPosts')
-      .withIndex('by_status', (q) => q.eq('status', 'awaiting_moderation'))
-      .collect()
+    const [pendingPosts, flaggedPosts, pendingAssets, flaggedAssets] =
+      await Promise.all([
+        ctx.db
+          .query('generatedPosts')
+          .withIndex('by_moderation_status', (q) =>
+            q.eq('moderationStatus', 'pending'),
+          )
+          .take(limit),
+        ctx.db
+          .query('generatedPosts')
+          .withIndex('by_moderation_status', (q) =>
+            q.eq('moderationStatus', 'flagged'),
+          )
+          .take(limit),
+        ctx.db
+          .query('assets')
+          .withIndex('by_moderation_status', (q) =>
+            q.eq('moderationStatus', 'pending'),
+          )
+          .take(limit),
+        ctx.db
+          .query('assets')
+          .withIndex('by_moderation_status', (q) =>
+            q.eq('moderationStatus', 'flagged'),
+          )
+          .take(limit),
+      ])
 
-    const pendingAssets = await ctx.db.query('assets').collect()
-    const assetItems = pendingAssets.filter(
-      (a) =>
-        a.moderationStatus === 'pending' || a.moderationStatus === 'flagged',
-    )
-
-    const postItems = posts.filter(
-      (p) =>
-        p.moderationStatus === 'pending' || p.moderationStatus === 'flagged',
-    )
+    const postItems = [...pendingPosts, ...flaggedPosts]
+      .filter((p) => p.status === 'awaiting_moderation')
+      .slice(0, limit)
+    const assetItems = [...pendingAssets, ...flaggedAssets].slice(0, limit)
 
     type QueueItem = {
       id: string

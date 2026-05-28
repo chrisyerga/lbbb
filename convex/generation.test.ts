@@ -1,6 +1,6 @@
 import { convexTest } from 'convex-test'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
-import { api, internal } from './_generated/api'
+import { internal } from './_generated/api'
 import schema from './schema'
 import { modules } from './test.setup'
 import {
@@ -17,47 +17,12 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-test('runMemoryGeneration completes with draft', async () => {
-  const t = convexTest(schema, modules)
-  stubOpenAIFetch()
-  const jobId = await seedMemoryJob(t)
-
-  const result = await t.action(api.generation.runMemoryGeneration, { jobId })
-
-  expect(result).toEqual({ jobId, status: 'awaiting_review' })
-
-  const state = await t.run(async (ctx) => {
-    const job = await ctx.db.get(jobId)
-    if (!job) throw new Error('Job not found')
-    const posts = await ctx.db
-      .query('generatedPosts')
-      .withIndex('by_pet', (q) => q.eq('petId', job.petId))
-      .collect()
-    const draft = posts.find((p) => p.jobId === jobId) ?? null
-    const costs = await ctx.db
-      .query('generationCosts')
-      .filter((q) => q.eq(q.field('jobId'), jobId))
-      .collect()
-    return { job, draft, costs }
-  })
-
-  expect(state.job.status).toBe('awaiting_review')
-  expect(state.draft).toMatchObject({
-    title: MOCK_TEXT_OUTPUT.title,
-    excerpt: MOCK_TEXT_OUTPUT.excerpt,
-    bodyMarkdown: MOCK_TEXT_OUTPUT.bodyMarkdown,
-    status: 'awaiting_moderation',
-    jobId,
-  })
-  expect(state.costs.length).toBeGreaterThanOrEqual(2)
-})
-
 test('upsertDraftFromText and runMemoryGenerationImages', async () => {
   const t = convexTest(schema, modules)
   stubOpenAIFetch()
   const jobId = await seedMemoryJob(t)
 
-  await t.mutation(internal.generation.upsertDraftFromText, {
+  await t.mutation(internal.generationState.upsertDraftFromText, {
     jobId,
     title: MOCK_TEXT_OUTPUT.title,
     excerpt: MOCK_TEXT_OUTPUT.excerpt,
@@ -74,7 +39,7 @@ test('upsertDraftFromText and runMemoryGenerationImages', async () => {
     },
   })
 
-  await t.action(internal.memoryGenerationStream.runMemoryGenerationImages, {
+  await t.action(internal.generationWorkflow.runMemoryGenerationImages, {
     jobId,
   })
 

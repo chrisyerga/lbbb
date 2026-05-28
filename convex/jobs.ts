@@ -1,5 +1,7 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import { PersistentTextStreaming } from '@convex-dev/persistent-text-streaming'
+import { components } from './_generated/api'
 import { requireStaff } from './lib/requireAccount'
 import {
   composePersonaPrompt,
@@ -11,6 +13,10 @@ import { syncCastMemberFromPet } from './lib/castSync'
 import { assertCanCreateGenerationJob } from './lib/quotaEnforcement'
 import { requireUser } from './lib/requireUser'
 import { resolveAssetUrl } from './lib/assets'
+
+const persistentTextStreaming = new PersistentTextStreaming(
+  components.persistentTextStreaming,
+)
 
 export const createGenerationJob = mutation({
   args: {
@@ -115,6 +121,7 @@ export const startMemoryGeneration = mutation({
       moodBlock,
     }
 
+    const streamId = await persistentTextStreaming.createStream(ctx)
     const now = Date.now()
     const jobId = await ctx.db.insert('generationJobs', {
       ownerUserId: user._id,
@@ -136,6 +143,7 @@ export const startMemoryGeneration = mutation({
         castSnapshot,
         promptVars,
       },
+      streamId,
       streamStatus: 'idle',
       attempt: 0,
       createdAt: now,
@@ -150,7 +158,7 @@ export const startMemoryGeneration = mutation({
       createdAt: now,
     })
 
-    return jobId
+    return { jobId, streamId }
   },
 })
 
@@ -199,14 +207,11 @@ export const recentMine = query({
   args: { limit: v.optional(v.number()) },
   handler: async (ctx, args) => {
     const user = await requireUser(ctx)
-    const jobs = await ctx.db
+    return await ctx.db
       .query('generationJobs')
-      .withIndex('by_owner', (q) => q.eq('ownerUserId', user._id))
-      .collect()
-
-    return jobs
-      .sort((a, b) => b.createdAt - a.createdAt)
-      .slice(0, args.limit ?? 50)
+      .withIndex('by_owner_and_created', (q) => q.eq('ownerUserId', user._id))
+      .order('desc')
+      .take(args.limit ?? 50)
   },
 })
 

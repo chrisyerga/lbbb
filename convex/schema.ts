@@ -190,6 +190,7 @@ export default defineSchema({
     .index('by_pet', ['petId'])
     .index('by_owner', ['ownerUserId'])
     .index('by_pet_date', ['petId', 'occurredOn'])
+    .index('by_pet_and_created', ['petId', 'createdAt'])
     .index('by_narrator', ['narratorId']),
 
   assets: defineTable({
@@ -218,6 +219,7 @@ export default defineSchema({
   })
     .index('by_owner', ['ownerUserId'])
     .index('by_pet', ['petId'])
+    .index('by_moderation_status', ['moderationStatus'])
     .index('by_storage', ['storageProvider', 'storageId']),
 
   generationJobs: defineTable({
@@ -256,6 +258,7 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index('by_owner', ['ownerUserId'])
+    .index('by_owner_and_created', ['ownerUserId', 'createdAt'])
     .index('by_pet', ['petId'])
     .index('by_status', ['status'])
     .index('by_created', ['createdAt'])
@@ -329,7 +332,9 @@ export default defineSchema({
     .index('by_pet_slug', ['petId', 'slug'])
     .index('by_job', ['jobId'])
     .index('by_status', ['status'])
+    .index('by_moderation_status', ['moderationStatus'])
     .index('by_owner', ['ownerUserId'])
+    .index('by_owner_and_created', ['ownerUserId', 'createdAt'])
     .index('by_narrator', ['narratorId']),
 
   narratorTraits: defineTable({

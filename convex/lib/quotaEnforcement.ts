@@ -37,12 +37,12 @@ export async function assertCanCreateGenerationJob(
   const limits = accountLimits(account)
   const dayStart = startOfUtcDay()
 
-  const jobs = await ctx.db
+  const todayJobs = await ctx.db
     .query('generationJobs')
-    .withIndex('by_owner', (q) => q.eq('ownerUserId', userId))
-    .collect()
-
-  const todayJobs = jobs.filter((j) => j.createdAt >= dayStart)
+    .withIndex('by_owner_and_created', (q) =>
+      q.eq('ownerUserId', userId).gte('createdAt', dayStart),
+    )
+    .take(500)
 
   if (operation === 'image') {
     const imageCount = todayJobs.filter((j) => j.operation === 'image').length
@@ -68,12 +68,12 @@ export async function assertCanCreateGenerationJob(
     limits.maxPostsPerMonth !== null
   ) {
     const monthStart = startOfUtcMonth()
-    const posts = await ctx.db
+    const monthPosts = (await ctx.db
       .query('generatedPosts')
-      .withIndex('by_owner', (q) => q.eq('ownerUserId', userId))
-      .collect()
-
-    const monthPosts = posts.filter((p) => p.createdAt >= monthStart).length
+      .withIndex('by_owner_and_created', (q) =>
+        q.eq('ownerUserId', userId).gte('createdAt', monthStart),
+      )
+      .take(limits.maxPostsPerMonth + 1)).length
     if (monthPosts >= limits.maxPostsPerMonth) {
       throw new Error(
         `Monthly post limit reached (${limits.maxPostsPerMonth}). Upgrade your plan for more posts.`,

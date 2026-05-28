@@ -11,7 +11,7 @@ export function LandingNav() {
   return (
     <nav className="relative z-10 flex flex-wrap items-center justify-between gap-4 px-4 py-5 sm:px-8 lg:px-14">
       <Link to="/" className="flex items-center gap-3 no-underline">
-        <div className="flex h-11 w-11 -rotate-[4deg] items-center justify-center rounded-xl border-2 border-[#14100E] bg-[var(--landing-primary)]">
+        <div className="flex h-11 w-11 -rotate-[4deg] items-center justify-center rounded-xl border-2 border-[#140e12] bg-[var(--landing-primary)]">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
             <circle cx="8" cy="9" r="2.5" fill="#fff" />
             <circle cx="16" cy="9" r="2.5" fill="#fff" />

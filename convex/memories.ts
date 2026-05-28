@@ -11,10 +11,9 @@ export const listByPet = query({
 
     const memories = await ctx.db
       .query('petMemories')
-      .withIndex('by_pet', (q) => q.eq('petId', args.petId))
-      .collect()
-
-    memories.sort((a, b) => b.occurredOn.localeCompare(a.occurredOn))
+      .withIndex('by_pet_and_created', (q) => q.eq('petId', args.petId))
+      .order('desc')
+      .take(100)
 
     return Promise.all(
       memories.map(async (memory) => {
