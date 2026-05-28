@@ -1,3 +1,5 @@
+'use client'
+
 import type { CSSProperties } from 'react'
 import { cn } from '#/lib/utils'
 
@@ -7,6 +9,10 @@ type SunBurstProps = {
   rays?: number
   className?: string
   style?: CSSProperties
+}
+
+function roundThou(n: number) {
+  return Math.round(n * 1000) / 1000
 }
 
 export function SunBurst({
@@ -26,10 +32,10 @@ export function SunBurst({
     lines.push(
       <line
         key={i}
-        x1={x1}
-        y1={y1}
-        x2={x2}
-        y2={y2}
+        x1={roundThou(x1)}
+        y1={roundThou(y1)}
+        x2={roundThou(x2)}
+        y2={roundThou(y2)}
         stroke={color}
         strokeWidth="3.5"
         strokeLinecap="round"
