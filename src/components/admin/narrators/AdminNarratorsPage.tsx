@@ -15,6 +15,7 @@ import {
   NarratorStatusChip,
 } from '#/components/admin/form'
 import { MonoLabel } from '#/components/admin/jobs/primitives'
+import { NarratorTextPreviewPanel } from '#/components/admin/narrators/NarratorTextPreviewPanel'
 import { TRAIT_CATEGORIES, artStyleColor, hashColor, narratorInitials, slugify } from '#/lib/adminCatalogUi'
 import type { NarratorStatus } from '#/lib/adminCatalogUi'
 import { relTime } from '#/lib/adminJobsUi'
@@ -600,6 +601,12 @@ export function AdminNarratorsPage({ selectedNarratorId }: { selectedNarratorId:
                   </div>
                 ) : null}
               </div>
+              <NarratorTextPreviewPanel
+                narratorId={draft._id || null}
+                disabled={isNew || !draft._id}
+                canRun={Boolean(draft) && !isNew}
+                defaultStory={draft.exampleExcerpt}
+              />
             </>
           )}
         </aside>

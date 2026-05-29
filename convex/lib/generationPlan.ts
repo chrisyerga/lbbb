@@ -1,4 +1,9 @@
-export { loadNarratorBundle, resolveGenerationPlan } from './generation/buildSnapshot'
+export {
+  loadNarratorBundle,
+  loadNarratorBundleForAdmin,
+  resolveGenerationPlan,
+  resolveGenerationPlanForAdmin,
+} from './generation/buildSnapshot'
 export {
   buildImagePromptsFromPlan,
   buildMetadataPromptFromPlan,

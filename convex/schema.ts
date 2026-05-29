@@ -366,6 +366,28 @@ export default defineSchema({
     .index('by_public', ['public', 'status'])
     .index('by_featured', ['featured', 'status']),
 
+  narratorTextPreviews: defineTable({
+    staffUserId: v.id('users'),
+    narratorId: v.id('narrators'),
+    streamId: v.string(),
+    inputSnapshot: v.any(),
+    streamStatus: v.union(
+      v.literal('idle'),
+      v.literal('streaming_text'),
+      v.literal('text_done'),
+      v.literal('failed'),
+    ),
+    streamBody: v.optional(v.string()),
+    title: v.optional(v.string()),
+    excerpt: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+    error: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_streamId', ['streamId'])
+    .index('by_staff_and_created', ['staffUserId', 'createdAt']),
+
   promptVersions: defineTable({
     key: v.string(),
     version: v.number(),

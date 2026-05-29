@@ -88,6 +88,14 @@ export type MemoryJobInputSnapshot = {
   promptVars: MemoryJobPromptVars
 }
 
+export type NarratorPreviewInputSnapshot = {
+  memoryDescription: string
+  petName: string
+  petSpecies?: string
+  generationPlan: GenerationPlan
+  promptVars: MemoryJobPromptVars
+}
+
 export type TextGenerationResult = {
   title: string
   excerpt: string

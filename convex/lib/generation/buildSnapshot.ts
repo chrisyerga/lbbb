@@ -22,10 +22,21 @@ function resolveImagePromptSuffix(artStyle: Doc<'artStyles'>, narrator?: Doc<'na
   return parts.filter(Boolean).join(' ')
 }
 
-export async function loadNarratorBundle(ctx: Ctx, narratorId: Id<'narrators'>) {
+async function loadNarratorBundleInternal(
+  ctx: Ctx,
+  narratorId: Id<'narrators'>,
+  options: { requirePublished: boolean },
+) {
   const narrator = await ctx.db.get(narratorId)
-  if (!narrator || narrator.status !== 'published') {
+  if (!narrator) {
     throw new Error('Narrator not found')
+  }
+  if (options.requirePublished) {
+    if (narrator.status !== 'published') {
+      throw new Error('Narrator not found')
+    }
+  } else if (narrator.status === 'archived') {
+    throw new Error('Narrator is archived')
   }
 
   const artStyle = await ctx.db.get(narrator.defaultArtStyleId)
@@ -48,17 +59,24 @@ export async function loadNarratorBundle(ctx: Ctx, narratorId: Id<'narrators'>) 
   }
 }
 
-export async function resolveGenerationPlan(
-  ctx: Ctx,
+export async function loadNarratorBundle(ctx: Ctx, narratorId: Id<'narrators'>) {
+  return await loadNarratorBundleInternal(ctx, narratorId, { requirePublished: true })
+}
+
+export async function loadNarratorBundleForAdmin(ctx: Ctx, narratorId: Id<'narrators'>) {
+  return await loadNarratorBundleInternal(ctx, narratorId, { requirePublished: false })
+}
+
+function buildGenerationPlanFromBundle(
+  bundle: Awaited<ReturnType<typeof loadNarratorBundleInternal>>,
   args: {
-    narratorId: Id<'narrators'>
     memoryDescription: string
     petName: string
     petSpecies?: string
     castSnapshot?: Array<CastSnapshotEntry>
   },
-): Promise<GenerationPlan> {
-  const { narrator, artStyle, traits, promptVersion } = await loadNarratorBundle(ctx, args.narratorId)
+): GenerationPlan {
+  const { narrator, artStyle, traits, promptVersion } = bundle
 
   const personaBlock = composePersonaPrompt({
     traits,
@@ -118,4 +136,25 @@ export async function resolveGenerationPlan(
     },
     speech: narrator.speechProfile,
   }
+}
+
+type ResolveGenerationPlanArgs = {
+  narratorId: Id<'narrators'>
+  memoryDescription: string
+  petName: string
+  petSpecies?: string
+  castSnapshot?: Array<CastSnapshotEntry>
+}
+
+export async function resolveGenerationPlan(ctx: Ctx, args: ResolveGenerationPlanArgs): Promise<GenerationPlan> {
+  const bundle = await loadNarratorBundle(ctx, args.narratorId)
+  return buildGenerationPlanFromBundle(bundle, args)
+}
+
+export async function resolveGenerationPlanForAdmin(
+  ctx: Ctx,
+  args: ResolveGenerationPlanArgs,
+): Promise<GenerationPlan> {
+  const bundle = await loadNarratorBundleForAdmin(ctx, args.narratorId)
+  return buildGenerationPlanFromBundle(bundle, args)
 }
