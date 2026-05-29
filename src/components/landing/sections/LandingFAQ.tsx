@@ -21,7 +21,7 @@ export function LandingFAQ() {
           </h2>
           <p className="mt-[18px] text-[15.5px] leading-normal text-[var(--landing-ink)]/75">
             Still curious?{' '}
-            <a href="mailto:hello@cafezoe.lol" className="font-bold text-[var(--landing-primary)] no-underline">
+            <a href="mailto:hello@lidabidabodabutt.com" className="font-bold text-[var(--landing-primary)] no-underline">
               email us
             </a>{' '}
             — a real human (and Zoe) reads every one.

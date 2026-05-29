@@ -44,7 +44,7 @@ const TIER_RANK: Record<PlanTier, number> = {
 const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
   pup: {
     maxPets: 1,
-    maxPostsPerMonth: 3,
+    maxPostsPerMonth: 1,
     dailyTextGenerations: Number(process.env.DAILY_TEXT_GENERATION_LIMIT ?? 20),
     dailyImageGenerations: Number(process.env.DAILY_IMAGE_GENERATION_LIMIT ?? 5),
     maxUploadBytes: Number(process.env.MAX_UPLOAD_BYTES ?? 10 * 1024 * 1024),

@@ -29,4 +29,4 @@ Convex provider keys belong in Convex environment variables, not the droplet.
 
 ## Edge Caddy
 
-The `cafezoe.lol` vhost lives in `lindale-infra/Caddyfile`. After changing domains or upstream ports, deploy `lindale-infra` and reload edge Caddy.
+The `lidabidabodabutt.com` vhost lives in `lindale-infra/Caddyfile`. After changing domains or upstream ports, deploy `lindale-infra` and reload edge Caddy.
