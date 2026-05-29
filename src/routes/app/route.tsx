@@ -1,11 +1,6 @@
 'use client'
 
-import {
-  createFileRoute,
-  Navigate,
-  Outlet,
-  useRouterState,
-} from '@tanstack/react-router'
+import { createFileRoute, Navigate, Outlet, useRouterState } from '@tanstack/react-router'
 import { useConvexAuth } from '@convex-dev/auth/react'
 import { useMutation, useQuery } from 'convex/react'
 import { useEffect } from 'react'
@@ -30,11 +25,7 @@ function AppLayout() {
   }, [isAuthenticated, account?.account, ensureAccount])
 
   if (isLoading) {
-    return (
-      <div className="page-wrap px-4 py-12 text-sm text-[var(--text-muted)]">
-        Loading…
-      </div>
-    )
+    return <div className="page-wrap px-4 py-12 text-sm text-[var(--text-muted)]">Loading…</div>
   }
 
   if (!isAuthenticated) {

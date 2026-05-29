@@ -1,24 +1,13 @@
 import type { ReactNode } from 'react'
-import type {
-  CatalogStatus,
-  ModerationStatus,
-  NarratorStatus,
-} from '#/lib/adminCatalogUi'
-import {
-  CATALOG_STATUS_TAX,
-  MODERATION_STATUS_TAX,
-  NARRATOR_STATUS_TAX,
-} from '#/lib/adminCatalogUi'
+import type { CatalogStatus, ModerationStatus, NarratorStatus } from '#/lib/adminCatalogUi'
+import { CATALOG_STATUS_TAX, MODERATION_STATUS_TAX, NARRATOR_STATUS_TAX } from '#/lib/adminCatalogUi'
 
 import { MonoLabel } from './jobs/primitives'
 
 export function CatalogStatusChip({ status }: { status: CatalogStatus }) {
   const s = CATALOG_STATUS_TAX[status]
   return (
-    <span
-      className="admin-status-pill"
-      style={{ background: s.bg, border: `1px solid ${s.ring}` }}
-    >
+    <span className="admin-status-pill" style={{ background: s.bg, border: `1px solid ${s.ring}` }}>
       <span className="admin-status-dot" style={{ background: s.dot }} />
       {s.label}
     </span>
@@ -28,23 +17,14 @@ export function CatalogStatusChip({ status }: { status: CatalogStatus }) {
 export function NarratorStatusChip({ status }: { status: NarratorStatus }) {
   const s = NARRATOR_STATUS_TAX[status]
   return (
-    <span
-      className="admin-status-pill"
-      style={{ background: s.bg, border: `1px solid ${s.ring}` }}
-    >
+    <span className="admin-status-pill" style={{ background: s.bg, border: `1px solid ${s.ring}` }}>
       <span className="admin-status-dot" style={{ background: s.dot }} />
       {s.label}
     </span>
   )
 }
 
-export function ModerationStatusChip({
-  status,
-  size = 'sm',
-}: {
-  status: ModerationStatus
-  size?: 'sm' | 'lg'
-}) {
+export function ModerationStatusChip({ status, size = 'sm' }: { status: ModerationStatus; size?: 'sm' | 'lg' }) {
   const s = MODERATION_STATUS_TAX[status]
   return (
     <span
@@ -57,15 +37,7 @@ export function ModerationStatusChip({
   )
 }
 
-export function AdminField({
-  label,
-  helper,
-  children,
-}: {
-  label: string
-  helper?: string
-  children: ReactNode
-}) {
+export function AdminField({ label, helper, children }: { label: string; helper?: string; children: ReactNode }) {
   return (
     <label className="admin-field">
       <div className="admin-field-head">
@@ -136,12 +108,7 @@ export function AdminSelect<T extends string>({
   disabled?: boolean
 }) {
   return (
-    <select
-      className="admin-select"
-      value={value}
-      disabled={disabled}
-      onChange={(e) => onChange(e.target.value as T)}
-    >
+    <select className="admin-select" value={value} disabled={disabled} onChange={(e) => onChange(e.target.value as T)}>
       {options.map((o) => (
         <option key={o.value} value={o.value}>
           {o.label}
@@ -165,16 +132,8 @@ export function AdminToggle({
   disabled?: boolean
 }) {
   return (
-    <button
-      type="button"
-      className="admin-toggle"
-      disabled={disabled}
-      onClick={() => onChange(!value)}
-    >
-      <span
-        className={`admin-toggle-track${value ? ' is-on' : ''}`}
-        aria-hidden
-      >
+    <button type="button" className="admin-toggle" disabled={disabled} onClick={() => onChange(!value)}>
+      <span className={`admin-toggle-track${value ? ' is-on' : ''}`} aria-hidden>
         <span className="admin-toggle-thumb" />
       </span>
       <span className="admin-toggle-copy">
@@ -197,12 +156,7 @@ export function AdminBtnPrimary({
   type?: 'button' | 'submit'
 }) {
   return (
-    <button
-      type={type}
-      className="admin-btn-primary"
-      disabled={disabled}
-      onClick={onClick}
-    >
+    <button type={type} className="admin-btn-primary" disabled={disabled} onClick={onClick}>
       {children}
     </button>
   )

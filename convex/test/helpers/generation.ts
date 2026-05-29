@@ -2,11 +2,7 @@ import type { convexTest } from 'convex-test'
 import { vi } from 'vitest'
 import { internal } from '../../_generated/api'
 import type { Id } from '../../_generated/dataModel'
-import {
-  composePersonaPrompt,
-  loadNarratorBundle,
-  resolveGenerationPlan,
-} from '../../lib/generationPlan'
+import { composePersonaPrompt, loadNarratorBundle, resolveGenerationPlan } from '../../lib/generationPlan'
 import { buildCastBlock } from '../../lib/castContext'
 
 type TestContext = ReturnType<typeof convexTest>
@@ -14,15 +10,13 @@ type TestContext = ReturnType<typeof convexTest>
 export const MOCK_TEXT_OUTPUT = {
   title: 'The Great Squirrel Chase',
   excerpt: 'Mabel spotted a squirrel and the backyard became a racetrack.',
-  bodyMarkdown:
-    '## A busy afternoon\n\nMabel went full zoomies after a squirrel appeared by the fence.',
+  bodyMarkdown: '## A busy afternoon\n\nMabel went full zoomies after a squirrel appeared by the fence.',
   tags: ['squirrel', 'zoomies'],
   imagePrompt: 'A corgi mid-sprint in a sunny backyard chasing a squirrel.',
 }
 
 /** 1x1 transparent PNG */
-const TINY_PNG_B64 =
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
+const TINY_PNG_B64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
 
 export function stubOpenAIFetch() {
   vi.stubGlobal(
@@ -42,8 +36,7 @@ export function stubOpenAIFetch() {
 
       if (url.includes('/v1/chat/completions')) {
         const init = initArg ?? {}
-        const body =
-          typeof init.body === 'string' ? JSON.parse(init.body) : {}
+        const body = typeof init.body === 'string' ? JSON.parse(init.body) : {}
         if (body.stream) {
           const encoder = new TextEncoder()
           const chunks = ['## A busy afternoon\n\n', 'Mabel went full zoomies.']
@@ -53,9 +46,7 @@ export function stubOpenAIFetch() {
                 const payload = {
                   choices: [{ delta: { content: chunk } }],
                 }
-                controller.enqueue(
-                  encoder.encode(`data: ${JSON.stringify(payload)}\n\n`),
-                )
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`))
               }
               controller.enqueue(encoder.encode('data: [DONE]\n\n'))
               controller.close()
@@ -138,10 +129,7 @@ export async function seedMemoryJob(t: TestContext): Promise<Id<'generationJobs'
       systemPromptAddon: narr.systemPromptAddon,
     })
     const moodHints = narr.defaultMoodHints ?? []
-    const moodBlock =
-      moodHints.length > 0
-        ? `Mood and scene tone: ${moodHints.filter(Boolean).join(', ')}`
-        : ''
+    const moodBlock = moodHints.length > 0 ? `Mood and scene tone: ${moodHints.filter(Boolean).join(', ')}` : ''
 
     return await ctx.db.insert('generationJobs', {
       ownerUserId,

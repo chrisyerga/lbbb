@@ -9,10 +9,7 @@ function PublicPost() {
   const { petSlug, postSlug } = Route.useParams()
   return (
     <PageShell eyebrow={petSlug} title={postSlug.replaceAll('-', ' ')}>
-      <p>
-        This published post route will render approved generated content and
-        canonical SEO metadata.
-      </p>
+      <p>This published post route will render approved generated content and canonical SEO metadata.</p>
     </PageShell>
   )
 }

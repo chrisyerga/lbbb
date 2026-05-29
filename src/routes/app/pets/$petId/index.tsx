@@ -18,10 +18,7 @@ export const Route = createFileRoute('/app/pets/$petId/')({
 function EditPetPage() {
   const { petId } = Route.useParams()
   const parsedPetId = parsePetId(petId)
-  const data = useQuery(
-    api.pets.getMineByPetId,
-    parsedPetId ? { petId } : 'skip',
-  )
+  const data = useQuery(api.pets.getMineByPetId, parsedPetId ? { petId } : 'skip')
   const updatePet = useMutation(api.pets.update)
   const updateBlog = useMutation(api.pets.updateBlogMeta)
 
@@ -30,9 +27,7 @@ function EditPetPage() {
   const [breed, setBreed] = useState('')
   const [bio, setBio] = useState('')
   const [description, setDescription] = useState('')
-  const [visibility, setVisibility] = useState<
-    'private' | 'public' | 'unlisted'
-  >('public')
+  const [visibility, setVisibility] = useState<'private' | 'public' | 'unlisted'>('public')
   const [savingPet, setSavingPet] = useState(false)
   const [savingBlog, setSavingBlog] = useState(false)
 
@@ -105,39 +100,20 @@ function EditPetPage() {
       title={`Edit ${pet.name}`}
       description="Pet name and bio are yours; the public URL slug stays stable."
     >
-      <PetAvatarSection
-        petId={pet._id}
-        petName={pet.name}
-        avatarUrl={avatarUrl}
-        avatarAssetId={pet.avatarAssetId}
-      />
+      <PetAvatarSection petId={pet._id} petName={pet.name} avatarUrl={avatarUrl} avatarAssetId={pet.avatarAssetId} />
 
       <p className="mb-8 text-sm">
-        <Link
-          to="/app/pets/$petId/memories"
-          params={{ petId: pet._id }}
-          className="font-semibold no-underline"
-        >
+        <Link to="/app/pets/$petId/memories" params={{ petId: pet._id }} className="font-semibold no-underline">
           Manage memories →
         </Link>
       </p>
 
       <div className="grid gap-8 lg:grid-cols-2">
-        <form
-          onSubmit={(e) => void onSavePet(e)}
-          className="panel grid gap-4 p-6 text-sm"
-        >
-          <h2 className="m-0 text-lg font-semibold text-[var(--text-primary)]">
-            Pet profile
-          </h2>
+        <form onSubmit={(e) => void onSavePet(e)} className="panel grid gap-4 p-6 text-sm">
+          <h2 className="m-0 text-lg font-semibold text-[var(--text-primary)]">Pet profile</h2>
           <label className="grid gap-2 text-[var(--text-primary)]">
             Name
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="input-field"
-            />
+            <input value={name} onChange={(e) => setName(e.target.value)} required className="input-field" />
           </label>
           <label className="grid gap-2 text-[var(--text-primary)]">
             Species
@@ -159,32 +135,20 @@ function EditPetPage() {
           </label>
           <label className="grid gap-2 text-[var(--text-primary)]">
             Bio
-            <textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              rows={3}
-              className="input-field resize-y"
-            />
+            <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} className="input-field resize-y" />
           </label>
           <Button type="submit" disabled={savingPet}>
             {savingPet ? 'Saving…' : 'Save pet'}
           </Button>
         </form>
 
-        <form
-          onSubmit={(e) => void onSaveBlog(e)}
-          className="panel grid gap-4 p-6 text-sm"
-        >
-          <h2 className="m-0 text-lg font-semibold text-[var(--text-primary)]">
-            Public blog
-          </h2>
+        <form onSubmit={(e) => void onSaveBlog(e)} className="panel grid gap-4 p-6 text-sm">
+          <h2 className="m-0 text-lg font-semibold text-[var(--text-primary)]">Public blog</h2>
           {blog ? (
             <>
               <div className="grid gap-1">
                 <p className="section-label">URL slug (read-only)</p>
-                <code className="block bg-[var(--bg-input)] px-3 py-2 text-[var(--accent)]">
-                  {blog.slug}
-                </code>
+                <code className="block bg-[var(--bg-input)] px-3 py-2 text-[var(--accent)]">{blog.slug}</code>
                 {publicUrl ? (
                   <a href={publicUrl} className="font-semibold no-underline">
                     View public blog
@@ -205,11 +169,7 @@ function EditPetPage() {
                 Visibility
                 <select
                   value={visibility}
-                  onChange={(e) =>
-                    setVisibility(
-                      e.target.value as 'private' | 'public' | 'unlisted',
-                    )
-                  }
+                  onChange={(e) => setVisibility(e.target.value as 'private' | 'public' | 'unlisted')}
                   className="input-field"
                 >
                   <option value="public">Public</option>
@@ -222,9 +182,7 @@ function EditPetPage() {
               </Button>
             </>
           ) : (
-            <p className="text-[var(--text-muted)]">
-              No blog row for this pet.
-            </p>
+            <p className="text-[var(--text-muted)]">No blog row for this pet.</p>
           )}
         </form>
       </div>

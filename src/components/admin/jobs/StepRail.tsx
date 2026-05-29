@@ -32,11 +32,7 @@ export function StepRail({
           <div key={step.id} style={{ display: 'flex', alignItems: 'center' }}>
             {i > 0 ? <span className="admin-step-connector" /> : null}
             <div
-              className={[
-                'admin-step',
-                isDone ? 'is-done' : '',
-                isCurrent ? 'is-current' : '',
-              ]
+              className={['admin-step', isDone ? 'is-done' : '', isCurrent ? 'is-current' : '']
                 .filter(Boolean)
                 .join(' ')}
             >

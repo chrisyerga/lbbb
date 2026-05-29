@@ -1,12 +1,6 @@
 import type { Doc, Id } from '../../_generated/dataModel'
 
-export const TRAIT_CATEGORIES = [
-  'personality',
-  'tone',
-  'register',
-  'cultural',
-  'pacing',
-] as const
+export const TRAIT_CATEGORIES = ['personality', 'tone', 'register', 'cultural', 'pacing'] as const
 export type TraitCategory = (typeof TRAIT_CATEGORIES)[number]
 
 export const CATALOG_STATUSES = ['active', 'archived'] as const
@@ -122,9 +116,7 @@ export type CatalogNarrator = {
   }
 }
 
-export function narratorSnapshotFromDoc(
-  narrator: Doc<'narrators'>,
-): NarratorSnapshot {
+export function narratorSnapshotFromDoc(narrator: Doc<'narrators'>): NarratorSnapshot {
   return {
     slug: narrator.slug,
     name: narrator.name,
@@ -135,9 +127,7 @@ export function narratorSnapshotFromDoc(
   }
 }
 
-export function artStyleSnapshotFromDoc(
-  artStyle: Doc<'artStyles'>,
-): ArtStyleSnapshot {
+export function artStyleSnapshotFromDoc(artStyle: Doc<'artStyles'>): ArtStyleSnapshot {
   return {
     slug: artStyle.slug,
     name: artStyle.name,

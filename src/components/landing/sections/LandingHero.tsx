@@ -23,24 +23,12 @@ export function LandingHero() {
         size={150}
         className={`absolute top-8 right-8 opacity-80 sm:right-[60px] ${!reducedMotion ? 'animate-v1-spin' : ''}`}
       />
-      <Star
-        color="var(--landing-primary)"
-        size={28}
-        className="absolute top-[220px] left-9 -rotate-12 max-sm:hidden"
-      />
-      <Star
-        color="var(--landing-ink)"
-        size={18}
-        className="absolute top-[410px] left-[320px] max-lg:hidden"
-      />
+      <Star color="var(--landing-primary)" size={28} className="absolute top-[220px] left-9 -rotate-12 max-sm:hidden" />
+      <Star color="var(--landing-ink)" size={18} className="absolute top-[410px] left-[320px] max-lg:hidden" />
 
       <div className="relative z-[2] grid items-center gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-8">
         <div>
-          <Pill
-            bg="var(--landing-soft)"
-            color="var(--landing-ink)"
-            className="mb-5"
-          >
+          <Pill bg="var(--landing-soft)" color="var(--landing-ink)" className="mb-5">
             <span className="inline-block h-2 w-2 rounded-full bg-[var(--landing-primary)]" />
             New · Now open for early access
           </Pill>
@@ -49,20 +37,15 @@ export function LandingHero() {
             {lines[0]} <br />
             <span className="relative inline-block">
               <span className="text-[var(--landing-primary)]">{lines[1]}</span>
-              <Squiggle
-                color="var(--landing-accent)"
-                width={320}
-                className="absolute -bottom-4 left-0 max-w-full"
-              />
+              <Squiggle color="var(--landing-accent)" width={320} className="absolute -bottom-4 left-0 max-w-full" />
             </span>
             <br />
             {lines[2]}
           </h1>
 
           <p className="mt-7 max-w-[480px] text-[17px] leading-[1.45] text-[var(--landing-ink)]/80 sm:text-[19px]">
-            Drop in a photo. Scribble what they got up to today. cafezoe writes
-            the blog post & paints the social art — so your good dog gets the
-            press they deserve.
+            Drop in a photo. Scribble what they got up to today. cafezoe writes the blog post & paints the social art —
+            so your good dog gets the press they deserve.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4 sm:gap-[18px]">
@@ -91,20 +74,14 @@ export function LandingHero() {
               ))}
             </div>
             <span>
-              <b className="text-[var(--landing-ink)]">2,140</b> very good pets
-              already onboarded
+              <b className="text-[var(--landing-ink)]">2,140</b> very good pets already onboarded
             </span>
           </div>
         </div>
 
         <div className="relative mx-auto h-[420px] w-full max-w-[520px] sm:h-[540px]">
           <div className="absolute inset-0 rotate-[2deg] rounded-3xl border-2 border-[#14100E] bg-[var(--landing-soft)]" />
-          <Tape
-            color="var(--landing-accent)"
-            w={120}
-            rotate={-8}
-            className="absolute -top-3 left-[32%]"
-          />
+          <Tape color="var(--landing-accent)" w={120} rotate={-8} className="absolute -top-3 left-[32%]" />
           <Tape
             color="var(--landing-cream)"
             w={90}
@@ -120,9 +97,7 @@ export function LandingHero() {
             <div className="font-hand text-[22px] leading-tight text-[var(--landing-ink)]">
               &ldquo;I&apos;m basically a content creator now.&rdquo;
             </div>
-            <div className="mt-1 text-[11px] text-[var(--landing-ink)]/60">
-              — Zoe, age 4
-            </div>
+            <div className="mt-1 text-[11px] text-[var(--landing-ink)]/60">— Zoe, age 4</div>
           </div>
         </div>
       </div>

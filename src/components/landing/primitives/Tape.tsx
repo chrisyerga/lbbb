@@ -9,13 +9,7 @@ type TapeProps = {
   style?: CSSProperties
 }
 
-export function Tape({
-  color = '#F2D27A',
-  w = 90,
-  rotate = -6,
-  className,
-  style,
-}: TapeProps) {
+export function Tape({ color = '#F2D27A', w = 90, rotate = -6, className, style }: TapeProps) {
   return (
     <div
       className={cn('opacity-[0.82] mix-blend-multiply', className)}

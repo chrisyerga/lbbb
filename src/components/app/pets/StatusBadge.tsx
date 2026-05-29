@@ -1,9 +1,6 @@
 type Visibility = 'public' | 'private' | 'unlisted'
 
-const STYLES: Record<
-  Visibility,
-  { bg: string; color: string; dot: string; label: string }
-> = {
+const STYLES: Record<Visibility, { bg: string; color: string; dot: string; label: string }> = {
   public: {
     bg: '#3CB07A22',
     color: '#1F6A47',
@@ -35,10 +32,7 @@ export function StatusBadge({ visibility }: { visibility: Visibility }) {
         color: styles.color,
       }}
     >
-      <span
-        className="inline-block h-1.5 w-1.5 rounded-full"
-        style={{ background: styles.dot }}
-      />
+      <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: styles.dot }} />
       {styles.label}
     </span>
   )

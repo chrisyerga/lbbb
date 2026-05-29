@@ -1,9 +1,5 @@
 import type { Id } from '#convex/_generated/dataModel'
-import {
-  OP_LABEL,
-  matchesFilter,
-  relTime,
-} from '#/lib/adminJobsUi'
+import { OP_LABEL, matchesFilter, relTime } from '#/lib/adminJobsUi'
 import type { QueueFilter } from '#/lib/adminJobsUi'
 import { StatusPill } from './primitives'
 
@@ -60,8 +56,7 @@ export function QueueList({
 
   const counts = FILTERS.reduce(
     (acc, f) => {
-      acc[f.id] =
-        rows?.filter((r) => matchesFilter(r.status, f.id)).length ?? 0
+      acc[f.id] = rows?.filter((r) => matchesFilter(r.status, f.id)).length ?? 0
       return acc
     },
     {} as Record<QueueFilter, number>,
@@ -84,11 +79,7 @@ export function QueueList({
             <button
               key={f.id}
               type="button"
-              className={
-                filter === f.id
-                  ? 'admin-filter-chip is-active'
-                  : 'admin-filter-chip'
-              }
+              className={filter === f.id ? 'admin-filter-chip is-active' : 'admin-filter-chip'}
               onClick={() => onFilterChange(f.id)}
             >
               {f.label} · {counts[f.id]}
@@ -118,11 +109,7 @@ export function QueueList({
               onClick={() => onSelect(row.jobId)}
             >
               <span className="admin-pet-dot">
-                {row.avatarUrl ? (
-                  <img src={row.avatarUrl} alt="" />
-                ) : (
-                  (row.petName.slice(0, 1) || '?').toUpperCase()
-                )}
+                {row.avatarUrl ? <img src={row.avatarUrl} alt="" /> : (row.petName.slice(0, 1) || '?').toUpperCase()}
               </span>
               <span style={{ minWidth: 0 }}>
                 <div
@@ -133,9 +120,7 @@ export function QueueList({
                     flexWrap: 'wrap',
                   }}
                 >
-                  <span style={{ fontWeight: 600, fontSize: 14 }}>
-                    {row.petName}
-                  </span>
+                  <span style={{ fontWeight: 600, fontSize: 14 }}>{row.petName}</span>
                   <StatusPill status={row.status} />
                   {row.attempt > 1 ? (
                     <span
@@ -161,15 +146,11 @@ export function QueueList({
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  {row.ownerEmail} · {relTime(row.createdAt)} ·{' '}
-                  {OP_LABEL[row.operation]}
+                  {row.ownerEmail} · {relTime(row.createdAt)} · {OP_LABEL[row.operation]}
                 </div>
                 {row.status === 'processing' ? (
                   <div className="admin-progress-bar">
-                    <div
-                      className="admin-progress-fill"
-                      style={{ width: `${Math.round(row.progress * 100)}%` }}
-                    />
+                    <div className="admin-progress-fill" style={{ width: `${Math.round(row.progress * 100)}%` }} />
                   </div>
                 ) : null}
                 {row.error ? (

@@ -63,12 +63,7 @@ export const PRICING_TIERS = [
     name: 'Pup',
     price: '0',
     sub: 'free forever',
-    items: [
-      '1 pet profile',
-      '3 posts / month',
-      'Basic AI portraits',
-      'cafezoe.app/yourpet page',
-    ],
+    items: ['1 pet profile', '3 posts / month', 'Basic AI portraits', 'cafezoe.app/yourpet page'],
     bg: '#fff',
     accent: 'ink' as const,
     featured: false,
@@ -92,13 +87,7 @@ export const PRICING_TIERS = [
     name: 'The Pack',
     price: '20',
     sub: 'per month',
-    items: [
-      'Everything in Top Dog',
-      'Up to 10 pets',
-      'Print zine, monthly',
-      'Founder hotline',
-      'Early-access models',
-    ],
+    items: ['Everything in Top Dog', 'Up to 10 pets', 'Print zine, monthly', 'Founder hotline', 'Early-access models'],
     bg: 'cream' as const,
     accent: 'ink' as const,
     featured: false,
@@ -152,10 +141,4 @@ export const FAQ_ITEMS = [
   },
 ] as const
 
-export const FOOTER_LINKS = [
-  'Privacy',
-  'Terms',
-  'About',
-  'Instagram',
-  'TikTok',
-] as const
+export const FOOTER_LINKS = ['Privacy', 'Terms', 'About', 'Instagram', 'TikTok'] as const

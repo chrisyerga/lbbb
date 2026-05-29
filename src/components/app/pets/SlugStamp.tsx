@@ -29,9 +29,7 @@ export function SlugStamp({ slug }: SlugStampProps) {
         {host}
         <b className="text-[var(--landing-ink)]">{path}</b>
       </span>
-      <span className={copied ? 'slug-stamp-copy is-copied' : 'slug-stamp-copy'}>
-        {copied ? '✓ copied' : 'copy'}
-      </span>
+      <span className={copied ? 'slug-stamp-copy is-copied' : 'slug-stamp-copy'}>{copied ? '✓ copied' : 'copy'}</span>
     </button>
   )
 }

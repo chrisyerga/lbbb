@@ -6,11 +6,7 @@ type Ctx = GenericQueryCtx<DataModel>
 
 const CAST_SNAPSHOT_CAP = 8
 
-export function nameMatchesMemory(
-  memoryDescription: string,
-  name: string,
-  aliases: Array<string>,
-): boolean {
+export function nameMatchesMemory(memoryDescription: string, name: string, aliases: Array<string>): boolean {
   const text = memoryDescription.trim()
   if (!text) return false
 
@@ -22,10 +18,7 @@ export function nameMatchesMemory(
   return false
 }
 
-function toSnapshotEntry(
-  member: Doc<'castMembers'>,
-  matchedInMemory: boolean,
-): CastSnapshotEntry {
+function toSnapshotEntry(member: Doc<'castMembers'>, matchedInMemory: boolean): CastSnapshotEntry {
   return {
     castMemberId: member._id,
     name: member.name,
@@ -39,10 +32,7 @@ function toSnapshotEntry(
 export function buildCastBlock(castSnapshot: Array<CastSnapshotEntry>): string {
   if (!castSnapshot.length) return ''
 
-  const lines = castSnapshot.map(
-    (entry) =>
-      `- ${entry.name} (${entry.kind}): ${entry.visualDescription.trim()}`,
-  )
+  const lines = castSnapshot.map((entry) => `- ${entry.name} (${entry.kind}): ${entry.visualDescription.trim()}`)
 
   return [
     'Cast (use these exact people/pets — do not substitute generic strangers):',
@@ -52,9 +42,7 @@ export function buildCastBlock(castSnapshot: Array<CastSnapshotEntry>): string {
   ].join('\n')
 }
 
-export function buildCastVisualSuffix(
-  castSnapshot: Array<CastSnapshotEntry>,
-): string {
+export function buildCastVisualSuffix(castSnapshot: Array<CastSnapshotEntry>): string {
   const parts = castSnapshot
     .filter((entry) => entry.matchedInMemory)
     .map((entry) => {
@@ -77,14 +65,10 @@ export async function resolveCastSnapshot(
 ): Promise<Array<CastSnapshotEntry>> {
   const members = await ctx.db
     .query('castMembers')
-    .withIndex('by_owner_status', (q) =>
-      q.eq('ownerUserId', args.ownerUserId).eq('status', 'active'),
-    )
+    .withIndex('by_owner_status', (q) => q.eq('ownerUserId', args.ownerUserId).eq('status', 'active'))
     .collect()
 
-  const subjectMember = members.find(
-    (member) => member.linkedPetId === args.subjectPetId,
-  )
+  const subjectMember = members.find((member) => member.linkedPetId === args.subjectPetId)
 
   const results: Array<CastSnapshotEntry> = []
   const seen = new Set<string>()
@@ -101,11 +85,7 @@ export async function resolveCastSnapshot(
 
   for (const member of members) {
     if (member.linkedPetId === args.subjectPetId) continue
-    const matched = nameMatchesMemory(
-      args.memoryDescription,
-      member.name,
-      member.aliases,
-    )
+    const matched = nameMatchesMemory(args.memoryDescription, member.name, member.aliases)
     if (matched) {
       add(toSnapshotEntry(member, true))
     }

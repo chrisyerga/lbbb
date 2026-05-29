@@ -49,10 +49,7 @@ export const TRAIT_CATEGORIES: Array<{
   },
 ]
 
-export const NARRATOR_STATUS_TAX: Record<
-  NarratorStatus,
-  { label: string; dot: string; bg: string; ring: string }
-> = {
+export const NARRATOR_STATUS_TAX: Record<NarratorStatus, { label: string; dot: string; bg: string; ring: string }> = {
   draft: {
     label: 'draft',
     dot: 'rgba(251,241,222,0.42)',
@@ -73,10 +70,7 @@ export const NARRATOR_STATUS_TAX: Record<
   },
 }
 
-export const CATALOG_STATUS_TAX: Record<
-  CatalogStatus,
-  { label: string; dot: string; bg: string; ring: string }
-> = {
+export const CATALOG_STATUS_TAX: Record<CatalogStatus, { label: string; dot: string; bg: string; ring: string }> = {
   active: {
     label: 'active',
     dot: '#3cb07a',
@@ -91,35 +85,33 @@ export const CATALOG_STATUS_TAX: Record<
   },
 }
 
-export const MODERATION_STATUS_TAX: Record<
-  ModerationStatus,
-  { label: string; dot: string; bg: string; ring: string }
-> = {
-  pending: {
-    label: 'pending review',
-    dot: '#f2a02e',
-    bg: 'rgba(242,160,46,0.10)',
-    ring: 'rgba(242,160,46,0.4)',
-  },
-  approved: {
-    label: 'approved',
-    dot: '#3cb07a',
-    bg: 'rgba(60,176,122,0.10)',
-    ring: 'rgba(60,176,122,0.35)',
-  },
-  flagged: {
-    label: 'flagged',
-    dot: '#e25d5d',
-    bg: 'rgba(226,93,93,0.10)',
-    ring: 'rgba(226,93,93,0.45)',
-  },
-  rejected: {
-    label: 'rejected',
-    dot: 'rgba(251,241,222,0.42)',
-    bg: 'rgba(251,241,222,0.05)',
-    ring: '#3a3027',
-  },
-}
+export const MODERATION_STATUS_TAX: Record<ModerationStatus, { label: string; dot: string; bg: string; ring: string }> =
+  {
+    pending: {
+      label: 'pending review',
+      dot: '#f2a02e',
+      bg: 'rgba(242,160,46,0.10)',
+      ring: 'rgba(242,160,46,0.4)',
+    },
+    approved: {
+      label: 'approved',
+      dot: '#3cb07a',
+      bg: 'rgba(60,176,122,0.10)',
+      ring: 'rgba(60,176,122,0.35)',
+    },
+    flagged: {
+      label: 'flagged',
+      dot: '#e25d5d',
+      bg: 'rgba(226,93,93,0.10)',
+      ring: 'rgba(226,93,93,0.45)',
+    },
+    rejected: {
+      label: 'rejected',
+      dot: 'rgba(251,241,222,0.42)',
+      bg: 'rgba(251,241,222,0.05)',
+      ring: '#3a3027',
+    },
+  }
 
 const ART_STYLE_COLORS: Record<string, string> = {
   watercolor: '#7ab6a0',
@@ -130,16 +122,7 @@ const ART_STYLE_COLORS: Record<string, string> = {
   sticker: '#e0382e',
 }
 
-const PALETTE = [
-  '#d67bb0',
-  '#f2a02e',
-  '#5fa8e0',
-  '#7ab6a0',
-  '#e08b5f',
-  '#a788e8',
-  '#3cb07a',
-  '#9c7b5c',
-]
+const PALETTE = ['#d67bb0', '#f2a02e', '#5fa8e0', '#7ab6a0', '#e08b5f', '#a788e8', '#3cb07a', '#9c7b5c']
 
 export function artStyleColor(slug: string): string {
   return ART_STYLE_COLORS[slug] ?? hashColor(slug)

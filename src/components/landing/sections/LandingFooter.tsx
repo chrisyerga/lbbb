@@ -30,14 +30,12 @@ export function LandingFooter() {
           post a week.
         </h2>
         <p className="mt-[18px] max-w-[460px] text-[17px] opacity-90">
-          Sample blog posts (from real pets), AI portrait drops, and product
-          updates. No spam — Zoe&apos;s a strict editor.
+          Sample blog posts (from real pets), AI portrait drops, and product updates. No spam — Zoe&apos;s a strict
+          editor.
         </p>
 
         {submitted ? (
-          <p className="mt-7 text-[15px] font-semibold">
-            Thanks — newsletter coming soon.
-          </p>
+          <p className="mt-7 text-[15px] font-semibold">Thanks — newsletter coming soon.</p>
         ) : (
           <form
             className="mt-7 flex max-w-[460px] flex-col gap-2.5 sm:flex-row"
@@ -60,21 +58,12 @@ export function LandingFooter() {
 
       <div className="relative mt-16 flex flex-col gap-6 border-t border-white/30 pt-7 sm:mt-20 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="font-display text-4xl font-extrabold tracking-tight">
-            cafezoe
-          </div>
-          <div className="mt-1 text-xs opacity-80">
-            © {new Date().getFullYear()} · Made with paws in Brooklyn
-          </div>
+          <div className="font-display text-4xl font-extrabold tracking-tight">cafezoe</div>
+          <div className="mt-1 text-xs opacity-80">© {new Date().getFullYear()} · Made with paws in Brooklyn</div>
         </div>
         <div className="flex flex-wrap gap-6 text-[13.5px]">
           {FOOTER_LINKS.map((l) => (
-            <a
-              key={l}
-              href="#"
-              className="text-white/90 no-underline"
-              onClick={(e) => e.preventDefault()}
-            >
+            <a key={l} href="#" className="text-white/90 no-underline" onClick={(e) => e.preventDefault()}>
               {l}
             </a>
           ))}

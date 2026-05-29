@@ -9,9 +9,7 @@ function validateFile(file: File) {
     throw new Error('Use JPEG, PNG, or WebP images only.')
   }
   if (file.size > defaultQuotas.maxUploadBytes) {
-    throw new Error(
-      `File exceeds ${Math.round(defaultQuotas.maxUploadBytes / (1024 * 1024))} MB limit.`,
-    )
+    throw new Error(`File exceeds ${Math.round(defaultQuotas.maxUploadBytes / (1024 * 1024))} MB limit.`)
   }
 }
 

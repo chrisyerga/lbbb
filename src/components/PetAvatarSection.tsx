@@ -29,9 +29,7 @@ export function PetAvatarSection({
   const photos = useQuery(api.assets.listByPet, { petId })
   const setAvatar = useMutation(api.pets.setAvatar)
   const clearAvatar = useMutation(api.pets.clearAvatar)
-  const [settingAssetId, setSettingAssetId] = useState<Id<'assets'> | null>(
-    null,
-  )
+  const [settingAssetId, setSettingAssetId] = useState<Id<'assets'> | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   async function chooseProfile(assetId: Id<'assets'>) {
@@ -41,9 +39,7 @@ export function PetAvatarSection({
     try {
       await setAvatar({ petId, assetId })
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to set profile photo',
-      )
+      setError(err instanceof Error ? err.message : 'Failed to set profile photo')
     } finally {
       setSettingAssetId(null)
     }
@@ -70,19 +66,13 @@ export function PetAvatarSection({
         )}
         <div className="grid flex-1 gap-3">
           <div>
-            <h2 className="m-0 text-lg font-semibold text-[var(--text-primary)]">
-              Profile photo
-            </h2>
+            <h2 className="m-0 text-lg font-semibold text-[var(--text-primary)]">Profile photo</h2>
             <p className="mt-1 text-[var(--text-muted)]">
-              Upload photos, then choose one as the profile picture shown on the
-              pets list. The first upload is selected automatically.
+              Upload photos, then choose one as the profile picture shown on the pets list. The first upload is selected
+              automatically.
             </p>
           </div>
-          <PhotoUpload
-            petId={petId}
-            label="Upload photo"
-            onUploaded={(assetId) => void onUploaded(assetId)}
-          />
+          <PhotoUpload petId={petId} label="Upload photo" onUploaded={(assetId) => void onUploaded(assetId)} />
           {avatarAssetId ? (
             <Button
               type="button"
@@ -108,12 +98,7 @@ export function PetAvatarSection({
             const isActive = photo.assetId === avatarAssetId
             const isSetting = settingAssetId === photo.assetId
             return (
-              <li
-                key={photo.assetId}
-                className={`panel grid gap-2 p-2 ${
-                  isActive ? 'border-[var(--accent)]' : ''
-                }`}
-              >
+              <li key={photo.assetId} className={`panel grid gap-2 p-2 ${isActive ? 'border-[var(--accent)]' : ''}`}>
                 <img
                   src={photo.url}
                   alt=""
@@ -127,11 +112,7 @@ export function PetAvatarSection({
                   disabled={isActive || isSetting}
                   onClick={() => void chooseProfile(photo.assetId)}
                 >
-                  {isSetting
-                    ? 'Setting…'
-                    : isActive
-                      ? 'Profile photo'
-                      : 'Set as profile'}
+                  {isSetting ? 'Setting…' : isActive ? 'Profile photo' : 'Set as profile'}
                 </Button>
               </li>
             )

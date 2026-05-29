@@ -8,10 +8,6 @@ export const Route = createFileRoute('/p/$petSlug/about')({
 function PublicPetAbout() {
   const { petSlug } = Route.useParams()
   return (
-    <PageShell
-      eyebrow="About"
-      title={`About ${petSlug}`}
-      children={<p>Public profile metadata for the pet blog.</p>}
-    />
+    <PageShell eyebrow="About" title={`About ${petSlug}`} children={<p>Public profile metadata for the pet blog.</p>} />
   )
 }

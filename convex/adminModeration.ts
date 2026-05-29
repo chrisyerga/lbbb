@@ -4,11 +4,7 @@ import { resolveAssetUrl } from './lib/assets'
 import { requireStaff } from './lib/requireAccount'
 import { requireUser } from './lib/requireUser'
 
-const moderationDecision = v.union(
-  v.literal('approved'),
-  v.literal('flagged'),
-  v.literal('rejected'),
-)
+const moderationDecision = v.union(v.literal('approved'), v.literal('flagged'), v.literal('rejected'))
 
 export const queueList = query({
   args: { limit: v.optional(v.number()) },
@@ -16,33 +12,24 @@ export const queueList = query({
     await requireStaff(ctx)
     const limit = args.limit ?? 50
 
-    const [pendingPosts, flaggedPosts, pendingAssets, flaggedAssets] =
-      await Promise.all([
-        ctx.db
-          .query('generatedPosts')
-          .withIndex('by_moderation_status', (q) =>
-            q.eq('moderationStatus', 'pending'),
-          )
-          .take(limit),
-        ctx.db
-          .query('generatedPosts')
-          .withIndex('by_moderation_status', (q) =>
-            q.eq('moderationStatus', 'flagged'),
-          )
-          .take(limit),
-        ctx.db
-          .query('assets')
-          .withIndex('by_moderation_status', (q) =>
-            q.eq('moderationStatus', 'pending'),
-          )
-          .take(limit),
-        ctx.db
-          .query('assets')
-          .withIndex('by_moderation_status', (q) =>
-            q.eq('moderationStatus', 'flagged'),
-          )
-          .take(limit),
-      ])
+    const [pendingPosts, flaggedPosts, pendingAssets, flaggedAssets] = await Promise.all([
+      ctx.db
+        .query('generatedPosts')
+        .withIndex('by_moderation_status', (q) => q.eq('moderationStatus', 'pending'))
+        .take(limit),
+      ctx.db
+        .query('generatedPosts')
+        .withIndex('by_moderation_status', (q) => q.eq('moderationStatus', 'flagged'))
+        .take(limit),
+      ctx.db
+        .query('assets')
+        .withIndex('by_moderation_status', (q) => q.eq('moderationStatus', 'pending'))
+        .take(limit),
+      ctx.db
+        .query('assets')
+        .withIndex('by_moderation_status', (q) => q.eq('moderationStatus', 'flagged'))
+        .take(limit),
+    ])
 
     const postItems = [...pendingPosts, ...flaggedPosts]
       .filter((p) => p.status === 'awaiting_moderation')
@@ -52,9 +39,9 @@ export const queueList = query({
     type QueueItem = {
       id: string
       kind: 'post' | 'asset'
-      postId?: typeof postItems[number]['_id']
-      assetId?: typeof assetItems[number]['_id']
-      status: typeof postItems[number]['moderationStatus']
+      postId?: (typeof postItems)[number]['_id']
+      assetId?: (typeof assetItems)[number]['_id']
+      status: (typeof postItems)[number]['moderationStatus']
       createdAt: number
       petName: string
       ownerEmail: string
@@ -76,7 +63,7 @@ export const queueList = query({
           .then((events) => {
             const sorted = events.sort((a, b) => b.createdAt - a.createdAt)
             return sorted.at(0) ?? null
-          })
+          }),
       ])
 
       items.push({
@@ -104,7 +91,7 @@ export const queueList = query({
           .then((events) => {
             const sorted = events.sort((a, b) => b.createdAt - a.createdAt)
             return sorted.at(0) ?? null
-          })
+          }),
       ])
 
       items.push({

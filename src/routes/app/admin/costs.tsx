@@ -12,8 +12,7 @@ function AdminCostsPage() {
       title="Provider cost tracking."
       children={
         <p>
-          Every OpenAI/OpenRouter call gets a <code>generationCosts</code>{' '}
-          record.
+          Every OpenAI/OpenRouter call gets a <code>generationCosts</code> record.
         </p>
       }
     />

@@ -1,6 +1,6 @@
 # Architecture
 
-Little Bestiary Blog Builder uses TanStack Start for the web surface and Convex for auth, data, storage, and the first-generation job runner.
+Lida Bida Boda Butt uses TanStack Start for the web surface and Convex for auth, data, storage, and the first-generation job runner.
 
 ## Request Flow
 

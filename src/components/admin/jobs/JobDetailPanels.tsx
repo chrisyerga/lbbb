@@ -69,35 +69,17 @@ export function JobHeader({
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
         {job.memoryId ? (
-          <Link
-            to="/app/pets/$petId/memories"
-            params={{ petId: job.petId }}
-            className="admin-btn-secondary"
-          >
+          <Link to="/app/pets/$petId/memories" params={{ petId: job.petId }} className="admin-btn-secondary">
             View memory
           </Link>
         ) : null}
-        <Link
-          to="/app/generations/$jobId"
-          params={{ jobId: job._id }}
-          className="admin-btn-secondary"
-        >
+        <Link to="/app/generations/$jobId" params={{ jobId: job._id }} className="admin-btn-secondary">
           Open draft
         </Link>
-        <button
-          type="button"
-          className="admin-btn-secondary"
-          disabled
-          title="Cancel not implemented yet"
-        >
+        <button type="button" className="admin-btn-secondary" disabled title="Cancel not implemented yet">
           Cancel
         </button>
-        <button
-          type="button"
-          className="admin-btn-secondary"
-          disabled
-          title="Retry not implemented yet"
-        >
+        <button type="button" className="admin-btn-secondary" disabled title="Retry not implemented yet">
           Retry
         </button>
       </div>
@@ -128,10 +110,7 @@ export function OutputPanel({
           <>
             <h3 className="admin-output-title">{draft.title}</h3>
             {draft.excerpt ? (
-              <p
-                className="admin-output-body"
-                style={{ opacity: 0.75, marginBottom: 10 }}
-              >
+              <p className="admin-output-body" style={{ opacity: 0.75, marginBottom: 10 }}>
                 {draft.excerpt}
               </p>
             ) : null}
@@ -139,9 +118,7 @@ export function OutputPanel({
           </>
         ) : (
           <p className="admin-output-body" style={{ color: 'var(--admin-ink-3)' }}>
-            {isProcessing
-              ? 'Waiting for generated text…'
-              : 'No draft output yet.'}
+            {isProcessing ? 'Waiting for generated text…' : 'No draft output yet.'}
           </p>
         )}
       </div>
@@ -150,11 +127,7 @@ export function OutputPanel({
           const url = draft?.imageUrls[i]
           return (
             <div key={i} className="admin-output-image">
-              {url ? (
-                <img src={url} alt="" />
-              ) : (
-                <div className="admin-output-placeholder" />
-              )}
+              {url ? <img src={url} alt="" /> : <div className="admin-output-placeholder" />}
             </div>
           )
         })}

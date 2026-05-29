@@ -7,10 +7,7 @@ import { useMemo } from 'react'
 import { api } from '#convex/_generated/api'
 import { getConvexSiteUrl } from '#/lib/convexSiteUrl'
 
-export function useMemoryGenerationStream(args: {
-  streamId: string | null | undefined
-  driven: boolean
-}) {
+export function useMemoryGenerationStream(args: { streamId: string | null | undefined; driven: boolean }) {
   const authToken = useAuthToken()
   const streamUrl = useMemo(() => {
     const site = getConvexSiteUrl()

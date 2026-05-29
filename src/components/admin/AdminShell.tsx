@@ -19,61 +19,37 @@ export function AdminShell({ children }: PropsWithChildren) {
         </Link>
         <Link
           to="/app/admin/jobs"
-          className={
-            pathname.startsWith('/app/admin/jobs')
-              ? 'admin-nav-link is-active'
-              : 'admin-nav-link'
-          }
+          className={pathname.startsWith('/app/admin/jobs') ? 'admin-nav-link is-active' : 'admin-nav-link'}
         >
           Jobs
         </Link>
         <Link
           to="/app/admin/moderation"
-          className={
-            pathname.startsWith('/app/admin/moderation')
-              ? 'admin-nav-link is-active'
-              : 'admin-nav-link'
-          }
+          className={pathname.startsWith('/app/admin/moderation') ? 'admin-nav-link is-active' : 'admin-nav-link'}
         >
           Moderation
         </Link>
         <Link
           to="/app/admin/narrators"
-          className={
-            pathname.startsWith('/app/admin/narrators')
-              ? 'admin-nav-link is-active'
-              : 'admin-nav-link'
-          }
+          className={pathname.startsWith('/app/admin/narrators') ? 'admin-nav-link is-active' : 'admin-nav-link'}
         >
           Narrators
         </Link>
         <Link
           to="/app/admin/art-styles"
-          className={
-            pathname.startsWith('/app/admin/art-styles')
-              ? 'admin-nav-link is-active'
-              : 'admin-nav-link'
-          }
+          className={pathname.startsWith('/app/admin/art-styles') ? 'admin-nav-link is-active' : 'admin-nav-link'}
         >
           Art styles
         </Link>
         <Link
           to="/app/admin/traits"
-          className={
-            pathname.startsWith('/app/admin/traits')
-              ? 'admin-nav-link is-active'
-              : 'admin-nav-link'
-          }
+          className={pathname.startsWith('/app/admin/traits') ? 'admin-nav-link is-active' : 'admin-nav-link'}
         >
           Traits
         </Link>
         <Link
           to="/app/admin/costs"
-          className={
-            pathname.startsWith('/app/admin/costs')
-              ? 'admin-nav-link is-active'
-              : 'admin-nav-link'
-          }
+          className={pathname.startsWith('/app/admin/costs') ? 'admin-nav-link is-active' : 'admin-nav-link'}
         >
           Costs
         </Link>

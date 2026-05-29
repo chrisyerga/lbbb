@@ -1,8 +1,4 @@
-export function imagePromptVariants(
-  basePrompt: string,
-  artStyle: string,
-  count = 4,
-) {
+export function imagePromptVariants(basePrompt: string, artStyle: string, count = 4) {
   const styleHint = artStyle ? ` Style: ${artStyle}.` : ''
   const angles = [
     'Wide establishing shot.',

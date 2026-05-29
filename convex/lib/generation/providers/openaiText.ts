@@ -12,16 +12,12 @@ function normalizeTextResult(raw: Record<string, unknown>): TextGenerationResult
     title: String(raw.title ?? ''),
     excerpt: String(raw.excerpt ?? ''),
     bodyMarkdown: String(raw.bodyMarkdown ?? raw.body_markdown ?? ''),
-    tags: Array.isArray(raw.tags)
-      ? raw.tags.filter((t): t is string => typeof t === 'string')
-      : [],
+    tags: Array.isArray(raw.tags) ? raw.tags.filter((t): t is string => typeof t === 'string') : [],
     imagePrompt,
   }
 }
 
-export async function callOpenAIText(
-  prompt: string,
-): Promise<TextGenerationResult> {
+export async function callOpenAIText(prompt: string): Promise<TextGenerationResult> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) throw new Error('OPENAI_API_KEY is not configured')
 
@@ -40,9 +36,7 @@ export async function callOpenAIText(
 
   if (!response.ok) {
     const detail = await response.text()
-    throw new Error(
-      `OpenAI text generation failed: ${response.status} ${detail.slice(0, 200)}`,
-    )
+    throw new Error(`OpenAI text generation failed: ${response.status} ${detail.slice(0, 200)}`)
   }
 
   const json = await response.json()
@@ -88,9 +82,7 @@ export async function streamOpenAIMarkdown(
 
   if (!response.ok) {
     const detail = await response.text()
-    throw new Error(
-      `OpenAI stream failed: ${response.status} ${detail.slice(0, 200)}`,
-    )
+    throw new Error(`OpenAI stream failed: ${response.status} ${detail.slice(0, 200)}`)
   }
 
   if (!response.body) throw new Error('OpenAI stream returned no body')
@@ -155,9 +147,7 @@ export async function callOpenAIMetadata(prompt: string): Promise<{
 
   if (!response.ok) {
     const detail = await response.text()
-    throw new Error(
-      `OpenAI metadata failed: ${response.status} ${detail.slice(0, 200)}`,
-    )
+    throw new Error(`OpenAI metadata failed: ${response.status} ${detail.slice(0, 200)}`)
   }
 
   const json = await response.json()
@@ -173,9 +163,7 @@ export async function callOpenAIMetadata(prompt: string): Promise<{
   return {
     title: String(raw.title ?? ''),
     excerpt: String(raw.excerpt ?? ''),
-    tags: Array.isArray(raw.tags)
-      ? raw.tags.filter((t): t is string => typeof t === 'string')
-      : [],
+    tags: Array.isArray(raw.tags) ? raw.tags.filter((t): t is string => typeof t === 'string') : [],
     imagePrompt,
     usage: {
       inputTokens: json.usage?.prompt_tokens,

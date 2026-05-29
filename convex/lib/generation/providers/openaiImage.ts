@@ -25,9 +25,7 @@ export async function callOpenAIImage(
 
   if (!response.ok) {
     const detail = await response.text()
-    throw new Error(
-      `OpenAI image generation failed: ${response.status} ${detail.slice(0, 200)}`,
-    )
+    throw new Error(`OpenAI image generation failed: ${response.status} ${detail.slice(0, 200)}`)
   }
 
   const json = await response.json()

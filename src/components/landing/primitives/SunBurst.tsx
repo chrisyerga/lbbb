@@ -15,13 +15,7 @@ function roundThou(n: number) {
   return Math.round(n * 1000) / 1000
 }
 
-export function SunBurst({
-  color = '#F2A02E',
-  size = 120,
-  rays = 12,
-  className,
-  style,
-}: SunBurstProps) {
+export function SunBurst({ color = '#F2A02E', size = 120, rays = 12, className, style }: SunBurstProps) {
   const lines = []
   for (let i = 0; i < rays; i += 1) {
     const a = (i / rays) * Math.PI * 2
@@ -44,13 +38,7 @@ export function SunBurst({
   }
 
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 100 100"
-      className={cn('block', className)}
-      style={style}
-    >
+    <svg width={size} height={size} viewBox="0 0 100 100" className={cn('block', className)} style={style}>
       {lines}
     </svg>
   )

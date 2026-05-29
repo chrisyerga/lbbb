@@ -11,13 +11,7 @@ type DismissibleTipProps = {
   className?: string
 }
 
-export function DismissibleTip({
-  storageKey,
-  title,
-  body,
-  action,
-  className,
-}: DismissibleTipProps) {
+export function DismissibleTip({ storageKey, title, body, action, className }: DismissibleTipProps) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -46,12 +40,8 @@ export function DismissibleTip({
         ✦
       </div>
       <div className="min-w-0 flex-1">
-        <p className="font-display m-0 text-lg font-extrabold tracking-tight text-[var(--landing-ink)]">
-          {title}
-        </p>
-        <p className="mt-1 mb-0 text-sm leading-normal text-[var(--landing-ink)]/70">
-          {body}
-        </p>
+        <p className="font-display m-0 text-lg font-extrabold tracking-tight text-[var(--landing-ink)]">{title}</p>
+        <p className="mt-1 mb-0 text-sm leading-normal text-[var(--landing-ink)]/70">{body}</p>
         {action ? (
           <a
             href={action.href}

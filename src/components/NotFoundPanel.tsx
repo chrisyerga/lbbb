@@ -28,9 +28,7 @@ export function NotFoundPanel({
         <h1 className="font-display m-0 text-4xl font-extrabold leading-tight tracking-tight text-[var(--text-primary)] sm:text-5xl">
           {title}
         </h1>
-        <p className="mt-4 max-w-xl text-sm text-[var(--text-muted)]">
-          {description}
-        </p>
+        <p className="mt-4 max-w-xl text-sm text-[var(--text-muted)]">{description}</p>
         {subject ? (
           <p className="font-mono mt-4 max-w-xl border border-[var(--border)] bg-[var(--bg-input)] px-3 py-2 text-xs text-[var(--text-muted)]">
             {subject}
@@ -58,12 +56,8 @@ export function PetBlogNotFound({ petSlug }: { petSlug: string }) {
       title="No pet blog here"
       description={
         <>
-          There is no public blog for{' '}
-          <span className="font-semibold text-[var(--text-primary)]">
-            {petSlug}
-          </span>
-          . The pet may not exist, the URL may be wrong, or the blog might be
-          private or unlisted.
+          There is no public blog for <span className="font-semibold text-[var(--text-primary)]">{petSlug}</span>. The
+          pet may not exist, the URL may be wrong, or the blog might be private or unlisted.
         </>
       }
       subject={`/p/${petSlug}`}

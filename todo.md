@@ -18,12 +18,12 @@
 
 ## Model Settings
 
- - [ ] Hacky constants for gpt-image-2 and text models in the code
- - [ ] Code is pulling from .env vars in Convex. This is weird and hard-coded. Needs to be params as part of the generation job
+- [ ] Hacky constants for gpt-image-2 and text models in the code
+- [ ] Code is pulling from .env vars in Convex. This is weird and hard-coded. Needs to be params as part of the generation job
 
 ## Routing
 
- - [ ] Need to understand Tanstack router better. Pages weren't rendering because they needed something called an <Outlet /> ??
+- [ ] Need to understand Tanstack router better. Pages weren't rendering because they needed something called an <Outlet /> ??
 
 ## Images & storage
 

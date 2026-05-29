@@ -19,10 +19,7 @@ async function nextSortOrder(ctx: MutationCtx, ownerUserId: Id<'users'>) {
   return max + 10
 }
 
-export async function syncCastMemberFromPet(
-  ctx: MutationCtx,
-  pet: Doc<'pets'>,
-): Promise<Id<'castMembers'>> {
+export async function syncCastMemberFromPet(ctx: MutationCtx, pet: Doc<'pets'>): Promise<Id<'castMembers'>> {
   const existing = await ctx.db
     .query('castMembers')
     .withIndex('by_linked_pet', (q) => q.eq('linkedPetId', pet._id))
@@ -64,10 +61,7 @@ export async function syncCastMemberFromPet(
   })
 }
 
-export async function syncAllCastMembersFromPets(
-  ctx: MutationCtx,
-  ownerUserId: Id<'users'>,
-) {
+export async function syncAllCastMembersFromPets(ctx: MutationCtx, ownerUserId: Id<'users'>) {
   const pets = await ctx.db
     .query('pets')
     .withIndex('by_owner', (q) => q.eq('ownerUserId', ownerUserId))

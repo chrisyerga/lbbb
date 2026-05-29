@@ -45,13 +45,7 @@ function CastMemberCard({
   onSelect: () => void
 }) {
   return (
-    <button
-      type="button"
-      className={
-        selected ? 'cast-card cast-card--selected' : 'cast-card'
-      }
-      onClick={onSelect}
-    >
+    <button type="button" className={selected ? 'cast-card cast-card--selected' : 'cast-card'} onClick={onSelect}>
       {member.avatarUrl ? (
         <img src={member.avatarUrl} alt="" className="cast-card-avatar" />
       ) : (
@@ -60,16 +54,10 @@ function CastMemberCard({
       <div className="cast-card-body">
         <div className="cast-card-head">
           <span className="cast-card-name">{member.name}</span>
-          <span className={kindBadgeClass(member.kind)}>
-            {KIND_LABELS[member.kind]}
-          </span>
+          <span className={kindBadgeClass(member.kind)}>{KIND_LABELS[member.kind]}</span>
         </div>
-        {member.relationship ? (
-          <p className="cast-card-relationship">{member.relationship}</p>
-        ) : null}
-        {member.linkedPetId ? (
-          <p className="cast-card-sync">Synced from {member.linkedPetName}</p>
-        ) : null}
+        {member.relationship ? <p className="cast-card-relationship">{member.relationship}</p> : null}
+        {member.linkedPetId ? <p className="cast-card-sync">Synced from {member.linkedPetName}</p> : null}
         <p className="cast-card-description">{member.visualDescription}</p>
       </div>
     </button>
@@ -85,10 +73,7 @@ function CastEditor({
   onClose: () => void
   onArchived: () => void
 }) {
-  const detail = useQuery(
-    api.castMembers.getById,
-    memberId ? { castMemberId: memberId } : 'skip',
-  )
+  const detail = useQuery(api.castMembers.getById, memberId ? { castMemberId: memberId } : 'skip')
   const updateMember = useMutation(api.castMembers.update)
   const archiveMember = useMutation(api.castMembers.archive)
   const removePhoto = useMutation(api.castMembers.removeReferencePhoto)
@@ -164,32 +149,19 @@ function CastEditor({
   }
 
   if (detail === undefined) {
-    return (
-      <div className="cast-editor panel p-6 text-sm text-[var(--text-muted)]">
-        Loading…
-      </div>
-    )
+    return <div className="cast-editor panel p-6 text-sm text-[var(--text-muted)]">Loading…</div>
   }
 
   const isLinkedPet = Boolean(detail.linkedPetId)
 
   return (
-    <form
-      onSubmit={(e) => void onSave(e)}
-      className="cast-editor panel grid gap-4 p-6 text-sm"
-    >
+    <form onSubmit={(e) => void onSave(e)} className="cast-editor panel grid gap-4 p-6 text-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="section-label m-0">Edit cast member</p>
-          <h2 className="font-display m-0 mt-1 text-xl font-extrabold text-[var(--text-primary)]">
-            {detail.name}
-          </h2>
+          <h2 className="font-display m-0 mt-1 text-xl font-extrabold text-[var(--text-primary)]">{detail.name}</h2>
         </div>
-        <button
-          type="button"
-          className="nav-link cursor-pointer border-0 bg-transparent p-0"
-          onClick={onClose}
-        >
+        <button type="button" className="nav-link cursor-pointer border-0 bg-transparent p-0" onClick={onClose}>
           Close
         </button>
       </div>
@@ -197,11 +169,7 @@ function CastEditor({
       {isLinkedPet ? (
         <p className="m-0 rounded-xl border-2 border-[#14100E] bg-[var(--landing-accent)]/20 px-3 py-2 text-xs text-[var(--text-primary)]">
           Synced from{' '}
-          <Link
-            to="/app/pets/$petId"
-            params={{ petId: detail.linkedPetId! }}
-            className="font-semibold"
-          >
+          <Link to="/app/pets/$petId" params={{ petId: detail.linkedPetId! }} className="font-semibold">
             {detail.linkedPetName}
           </Link>
           . Name and species update from the pet profile.
@@ -211,12 +179,7 @@ function CastEditor({
       {!isLinkedPet ? (
         <label className="grid gap-2 text-[var(--text-primary)]">
           Name
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="input-field"
-            required
-          />
+          <input value={name} onChange={(e) => setName(e.target.value)} className="input-field" required />
         </label>
       ) : null}
 
@@ -256,11 +219,7 @@ function CastEditor({
           </label>
           <label className="grid gap-2 text-[var(--text-primary)]">
             Breed
-            <input
-              value={breed}
-              onChange={(e) => setBreed(e.target.value)}
-              className="input-field"
-            />
+            <input value={breed} onChange={(e) => setBreed(e.target.value)} className="input-field" />
           </label>
         </div>
       ) : null}
@@ -317,9 +276,7 @@ function CastEditor({
         <Button type="submit" disabled={saving}>
           {saving ? 'Saving…' : 'Save changes'}
         </Button>
-        {savedAt !== null ? (
-          <span className="text-xs text-[var(--accent)]">Saved.</span>
-        ) : null}
+        {savedAt !== null ? <span className="text-xs text-[var(--accent)]">Saved.</span> : null}
         {!isLinkedPet ? (
           <button
             type="button"
@@ -379,21 +336,14 @@ function NewCastForm({ onCreated }: { onCreated: (id: Id<'castMembers'>) => void
 
   if (!open) {
     return (
-      <button
-        type="button"
-        className={buttonClassName('secondary')}
-        onClick={() => setOpen(true)}
-      >
+      <button type="button" className={buttonClassName('secondary')} onClick={() => setOpen(true)}>
         Add person or animal
       </button>
     )
   }
 
   return (
-    <form
-      onSubmit={(e) => void onSubmit(e)}
-      className="panel grid gap-4 p-6 text-sm"
-    >
+    <form onSubmit={(e) => void onSubmit(e)} className="panel grid gap-4 p-6 text-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="section-label m-0">New cast member</p>
         <button
@@ -424,12 +374,7 @@ function NewCastForm({ onCreated }: { onCreated: (id: Id<'castMembers'>) => void
 
       <label className="grid gap-2 text-[var(--text-primary)]">
         Name
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="input-field"
-          required
-        />
+        <input value={name} onChange={(e) => setName(e.target.value)} className="input-field" required />
       </label>
 
       <label className="grid gap-2 text-[var(--text-primary)]">
@@ -444,30 +389,18 @@ function NewCastForm({ onCreated }: { onCreated: (id: Id<'castMembers'>) => void
 
       <label className="grid gap-2 text-[var(--text-primary)]">
         Relationship
-        <input
-          value={relationship}
-          onChange={(e) => setRelationship(e.target.value)}
-          className="input-field"
-        />
+        <input value={relationship} onChange={(e) => setRelationship(e.target.value)} className="input-field" />
       </label>
 
       {kind === 'animal' ? (
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="grid gap-2 text-[var(--text-primary)]">
             Species
-            <input
-              value={species}
-              onChange={(e) => setSpecies(e.target.value)}
-              className="input-field"
-            />
+            <input value={species} onChange={(e) => setSpecies(e.target.value)} className="input-field" />
           </label>
           <label className="grid gap-2 text-[var(--text-primary)]">
             Breed
-            <input
-              value={breed}
-              onChange={(e) => setBreed(e.target.value)}
-              className="input-field"
-            />
+            <input value={breed} onChange={(e) => setBreed(e.target.value)} className="input-field" />
           </label>
         </div>
       ) : null}
@@ -519,13 +452,10 @@ export function CastPage() {
         <p className="text-sm text-[var(--text-muted)]">Loading…</p>
       ) : sortedMembers.length === 0 ? (
         <div className="panel p-8 text-center text-sm text-[var(--text-muted)]">
-          <p className="m-0 text-[var(--text-primary)]">
-            Add the people and pets who show up in your stories
-          </p>
+          <p className="m-0 text-[var(--text-primary)]">Add the people and pets who show up in your stories</p>
           <p className="mt-2 mb-0">
-            Your platform pets will appear here automatically. Add family,
-            friends, and neighbor pets so memories mentioning them get accurate
-            art.
+            Your platform pets will appear here automatically. Add family, friends, and neighbor pets so memories
+            mentioning them get accurate art.
           </p>
         </div>
       ) : (

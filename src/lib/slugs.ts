@@ -37,10 +37,7 @@ export function postSlug(title: string, date = new Date()) {
   return `${yyyy}-${mm}-${dd}-${slugify(title)}`
 }
 
-export function uniqueSlug(
-  baseSlug: string,
-  existingSlugs: ReadonlySet<string>,
-) {
+export function uniqueSlug(baseSlug: string, existingSlugs: ReadonlySet<string>) {
   if (!existingSlugs.has(baseSlug)) return baseSlug
 
   let suffix = 2

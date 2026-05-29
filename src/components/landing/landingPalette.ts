@@ -50,9 +50,7 @@ export function getLandingPalette(key: LandingPaletteKey = DEFAULT_PALETTE_KEY) 
   return V1_PALETTES[key]
 }
 
-export function paletteToCssVars(
-  palette: LandingPalette,
-): Record<string, string> {
+export function paletteToCssVars(palette: LandingPalette): Record<string, string> {
   return {
     '--landing-cream': palette.cream,
     '--landing-ink': palette.ink,

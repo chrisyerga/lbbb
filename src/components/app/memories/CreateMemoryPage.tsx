@@ -9,17 +9,8 @@ import { Squiggle } from '#/components/landing/primitives/Squiggle'
 import { StickerBtn } from '#/components/landing/primitives/StickerBtn'
 import { SunBurst } from '#/components/landing/primitives/SunBurst'
 import { Tape } from '#/components/landing/primitives/Tape'
-import {
-  DEFAULT_PALETTE_KEY,
-  getLandingPalette,
-} from '#/components/landing/landingPalette'
-import {
-  IconArrowRight,
-  IconComment,
-  IconHeart,
-  IconSparkle,
-  LogoPaw,
-} from '#/components/app/icons'
+import { DEFAULT_PALETTE_KEY, getLandingPalette } from '#/components/landing/landingPalette'
+import { IconArrowRight, IconComment, IconHeart, IconSparkle, LogoPaw } from '#/components/app/icons'
 import { PetNotFound } from '#/components/NotFoundPanel'
 import { api } from '#convex/_generated/api'
 import type { Id } from '#convex/_generated/dataModel'
@@ -31,15 +22,7 @@ type PendingPhoto = {
   url: string | null
 }
 
-function StepLabel({
-  n,
-  title,
-  helper,
-}: {
-  n: number
-  title: string
-  helper?: string
-}) {
+function StepLabel({ n, title, helper }: { n: number; title: string; helper?: string }) {
   return (
     <div className="memory-step-label">
       <span className="memory-step-num">0{n}</span>
@@ -73,29 +56,19 @@ function NarratorPicker({
           <button
             key={narrator._id}
             type="button"
-            className={
-              selected ? 'memory-narrator-card is-selected' : 'memory-narrator-card'
-            }
+            className={selected ? 'memory-narrator-card is-selected' : 'memory-narrator-card'}
             onClick={() => onSelect(narrator._id)}
           >
             <div className="memory-narrator-avatar">
-              {narrator.avatarUrl ? (
-                <img src={narrator.avatarUrl} alt="" />
-              ) : (
-                <span>{narrator.name.slice(0, 1)}</span>
-              )}
+              {narrator.avatarUrl ? <img src={narrator.avatarUrl} alt="" /> : <span>{narrator.name.slice(0, 1)}</span>}
             </div>
             <div className="memory-narrator-copy">
               <span className="memory-narrator-name">{narrator.name}</span>
               <span className="memory-narrator-tagline">{narrator.tagline}</span>
               {narrator.exampleExcerpt ? (
-                <span className="memory-narrator-excerpt">
-                  “{narrator.exampleExcerpt}”
-                </span>
+                <span className="memory-narrator-excerpt">“{narrator.exampleExcerpt}”</span>
               ) : null}
-              <span className="memory-narrator-art">
-                Art: {narrator.defaultArtStyle.name}
-              </span>
+              <span className="memory-narrator-art">Art: {narrator.defaultArtStyle.name}</span>
             </div>
           </button>
         )
@@ -147,18 +120,8 @@ function Composer({
 
   return (
     <div className="memory-composer-wrap">
-      <Tape
-        color="var(--landing-accent)"
-        w={110}
-        rotate={-7}
-        className="absolute -top-3 left-9 z-[2]"
-      />
-      <Tape
-        color="var(--landing-soft)"
-        w={70}
-        rotate={9}
-        className="absolute -top-2.5 right-20 z-[2]"
-      />
+      <Tape color="var(--landing-accent)" w={110} rotate={-7} className="absolute -top-3 left-9 z-[2]" />
+      <Tape color="var(--landing-soft)" w={70} rotate={9} className="absolute -top-2.5 right-20 z-[2]" />
 
       <div className="memory-composer">
         <div className="memory-composer-rules" aria-hidden />
@@ -180,11 +143,7 @@ function Composer({
             <button
               type="button"
               onClick={onDictate}
-              className={
-                dictating
-                  ? 'memory-dictate-btn is-active'
-                  : 'memory-dictate-btn'
-              }
+              className={dictating ? 'memory-dictate-btn is-active' : 'memory-dictate-btn'}
               aria-label="Toggle dictation"
             >
               <svg
@@ -211,12 +170,7 @@ function Composer({
           </div>
 
           <div className="memory-composer-meta">
-            <PhotoUpload
-              petId={petId}
-              multiple
-              label="Attach photo"
-              onUploaded={onPhotoUploaded}
-            />
+            <PhotoUpload petId={petId} multiple label="Attach photo" onUploaded={onPhotoUploaded} />
             <span className="memory-word-count">
               {wordCount} word{wordCount === 1 ? '' : 's'}
             </span>
@@ -229,10 +183,7 @@ function Composer({
               photo.url ? (
                 <li key={photo.assetId}>
                   <img src={photo.url} alt="" />
-                  <button
-                    type="button"
-                    onClick={() => onRemovePhoto(photo.assetId)}
-                  >
+                  <button type="button" onClick={() => onRemovePhoto(photo.assetId)}>
                     Remove
                   </button>
                 </li>
@@ -245,20 +196,9 @@ function Composer({
   )
 }
 
-function GeneratedArtPreview({
-  artStyleLabel,
-  imageUrls,
-}: {
-  artStyleLabel: string
-  imageUrls: Array<string | null>
-}) {
+function GeneratedArtPreview({ artStyleLabel, imageUrls }: { artStyleLabel: string; imageUrls: Array<string | null> }) {
   const palette = getLandingPalette(DEFAULT_PALETTE_KEY)
-  const accents = [
-    palette.primary,
-    palette.accent,
-    palette.ink,
-    '#3CB07A',
-  ] as const
+  const accents = [palette.primary, palette.accent, palette.ink, '#3CB07A'] as const
 
   return (
     <div className="memory-art-grid">
@@ -266,11 +206,7 @@ function GeneratedArtPreview({
         const url = imageUrls[i]
         if (url) {
           return (
-            <div
-              key={i}
-              className="memory-art-photo"
-              style={{ transform: `rotate(${[-1, 1.2, 0.8, -1.4][i]}deg)` }}
-            >
+            <div key={i} className="memory-art-photo" style={{ transform: `rotate(${[-1, 1.2, 0.8, -1.4][i]}deg)` }}>
               <img src={url} alt="" />
             </div>
           )
@@ -313,39 +249,24 @@ function PreviewCard({
 }) {
   const palette = getLandingPalette(DEFAULT_PALETTE_KEY)
   const previewMeta =
-    narratorName && artStyleName
-      ? `${narratorName} · ${artStyleName}`
-      : narratorName ?? 'Pick a narrator'
+    narratorName && artStyleName ? `${narratorName} · ${artStyleName}` : (narratorName ?? 'Pick a narrator')
   const previewTitle =
     generatedTitle ||
     (isGenerating
       ? 'Writing your post…'
       : description.trim()
-        ? description.trim().slice(0, 48) +
-          (description.trim().length > 48 ? '…' : '')
+        ? description.trim().slice(0, 48) + (description.trim().length > 48 ? '…' : '')
         : 'Your post title')
   const previewParagraphs = generatedBody
     ? generatedBody.split(/\n\n+/).filter(Boolean).slice(0, 3)
     : description.trim()
       ? [description.trim()]
-      : [
-          'Your story will land here once you generate — keep typing to preview the draft.',
-        ]
+      : ['Your story will land here once you generate — keep typing to preview the draft.']
 
   return (
     <div className="memory-preview-wrap">
-      <Tape
-        color={palette.primary}
-        w={84}
-        rotate={-8}
-        className="absolute -top-2.5 left-9 z-[2]"
-      />
-      <Tape
-        color={palette.accent}
-        w={66}
-        rotate={11}
-        className="absolute -top-2.5 right-12 z-[2]"
-      />
+      <Tape color={palette.primary} w={84} rotate={-8} className="absolute -top-2.5 left-9 z-[2]" />
+      <Tape color={palette.accent} w={66} rotate={11} className="absolute -top-2.5 right-12 z-[2]" />
 
       <div className="memory-preview-card">
         <div className="memory-preview-head">
@@ -354,19 +275,13 @@ function PreviewCard({
             live preview
           </span>
           <span className="memory-preview-url">
-            {statusHint ??
-              (blogSlug ? `cafezoe.app/p/${blogSlug}/draft` : 'draft preview')}
+            {statusHint ?? (blogSlug ? `cafezoe.app/p/${blogSlug}/draft` : 'draft preview')}
           </span>
         </div>
 
-        <GeneratedArtPreview
-          artStyleLabel={artStyleName ?? 'art preview'}
-          imageUrls={imageUrls}
-        />
+        <GeneratedArtPreview artStyleLabel={artStyleName ?? 'art preview'} imageUrls={imageUrls} />
 
-        <div className="memory-preview-meta">
-          today · ~3 min · {previewMeta}
-        </div>
+        <div className="memory-preview-meta">today · ~3 min · {previewMeta}</div>
 
         <h3 className="memory-preview-title">{previewTitle}</h3>
 
@@ -389,11 +304,7 @@ function PreviewCard({
         </div>
       </div>
 
-      <p className="memory-preview-note">
-        {isGenerating
-          ? '← generating your post'
-          : '← updates live as you write'}
-      </p>
+      <p className="memory-preview-note">{isGenerating ? '← generating your post' : '← updates live as you write'}</p>
     </div>
   )
 }
@@ -411,12 +322,7 @@ function MemoryHeader({
 
   return (
     <section className="memory-header-band">
-      <SunBurst
-        color="rgba(242,160,46,.18)"
-        size={120}
-        rays={14}
-        className="memory-header-sun"
-      />
+      <SunBurst color="rgba(242,160,46,.18)" size={120} rays={14} className="memory-header-sun" />
       <LogoPaw
         size={220}
         fg="rgba(251,241,222,.04)"
@@ -431,24 +337,17 @@ function MemoryHeader({
       <div className="page-wrap px-4">
         <div className="memory-header-grid">
           <div>
-            <p className="memory-header-eyebrow">
-              ↳ Pets · {petName} · new memory
-            </p>
+            <p className="memory-header-eyebrow">↳ Pets · {petName} · new memory</p>
             <h1 className="memory-header-title">
               What happened
               <br />
               <span className="memory-header-accent-wrap">
                 <span className="memory-header-accent">today?</span>
-                <Squiggle
-                  color={palette.primary}
-                  width={170}
-                  className="memory-header-squiggle"
-                />
+                <Squiggle color={palette.primary} width={170} className="memory-header-squiggle" />
               </span>
             </h1>
             <p className="memory-header-lede">
-              Pick a narrator, dump the memory, and we&apos;ll write the post and
-              paint the art.
+              Pick a narrator, dump the memory, and we&apos;ll write the post and paint the art.
             </p>
           </div>
 
@@ -460,9 +359,7 @@ function MemoryHeader({
             )}
             <span className="memory-pet-chip-label">filing for</span>
             <span className="memory-pet-chip-name">{petName}</span>
-            {blogSlug ? (
-              <span className="memory-pet-chip-slug">/{blogSlug}</span>
-            ) : null}
+            {blogSlug ? <span className="memory-pet-chip-slug">/{blogSlug}</span> : null}
           </div>
         </div>
       </div>
@@ -473,26 +370,18 @@ function MemoryHeader({
 export function CreateMemoryPage({ petId }: { petId: string }) {
   const navigate = useNavigate()
   const parsedPetId = parsePetId(petId)
-  const petData = useQuery(
-    api.pets.getMineByPetId,
-    parsedPetId ? { petId } : 'skip',
-  )
+  const petData = useQuery(api.pets.getMineByPetId, parsedPetId ? { petId } : 'skip')
   const narrators = useQuery(api.narrators.listPublished)
   const usage = useQuery(api.quotas.usageToday)
 
   const createDraft = useMutation(api.memories.createDraft)
   const startGeneration = useMutation(api.jobs.startMemoryGeneration)
 
-  const [activeJobId, setActiveJobId] = useState<Id<'generationJobs'> | null>(
-    null,
-  )
+  const [activeJobId, setActiveJobId] = useState<Id<'generationJobs'> | null>(null)
   const [streamId, setStreamId] = useState<string | null>(null)
   const [streamDriver, setStreamDriver] = useState(false)
 
-  const generationPreview = useQuery(
-    api.jobs.getMineById,
-    activeJobId ? { jobId: activeJobId } : 'skip',
-  )
+  const generationPreview = useQuery(api.jobs.getMineById, activeJobId ? { jobId: activeJobId } : 'skip')
 
   const stream = useMemoryGenerationStream({
     streamId,
@@ -505,8 +394,7 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
     text.trim().length > 0 ? { memoryDescription: text } : 'skip',
   )
   const [dictating, setDictating] = useState(false)
-  const [selectedNarratorId, setSelectedNarratorId] =
-    useState<Id<'narrators'> | null>(null)
+  const [selectedNarratorId, setSelectedNarratorId] = useState<Id<'narrators'> | null>(null)
   const [pendingPhotos, setPendingPhotos] = useState<Array<PendingPhoto>>([])
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -596,11 +484,7 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
   }
 
   if (petData === undefined) {
-    return (
-      <div className="page-wrap px-4 py-12 text-sm text-[var(--text-muted)]">
-        Loading…
-      </div>
-    )
+    return <div className="page-wrap px-4 py-12 text-sm text-[var(--text-muted)]">Loading…</div>
   }
 
   if (petData === null) {
@@ -635,28 +519,18 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
   })()
 
   const previewBody =
-    stream.text &&
-    (stream.status === 'streaming' ||
-      (stream.status === 'pending' && stream.text.length > 0))
+    stream.text && (stream.status === 'streaming' || (stream.status === 'pending' && stream.text.length > 0))
       ? stream.text
       : (generationPreview?.draft?.bodyMarkdown ?? null)
 
   const previewTitle = generationPreview?.draft?.title ?? null
   const previewImages = generationPreview?.imageUrls ?? []
 
-  const canGenerate =
-    text.trim().length > 0 &&
-    Boolean(selectedNarratorId) &&
-    !submitting &&
-    !isGenerating
+  const canGenerate = text.trim().length > 0 && Boolean(selectedNarratorId) && !submitting && !isGenerating
 
   return (
     <div className="create-memory-page">
-      <MemoryHeader
-        petName={pet.name}
-        avatarUrl={avatarUrl}
-        blogSlug={blog?.slug ?? null}
-      />
+      <MemoryHeader petName={pet.name} avatarUrl={avatarUrl} blogSlug={blog?.slug ?? null} />
 
       <main className="memory-main page-wrap px-4">
         <div className="memory-main-grid">
@@ -669,11 +543,7 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
                 No narrators published yet. Ask an admin to seed the catalog.
               </p>
             ) : (
-              <NarratorPicker
-                narrators={narrators}
-                selectedId={selectedNarratorId}
-                onSelect={setSelectedNarratorId}
-              />
+              <NarratorPicker narrators={narrators} selectedId={selectedNarratorId} onSelect={setSelectedNarratorId} />
             )}
 
             <div className="memory-section-gap" />
@@ -693,10 +563,7 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
 
             <p className="memory-cast-note">
               {castMatches && castMatches.length > 0 ? (
-                <>
-                  {castMatches.map((match) => match.name).join(' and ')} may
-                  appear in your art.{' '}
-                </>
+                <>{castMatches.map((match) => match.name).join(' and ')} may appear in your art. </>
               ) : null}
               <Link to="/app/cast" className="font-semibold">
                 Manage friends & family
@@ -708,12 +575,7 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
 
             <div className="memory-generate-row">
               <div className="memory-generate-btn-wrap">
-                <SunBurst
-                  color="var(--landing-accent)"
-                  size={92}
-                  rays={12}
-                  className="memory-generate-sun"
-                />
+                <SunBurst color="var(--landing-accent)" size={92} rays={12} className="memory-generate-sun" />
                 <StickerBtn
                   bg="var(--landing-primary)"
                   size="lg"
@@ -721,8 +583,7 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
                   onClick={() => void onGenerate()}
                   disabled={!canGenerate}
                 >
-                  <IconSparkle size={20} />{' '}
-                  {submitting ? 'Generating…' : 'Generate post + art'}
+                  <IconSparkle size={20} /> {submitting ? 'Generating…' : 'Generate post + art'}
                 </StickerBtn>
               </div>
 
@@ -766,11 +627,7 @@ export function CreateMemoryPage({ petId }: { petId: string }) {
         </div>
 
         <p className="memory-back-link">
-          <Link
-            to="/app/pets/$petId"
-            params={{ petId: pet._id }}
-            className="font-semibold no-underline"
-          >
+          <Link to="/app/pets/$petId" params={{ petId: pet._id }} className="font-semibold no-underline">
             ← Back to edit {pet.name}
           </Link>
         </p>

@@ -2,11 +2,7 @@ import { authTables } from '@convex-dev/auth/server'
 import { defineSchema, defineTable } from 'convex/server'
 import { v } from 'convex/values'
 
-const visibility = v.union(
-  v.literal('private'),
-  v.literal('public'),
-  v.literal('unlisted'),
-)
+const visibility = v.union(v.literal('private'), v.literal('public'), v.literal('unlisted'))
 const jobStatus = v.union(
   v.literal('queued'),
   v.literal('processing'),
@@ -29,23 +25,9 @@ const moderationStatus = v.union(
   v.literal('flagged'),
   v.literal('rejected'),
 )
-const accessRole = v.union(
-  v.literal('user'),
-  v.literal('site_admin'),
-  v.literal('moderator'),
-  v.literal('support'),
-)
-const planTier = v.union(
-  v.literal('pup'),
-  v.literal('top_dog'),
-  v.literal('the_pack'),
-)
-const planStatus = v.union(
-  v.literal('active'),
-  v.literal('trialing'),
-  v.literal('cancelled'),
-  v.literal('past_due'),
-)
+const accessRole = v.union(v.literal('user'), v.literal('site_admin'), v.literal('moderator'), v.literal('support'))
+const planTier = v.union(v.literal('pup'), v.literal('top_dog'), v.literal('the_pack'))
+const planStatus = v.union(v.literal('active'), v.literal('trialing'), v.literal('cancelled'), v.literal('past_due'))
 const traitCategory = v.union(
   v.literal('personality'),
   v.literal('tone'),
@@ -53,19 +35,9 @@ const traitCategory = v.union(
   v.literal('cultural'),
   v.literal('pacing'),
 )
-const catalogStatus = v.union(
-  v.literal('active'),
-  v.literal('archived'),
-)
-const narratorStatus = v.union(
-  v.literal('draft'),
-  v.literal('published'),
-  v.literal('archived'),
-)
-const generationStrategy = v.union(
-  v.literal('single_shot'),
-  v.literal('draft_critique'),
-)
+const catalogStatus = v.union(v.literal('active'), v.literal('archived'))
+const narratorStatus = v.union(v.literal('draft'), v.literal('published'), v.literal('archived'))
+const generationStrategy = v.union(v.literal('single_shot'), v.literal('draft_critique'))
 const textParameters = v.object({
   temperature: v.optional(v.number()),
   maxTokens: v.optional(v.number()),
@@ -227,11 +199,7 @@ export default defineSchema({
     petId: v.id('pets'),
     memoryId: v.optional(v.id('petMemories')),
     status: jobStatus,
-    operation: v.union(
-      v.literal('blog_post'),
-      v.literal('image'),
-      v.literal('regeneration'),
-    ),
+    operation: v.union(v.literal('blog_post'), v.literal('image'), v.literal('regeneration')),
     textModel: v.optional(v.string()),
     imageModel: v.optional(v.string()),
     provider: v.optional(v.union(v.literal('openai'), v.literal('openrouter'))),

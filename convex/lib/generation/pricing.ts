@@ -1,9 +1,5 @@
 export function estimateTextCostUsd(inputTokens = 0, outputTokens = 0) {
-  return Number(
-    ((inputTokens / 1_000_000) * 0.25 + (outputTokens / 1_000_000) * 2).toFixed(
-      6,
-    ),
-  )
+  return Number(((inputTokens / 1_000_000) * 0.25 + (outputTokens / 1_000_000) * 2).toFixed(6))
 }
 
 export function estimateImageCostUsd() {

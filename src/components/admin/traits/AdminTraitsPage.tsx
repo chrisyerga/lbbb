@@ -14,10 +14,7 @@ import {
   CatalogStatusChip,
 } from '#/components/admin/form'
 import { MonoLabel } from '#/components/admin/jobs/primitives'
-import {
-  TRAIT_CATEGORIES,
-  slugify
-} from '#/lib/adminCatalogUi'
+import { TRAIT_CATEGORIES, slugify } from '#/lib/adminCatalogUi'
 
 import type { TraitCategory } from '#/lib/adminCatalogUi'
 
@@ -38,11 +35,7 @@ function emptyTrait(category: TraitCategory, sortOrder: number): TraitDoc {
   }
 }
 
-export function AdminTraitsPage({
-  selectedTraitId,
-}: {
-  selectedTraitId: Id<'narratorTraits'> | null
-}) {
+export function AdminTraitsPage({ selectedTraitId }: { selectedTraitId: Id<'narratorTraits'> | null }) {
   const navigate = useNavigate()
   const traits = useQuery(api.adminNarrators.listTraits)
   const usage = useQuery(api.adminNarrators.traitUsage)
@@ -96,8 +89,7 @@ export function AdminTraitsPage({
 
   function startNew() {
     const cat = category === 'all' ? 'personality' : category
-    const maxOrder =
-      traits?.reduce((m, t) => Math.max(m, t.sortOrder), 0) ?? 0
+    const maxOrder = traits?.reduce((m, t) => Math.max(m, t.sortOrder), 0) ?? 0
     setIsNew(true)
     setDraft(emptyTrait(cat, maxOrder + 10))
     void navigate({ to: '/app/admin/traits', search: {} })
@@ -143,16 +135,11 @@ export function AdminTraitsPage({
           <MonoLabel>Voice fragments for persona composition</MonoLabel>
         </div>
         <div className="admin-catalog-topbar-actions">
-          {message ? (
-            <span className="admin-mono admin-save-message">{message}</span>
-          ) : null}
+          {message ? <span className="admin-mono admin-save-message">{message}</span> : null}
           <AdminBtnPrimary onClick={startNew} disabled={!canEdit}>
             New trait
           </AdminBtnPrimary>
-          <AdminBtnPrimary
-            onClick={() => void save()}
-            disabled={!canEdit || !draft || busy}
-          >
+          <AdminBtnPrimary onClick={() => void save()} disabled={!canEdit || !draft || busy}>
             {busy ? 'Saving…' : 'Save'}
           </AdminBtnPrimary>
         </div>
@@ -164,28 +151,14 @@ export function AdminTraitsPage({
             <button
               key={cat.id}
               type="button"
-              className={
-                category === cat.id
-                  ? 'admin-category-item is-active'
-                  : 'admin-category-item'
-              }
-              style={
-                category === cat.id
-                  ? { borderLeftColor: cat.color }
-                  : undefined
-              }
+              className={category === cat.id ? 'admin-category-item is-active' : 'admin-category-item'}
+              style={category === cat.id ? { borderLeftColor: cat.color } : undefined}
               onClick={() => setCategory(cat.id)}
             >
               <span className="admin-category-dot" style={{ background: cat.color }} />
               <span className="admin-category-label">{cat.label}</span>
-              <span className="admin-mono admin-category-count">
-                {counts[cat.id] ?? 0}
-              </span>
-              {cat.helper ? (
-                <span className="admin-mono admin-category-helper">
-                  {cat.helper}
-                </span>
-              ) : null}
+              <span className="admin-mono admin-category-count">{counts[cat.id] ?? 0}</span>
+              {cat.helper ? <span className="admin-mono admin-category-helper">{cat.helper}</span> : null}
             </button>
           ))}
         </aside>
@@ -204,26 +177,18 @@ export function AdminTraitsPage({
               <button
                 key={trait._id}
                 type="button"
-                className={
-                  trait._id === effectiveId && !isNew
-                    ? 'admin-trait-row is-active'
-                    : 'admin-trait-row'
-                }
+                className={trait._id === effectiveId && !isNew ? 'admin-trait-row is-active' : 'admin-trait-row'}
                 onClick={() => selectTrait(trait._id)}
               >
                 <span
                   className="admin-category-dot"
                   style={{
-                    background:
-                      TRAIT_CATEGORIES.find((c) => c.id === trait.category)
-                        ?.color ?? '#666',
+                    background: TRAIT_CATEGORIES.find((c) => c.id === trait.category)?.color ?? '#666',
                   }}
                 />
                 <span className="admin-trait-row-copy">
                   <span className="admin-trait-row-label">{trait.label}</span>
-                  <span className="admin-mono admin-trait-row-slug">
-                    {trait.slug}
-                  </span>
+                  <span className="admin-mono admin-trait-row-slug">{trait.slug}</span>
                 </span>
                 <CatalogStatusChip status={trait.status} />
                 <span className="admin-mono admin-trait-row-used">
@@ -241,16 +206,10 @@ export function AdminTraitsPage({
             <>
               <div className="admin-inspector-section">
                 <div className="admin-inspector-head">
-                  <h2 className="admin-inspector-title">
-                    {isNew ? 'New trait' : draft.label || 'Untitled'}
-                  </h2>
+                  <h2 className="admin-inspector-title">{isNew ? 'New trait' : draft.label || 'Untitled'}</h2>
                   {!isNew ? <CatalogStatusChip status={draft.status} /> : null}
                 </div>
-                {!canEdit ? (
-                  <p className="admin-readonly-note">
-                    Site admin required to edit catalog.
-                  </p>
-                ) : null}
+                {!canEdit ? <p className="admin-readonly-note">Site admin required to edit catalog.</p> : null}
               </div>
 
               <div className="admin-inspector-section admin-inspector-form">
@@ -273,9 +232,7 @@ export function AdminTraitsPage({
                   <AdminSelect
                     value={draft.category}
                     disabled={!canEdit}
-                    options={TRAIT_CATEGORIES.filter(
-                      (c) => c.id !== 'all',
-                    ).map((c) => ({
+                    options={TRAIT_CATEGORIES.filter((c) => c.id !== 'all').map((c) => ({
                       value: c.id as TraitCategory,
                       label: c.label,
                     }))}
@@ -305,17 +262,12 @@ export function AdminTraitsPage({
                     onChange={(status) => setDraft({ ...draft, status })}
                   />
                 </AdminField>
-                <AdminField
-                  label="Prompt fragment"
-                  helper="injected into narrator persona"
-                >
+                <AdminField label="Prompt fragment" helper="injected into narrator persona">
                   <AdminTextarea
                     rows={8}
                     value={draft.promptFragment}
                     disabled={!canEdit}
-                    onChange={(promptFragment) =>
-                      setDraft({ ...draft, promptFragment })
-                    }
+                    onChange={(promptFragment) => setDraft({ ...draft, promptFragment })}
                   />
                 </AdminField>
               </div>
@@ -333,11 +285,7 @@ export function AdminTraitsPage({
 
               {!isNew && canEdit ? (
                 <div className="admin-inspector-section">
-                  <button
-                    type="button"
-                    className="admin-btn-secondary"
-                    onClick={() => void archive()}
-                  >
+                  <button type="button" className="admin-btn-secondary" onClick={() => void archive()}>
                     Mark archived
                   </button>
                 </div>

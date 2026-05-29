@@ -11,11 +11,7 @@ export function LandingFAQ() {
     <section className="px-4 py-10 sm:px-8 sm:py-16 lg:px-14 lg:pb-[120px]">
       <div className="grid items-start gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:gap-14">
         <div>
-          <Pill
-            bg="var(--landing-cream)"
-            color="var(--landing-ink)"
-            className="mb-4"
-          >
+          <Pill bg="var(--landing-cream)" color="var(--landing-ink)" className="mb-4">
             FAQ
           </Pill>
           <h2 className="font-display m-0 text-[clamp(2rem,5vw,3.5rem)] leading-[0.95] font-extrabold tracking-tight text-[var(--landing-ink)]">
@@ -25,10 +21,7 @@ export function LandingFAQ() {
           </h2>
           <p className="mt-[18px] text-[15.5px] leading-normal text-[var(--landing-ink)]/75">
             Still curious?{' '}
-            <a
-              href="mailto:hello@cafezoe.lol"
-              className="font-bold text-[var(--landing-primary)] no-underline"
-            >
+            <a href="mailto:hello@cafezoe.lol" className="font-bold text-[var(--landing-primary)] no-underline">
               email us
             </a>{' '}
             — a real human (and Zoe) reads every one.
@@ -68,9 +61,7 @@ export function LandingFAQ() {
                 </span>
               </div>
               {open === i && (
-                <p className="mt-3 mb-0 max-w-[580px] text-[15px] leading-normal text-[var(--landing-ink)]/85">
-                  {f.a}
-                </p>
+                <p className="mt-3 mb-0 max-w-[580px] text-[15px] leading-normal text-[var(--landing-ink)]/85">{f.a}</p>
               )}
             </div>
           ))}

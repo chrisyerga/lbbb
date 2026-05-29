@@ -723,20 +723,36 @@ body.landing-v1-active {
 }
 
 @keyframes memory-wave-0 {
-  from { height: 4px; }
-  to { height: 22px; }
+  from {
+    height: 4px;
+  }
+  to {
+    height: 22px;
+  }
 }
 @keyframes memory-wave-1 {
-  from { height: 6px; }
-  to { height: 14px; }
+  from {
+    height: 6px;
+  }
+  to {
+    height: 14px;
+  }
 }
 @keyframes memory-wave-2 {
-  from { height: 4px; }
-  to { height: 18px; }
+  from {
+    height: 4px;
+  }
+  to {
+    height: 18px;
+  }
 }
 @keyframes memory-wave-3 {
-  from { height: 8px; }
-  to { height: 12px; }
+  from {
+    height: 8px;
+  }
+  to {
+    height: 12px;
+  }
 }
 
 .landing-v1 .memory-dictate-status {
@@ -760,8 +776,13 @@ body.landing-v1-active {
 }
 
 @keyframes memory-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
 
 .landing-v1 .memory-word-count {
@@ -819,7 +840,10 @@ body.landing-v1-active {
   background: #fff;
   text-align: left;
   cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    background 0.12s ease;
 }
 
 .landing-v1 .memory-narrator-card.is-selected {
@@ -906,7 +930,9 @@ body.landing-v1-active {
 }
 
 @keyframes memory-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .landing-v1 .memory-generate-btn {
@@ -1246,4 +1272,3 @@ body.landing-v1-active {
     grid-template-columns: 1fr;
   }
 }
-

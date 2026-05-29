@@ -11,9 +11,9 @@ describe('slug utilities', () => {
   })
 
   it('prefixes post slugs with the UTC date', () => {
-    expect(
-      postSlug('The Great Squirrel Standoff', new Date('2026-05-07T12:00:00Z')),
-    ).toBe('2026-05-07-the-great-squirrel-standoff')
+    expect(postSlug('The Great Squirrel Standoff', new Date('2026-05-07T12:00:00Z'))).toBe(
+      '2026-05-07-the-great-squirrel-standoff',
+    )
   })
 
   it('suffixes duplicate slugs', () => {

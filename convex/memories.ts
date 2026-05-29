@@ -68,9 +68,7 @@ export const createDraft = mutation({
       await requirePetAsset(ctx, assetId, args.petId, user._id)
     }
 
-    const occurredOn =
-      args.occurredOn?.trim() ||
-      new Date().toISOString().slice(0, 10)
+    const occurredOn = args.occurredOn?.trim() || new Date().toISOString().slice(0, 10)
 
     const memoryId = await ctx.db.insert('petMemories', {
       ownerUserId: user._id,

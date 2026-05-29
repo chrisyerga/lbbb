@@ -20,8 +20,7 @@ export function CastPhotoUpload({
   disabled?: boolean
 }) {
   const inputRef = useRef<HTMLInputElement>(null)
-  const { uploadFile, uploadFiles, uploading, error, setError } =
-    useCastPhotoUpload(castMemberId)
+  const { uploadFile, uploadFiles, uploading, error, setError } = useCastPhotoUpload(castMemberId)
 
   async function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files

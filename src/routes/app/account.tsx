@@ -53,9 +53,7 @@ function AccountPage() {
   if (data === null) {
     return (
       <PageShell eyebrow="Account" title="Your profile">
-        <p className="text-sm text-[var(--text-muted)]">
-          Sign in to manage your profile.
-        </p>
+        <p className="text-sm text-[var(--text-muted)]">Sign in to manage your profile.</p>
       </PageShell>
     )
   }
@@ -76,32 +74,19 @@ function AccountPage() {
       <div className="mb-8 flex items-center gap-4 border-b border-[var(--border)] pb-8">
         <UserAvatar imageUrl={user.image} name={display} size="lg" />
         <div>
-          <p className="m-0 text-lg font-semibold text-[var(--text-primary)]">
-            {display}
-          </p>
-          {user.email ? (
-            <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">
-              {user.email}
-            </p>
-          ) : null}
+          <p className="m-0 text-lg font-semibold text-[var(--text-primary)]">{display}</p>
+          {user.email ? <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">{user.email}</p> : null}
           {user.image ? (
-            <p className="m-0 mt-2 text-xs text-[var(--text-muted)]">
-              Profile photo from your sign-in provider.
-            </p>
+            <p className="m-0 mt-2 text-xs text-[var(--text-muted)]">Profile photo from your sign-in provider.</p>
           ) : null}
         </div>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-2">
-        <form
-          onSubmit={(e) => void onSubmit(e)}
-          className="panel grid gap-4 p-6 text-sm"
-        >
+        <form onSubmit={(e) => void onSubmit(e)} className="panel grid gap-4 p-6 text-sm">
           <div className="grid gap-1">
             <p className="section-label">Email</p>
-            <p className="m-0 text-[var(--text-primary)]">
-              {user.email ?? '—'}
-            </p>
+            <p className="m-0 text-[var(--text-primary)]">{user.email ?? '—'}</p>
             <p className="m-0 text-xs text-[var(--text-muted)]">
               Email comes from your sign-in provider and isn’t editable here.
             </p>
@@ -133,19 +118,14 @@ function AccountPage() {
             <Button type="submit" disabled={saving}>
               {saving ? 'Saving…' : 'Save profile'}
             </Button>
-            {savedAt !== null ? (
-              <span className="text-xs text-[var(--accent)]">Saved.</span>
-            ) : null}
+            {savedAt !== null ? <span className="text-xs text-[var(--accent)]">Saved.</span> : null}
           </div>
         </form>
 
         <div className="panel p-6 text-sm text-[var(--text-muted)]">
           <p className="mt-0 text-[var(--text-primary)]">
-            Convex stores an optional profile row for <code>displayName</code>{' '}
-            and <code>bio</code>
-            {profile
-              ? ' (you have one).'
-              : ' — save the form to create yours).'}
+            Convex stores an optional profile row for <code>displayName</code> and <code>bio</code>
+            {profile ? ' (you have one).' : ' — save the form to create yours).'}
           </p>
           <p>
             To rename pets, open{' '}

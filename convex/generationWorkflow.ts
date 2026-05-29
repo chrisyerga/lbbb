@@ -32,10 +32,7 @@ export const runMemoryGenerationImages = internalAction({
     const input = job.inputSnapshot
     const plan = input.generationPlan
 
-    const draft = await ctx.runQuery(
-      internal.generationState.getDraftByJobInternal,
-      { jobId: args.jobId },
-    )
+    const draft = await ctx.runQuery(internal.generationState.getDraftByJobInternal, { jobId: args.jobId })
     if (!draft) throw new Error('Draft not found after text generation')
 
     const textResult = {
@@ -43,9 +40,7 @@ export const runMemoryGenerationImages = internalAction({
       excerpt: draft.excerpt ?? '',
       bodyMarkdown: draft.bodyMarkdown,
       tags: (draft.outputSnapshot as { tags?: Array<string> }).tags ?? [],
-      imagePrompt:
-        (draft.outputSnapshot as { imagePrompt?: string }).imagePrompt ??
-        input.description,
+      imagePrompt: (draft.outputSnapshot as { imagePrompt?: string }).imagePrompt ?? input.description,
     }
 
     await ctx.runMutation(internal.generationState.patchStreamStatus, {
@@ -77,23 +72,17 @@ export const runMemoryGenerationImages = internalAction({
         metadata: { index: i, total: imagePrompts.length },
       })
 
-      const { blob, providerRequestId } = await callOpenAIImage(
-        imagePrompt,
-        imageModel,
-      )
+      const { blob, providerRequestId } = await callOpenAIImage(imagePrompt, imageModel)
 
       const storageId = await ctx.storage.store(blob)
-      const assetId = await ctx.runMutation(
-        internal.generationState.storeGeneratedImage,
-        {
-          jobId: args.jobId,
-          petId: job.petId,
-          ownerUserId: job.ownerUserId,
-          storageId,
-          byteSize: blob.size,
-          contentType: blob.type || 'image/png',
-        },
-      )
+      const assetId = await ctx.runMutation(internal.generationState.storeGeneratedImage, {
+        jobId: args.jobId,
+        petId: job.petId,
+        ownerUserId: job.ownerUserId,
+        storageId,
+        byteSize: blob.size,
+        contentType: blob.type || 'image/png',
+      })
 
       await ctx.runMutation(internal.generationState.appendDraftImage, {
         jobId: args.jobId,

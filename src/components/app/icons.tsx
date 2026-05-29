@@ -80,23 +80,9 @@ export function IconSparkle(props: IconProps) {
   )
 }
 
-export function LogoPaw({
-  size = 26,
-  fg = '#fff',
-  style = {},
-}: {
-  size?: number
-  fg?: string
-  style?: CSSProperties
-}) {
+export function LogoPaw({ size = 26, fg = '#fff', style = {} }: { size?: number; fg?: string; style?: CSSProperties }) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill={fg}
-      style={{ display: 'block', ...style }}
-    >
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={fg} style={{ display: 'block', ...style }}>
       <circle cx="8" cy="9" r="2.5" />
       <circle cx="16" cy="9" r="2.5" />
       <circle cx="5" cy="14" r="2" />

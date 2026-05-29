@@ -27,18 +27,14 @@ export const listMine = query({
 
     const members = await ctx.db
       .query('castMembers')
-      .withIndex('by_owner_status', (q) =>
-        q.eq('ownerUserId', user._id).eq('status', 'active'),
-      )
+      .withIndex('by_owner_status', (q) => q.eq('ownerUserId', user._id).eq('status', 'active'))
       .collect()
 
     members.sort((a, b) => a.sortOrder - b.sortOrder)
 
     return Promise.all(
       members.map(async (member) => {
-        const linkedPet = member.linkedPetId
-          ? await ctx.db.get(member.linkedPetId)
-          : null
+        const linkedPet = member.linkedPetId ? await ctx.db.get(member.linkedPetId) : null
         return {
           ...member,
           avatarUrl: await resolveMemberAvatarUrl(ctx, member),
@@ -66,17 +62,13 @@ export const getById = query({
       }),
     )
 
-    const linkedPet = member.linkedPetId
-      ? await ctx.db.get(member.linkedPetId)
-      : null
+    const linkedPet = member.linkedPetId ? await ctx.db.get(member.linkedPetId) : null
 
     return {
       ...member,
       avatarUrl: await resolveMemberAvatarUrl(ctx, member),
       linkedPetName: linkedPet?.name ?? null,
-      referencePhotos: referencePhotos.filter(
-        (photo): photo is NonNullable<typeof photo> => photo !== null,
-      ),
+      referencePhotos: referencePhotos.filter((photo): photo is NonNullable<typeof photo> => photo !== null),
     }
   },
 })
@@ -259,9 +251,7 @@ export const removeReferencePhoto = mutation({
     const user = await requireUser(ctx)
     const member = await requireCastMemberOwner(ctx, args.castMemberId, user._id)
 
-    const referenceAssetIds = member.referenceAssetIds.filter(
-      (id) => id !== args.assetId,
-    )
+    const referenceAssetIds = member.referenceAssetIds.filter((id) => id !== args.assetId)
     const patch: {
       referenceAssetIds: typeof referenceAssetIds
       updatedAt: number
@@ -307,15 +297,11 @@ export const previewMatches = query({
     const user = await requireUser(ctx)
     const members = await ctx.db
       .query('castMembers')
-      .withIndex('by_owner_status', (q) =>
-        q.eq('ownerUserId', user._id).eq('status', 'active'),
-      )
+      .withIndex('by_owner_status', (q) => q.eq('ownerUserId', user._id).eq('status', 'active'))
       .collect()
 
     return members
-      .filter((member) =>
-        nameMatchesMemory(args.memoryDescription, member.name, member.aliases),
-      )
+      .filter((member) => nameMatchesMemory(args.memoryDescription, member.name, member.aliases))
       .map((member) => ({ castMemberId: member._id, name: member.name }))
   },
 })

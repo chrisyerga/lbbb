@@ -8,12 +8,7 @@ type SeedCtx = GenericMutationCtx<DataModel>
 type TraitSeed = {
   slug: string
   label: string
-  category:
-    | 'personality'
-    | 'tone'
-    | 'register'
-    | 'cultural'
-    | 'pacing'
+  category: 'personality' | 'tone' | 'register' | 'cultural' | 'pacing'
   promptFragment: string
   sortOrder: number
 }
@@ -200,12 +195,10 @@ const NARRATOR_SEEDS: Array<NarratorSeed> = [
     slug: 'earnest-pet-mom',
     name: 'Earnest Pet-Mom',
     tagline: 'Tender, sincere, and a little weepy.',
-    exampleExcerpt:
-      'I still cannot believe the little way she looked at me when the treat bag crinkled.',
+    exampleExcerpt: 'I still cannot believe the little way she looked at me when the treat bag crinkled.',
     description: 'Warm, emotionally open posts with sincere affection.',
     traitSlugs: ['warm', 'wholesome'],
-    specializationPrompt:
-      'Write like a devoted pet parent who finds everyday moments genuinely moving.',
+    specializationPrompt: 'Write like a devoted pet parent who finds everyday moments genuinely moving.',
     defaultArtStyleSlug: 'watercolor',
     defaultMoodHints: ['tender', 'proud'],
     wordTarget: 200,
@@ -216,12 +209,10 @@ const NARRATOR_SEEDS: Array<NarratorSeed> = [
     slug: 'wry-essayist',
     name: 'Wry Essayist',
     tagline: 'Dry humor, sharp eye, soft heart.',
-    exampleExcerpt:
-      'The dog had, once again, mistaken confidence for competence.',
+    exampleExcerpt: 'The dog had, once again, mistaken confidence for competence.',
     description: 'Observational humor with literary restraint.',
     traitSlugs: ['dry', 'literary', 'sarcastic'],
-    specializationPrompt:
-      'Write like a wry personal essayist noticing the absurdity of pet ownership.',
+    specializationPrompt: 'Write like a wry personal essayist noticing the absurdity of pet ownership.',
     defaultArtStyleSlug: 'polaroid',
     defaultMoodHints: ['cozy'],
     wordTarget: 200,
@@ -232,12 +223,10 @@ const NARRATOR_SEEDS: Array<NarratorSeed> = [
     slug: 'wes-anderson',
     name: 'Wes Anderson',
     tagline: 'Symmetrical feelings in vintage hues.',
-    exampleExcerpt:
-      'Chapter One, in which Biscuit considers the moral implications of a rogue tennis ball.',
+    exampleExcerpt: 'Chapter One, in which Biscuit considers the moral implications of a rogue tennis ball.',
     description: 'Precise, whimsical narration with cinematic framing.',
     traitSlugs: ['formal', 'nostalgic', 'literary'],
-    specializationPrompt:
-      'Write with symmetrical whimsy, chapter titles, and deadpan emotional stakes.',
+    specializationPrompt: 'Write with symmetrical whimsy, chapter titles, and deadpan emotional stakes.',
     defaultArtStyleSlug: 'comic',
     defaultMoodHints: ['dramatic'],
     wordTarget: 250,
@@ -249,12 +238,10 @@ const NARRATOR_SEEDS: Array<NarratorSeed> = [
     slug: 'sports-announcer',
     name: 'Sports Announcer',
     tagline: 'Every walk is the big game.',
-    exampleExcerpt:
-      'AND SHE TAKES THE CORNER AT FULL SPEED — what a move from a very small athlete!',
+    exampleExcerpt: 'AND SHE TAKES THE CORNER AT FULL SPEED — what a move from a very small athlete!',
     description: 'High-energy play-by-play narration.',
     traitSlugs: ['chaotic', 'silly'],
-    specializationPrompt:
-      'Call the memory like an excited sports broadcast with rising drama.',
+    specializationPrompt: 'Call the memory like an excited sports broadcast with rising drama.',
     defaultArtStyleSlug: 'sticker',
     defaultMoodHints: ['sporty', 'proud'],
     wordTarget: 180,
@@ -266,12 +253,10 @@ const NARRATOR_SEEDS: Array<NarratorSeed> = [
     slug: 'kids-book',
     name: "Kid's Book",
     tagline: 'Simple words, big wonder.',
-    exampleExcerpt:
-      'Zoe went zoom-zoom through the leaves, and the whole park felt like magic.',
+    exampleExcerpt: 'Zoe went zoom-zoom through the leaves, and the whole park felt like magic.',
     description: 'Gentle, read-aloud storytelling for all ages.',
     traitSlugs: ['wholesome', 'warm', 'silly'],
-    specializationPrompt:
-      "Write like a picture-book narrator with simple rhythms and gentle wonder.",
+    specializationPrompt: 'Write like a picture-book narrator with simple rhythms and gentle wonder.',
     defaultArtStyleSlug: 'watercolor',
     defaultMoodHints: ['cozy', 'tender'],
     wordTarget: 150,
@@ -288,9 +273,7 @@ async function seedCatalogHandler(ctx: SeedCtx) {
 
   const existingPrompt = await ctx.db
     .query('promptVersions')
-    .withIndex('by_key_version', (q) =>
-      q.eq('key', 'pet_blog_post').eq('version', 1),
-    )
+    .withIndex('by_key_version', (q) => q.eq('key', 'pet_blog_post').eq('version', 1))
     .unique()
 
   if (!existingPrompt) {

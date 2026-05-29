@@ -30,12 +30,8 @@ export const update = mutation({
       .withIndex('by_user', (q) => q.eq('userId', user._id))
       .first()
 
-    const displayName =
-      args.displayName === undefined
-        ? existing?.displayName
-        : args.displayName.trim() || undefined
-    const bio =
-      args.bio === undefined ? existing?.bio : args.bio.trim() || undefined
+    const displayName = args.displayName === undefined ? existing?.displayName : args.displayName.trim() || undefined
+    const bio = args.bio === undefined ? existing?.bio : args.bio.trim() || undefined
 
     if (existing) {
       await ctx.db.patch(existing._id, {

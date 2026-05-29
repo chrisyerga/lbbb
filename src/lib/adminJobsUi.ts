@@ -2,10 +2,7 @@ import type { Doc } from '#convex/_generated/dataModel'
 
 export type JobStatus = Doc<'generationJobs'>['status']
 
-export const STATUS_TAX: Record<
-  JobStatus,
-  { label: string; dot: string; bg: string; ring: string; live?: boolean }
-> = {
+export const STATUS_TAX: Record<JobStatus, { label: string; dot: string; bg: string; ring: string; live?: boolean }> = {
   queued: {
     label: 'queued',
     dot: 'rgba(251,241,222,0.42)',
@@ -101,15 +98,9 @@ export function relTime(timestamp: number, now = Date.now()) {
   return `${(d / 86400).toFixed(1)}d`
 }
 
-export function elapsedMs(job: {
-  startedAt?: number
-  completedAt?: number
-  status: JobStatus
-}) {
+export function elapsedMs(job: { startedAt?: number; completedAt?: number; status: JobStatus }) {
   if (!job.startedAt) return null
-  const end =
-    job.completedAt ??
-    (job.status === 'processing' ? Date.now() : job.startedAt)
+  const end = job.completedAt ?? (job.status === 'processing' ? Date.now() : job.startedAt)
   return end - job.startedAt
 }
 
@@ -123,19 +114,9 @@ export function formatUsd(amount: number) {
   return `$${amount.toFixed(amount >= 1 ? 2 : 3)}`
 }
 
-const TERMINAL_STATUSES: Array<JobStatus> = [
-  'completed',
-  'failed',
-  'cancelled',
-]
+const TERMINAL_STATUSES: Array<JobStatus> = ['completed', 'failed', 'cancelled']
 
-export type StepId =
-  | 'queued'
-  | 'started'
-  | 'text'
-  | 'image'
-  | 'review'
-  | 'done'
+export type StepId = 'queued' | 'started' | 'text' | 'image' | 'review' | 'done'
 
 export const STEPS: Array<{ id: StepId; label: string }> = [
   { id: 'queued', label: 'queued' },
@@ -155,8 +136,7 @@ export function deriveStepState(args: {
   eventTypes: Array<string>
 }) {
   const done = new Set<StepId>()
-  const { status, operation, hasTextCost, imageCostCount, hasDraft, eventTypes } =
-    args
+  const { status, operation, hasTextCost, imageCostCount, hasDraft, eventTypes } = args
 
   if (eventTypes.includes('queued') || status !== 'queued') done.add('queued')
   if (
@@ -168,10 +148,7 @@ export function deriveStepState(args: {
   ) {
     done.add('started')
   }
-  if (
-    operation !== 'image' &&
-    (hasTextCost || hasDraft || status === 'awaiting_review' || status === 'completed')
-  ) {
+  if (operation !== 'image' && (hasTextCost || hasDraft || status === 'awaiting_review' || status === 'completed')) {
     done.add('text')
   }
   if (operation === 'image' && (imageCostCount > 0 || status === 'completed')) {

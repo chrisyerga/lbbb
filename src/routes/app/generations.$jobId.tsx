@@ -43,36 +43,20 @@ function GenerationPage() {
       description={`Status: ${statusLabel}`}
     >
       <div className="panel grid gap-4 p-6 text-sm">
-        {job.error ? (
-          <p className="alert-error m-0 px-3 py-2">{job.error}</p>
-        ) : null}
+        {job.error ? <p className="alert-error m-0 px-3 py-2">{job.error}</p> : null}
 
         {draft ? (
           <>
-            {draft.excerpt ? (
-              <p className="m-0 text-[var(--text-muted)]">{draft.excerpt}</p>
-            ) : null}
-            <div className="whitespace-pre-wrap text-[var(--text-primary)]">
-              {draft.bodyMarkdown}
-            </div>
+            {draft.excerpt ? <p className="m-0 text-[var(--text-muted)]">{draft.excerpt}</p> : null}
+            <div className="whitespace-pre-wrap text-[var(--text-primary)]">{draft.bodyMarkdown}</div>
             {imageUrls.filter(Boolean).length > 0 ? (
               <div className="grid grid-cols-2 gap-3">
-                {imageUrls.map(
-                  (url, i) =>
-                    url ? (
-                      <img
-                        key={i}
-                        src={url}
-                        alt=""
-                        className="aspect-square w-full rounded object-cover"
-                      />
-                    ) : null,
+                {imageUrls.map((url, i) =>
+                  url ? <img key={i} src={url} alt="" className="aspect-square w-full rounded object-cover" /> : null,
                 )}
               </div>
             ) : draft.imageAssetIds.length > 0 ? (
-              <p className="section-label m-0">
-                {draft.imageAssetIds.length} sample images generated
-              </p>
+              <p className="section-label m-0">{draft.imageAssetIds.length} sample images generated</p>
             ) : null}
           </>
         ) : (
@@ -85,10 +69,7 @@ function GenerationPage() {
 
         <ul className="m-0 grid list-none gap-2 p-0">
           {events.map((event) => (
-            <li
-              key={event._id}
-              className="font-mono text-xs tracking-wide text-[var(--text-muted)] uppercase"
-            >
+            <li key={event._id} className="font-mono text-xs tracking-wide text-[var(--text-muted)] uppercase">
               {event.type} · {event.message}
             </li>
           ))}

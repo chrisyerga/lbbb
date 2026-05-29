@@ -11,16 +11,11 @@ export type PetsListStats = {
 }
 
 const TITLE_VARIATIONS = [
-  (n: number) =>
-    n === 1 ? 'One good client.' : `${n} good clients.`,
-  (n: number) =>
-    n === 1 ? 'One very good pet.' : `${n} very good pets.`,
-  (n: number) =>
-    n === 1 ? 'One star of the show.' : `${n} stars of the show.`,
-  (n: number) =>
-    n === 1 ? 'One beloved contributor.' : `${n} beloved contributors.`,
-  (n: number) =>
-    n === 1 ? 'One on the roster.' : `${n} on the roster.`,
+  (n: number) => (n === 1 ? 'One good client.' : `${n} good clients.`),
+  (n: number) => (n === 1 ? 'One very good pet.' : `${n} very good pets.`),
+  (n: number) => (n === 1 ? 'One star of the show.' : `${n} stars of the show.`),
+  (n: number) => (n === 1 ? 'One beloved contributor.' : `${n} beloved contributors.`),
+  (n: number) => (n === 1 ? 'One on the roster.' : `${n} on the roster.`),
 ] as const
 
 const CYCLE_MS = 5000
@@ -29,10 +24,7 @@ export function PetsListHeader({ stats }: { stats: PetsListStats }) {
   const reducedMotion = usePrefersReducedMotion()
   const [variationIndex, setVariationIndex] = useState(0)
 
-  const titles = useMemo(
-    () => TITLE_VARIATIONS.map((fn) => fn(stats.petCount)),
-    [stats.petCount],
-  )
+  const titles = useMemo(() => TITLE_VARIATIONS.map((fn) => fn(stats.petCount)), [stats.petCount])
 
   useEffect(() => {
     if (stats.petCount === 0 || reducedMotion) return
@@ -46,8 +38,7 @@ export function PetsListHeader({ stats }: { stats: PetsListStats }) {
     setVariationIndex(0)
   }, [stats.petCount])
 
-  const title =
-    stats.petCount === 0 ? 'Your pets' : titles[variationIndex]
+  const title = stats.petCount === 0 ? 'Your pets' : titles[variationIndex]
 
   return (
     <section className="pets-header-band">

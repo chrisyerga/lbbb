@@ -11,20 +11,9 @@ const traitCategory = v.union(
   v.literal('pacing'),
 )
 const catalogStatus = v.union(v.literal('active'), v.literal('archived'))
-const narratorStatus = v.union(
-  v.literal('draft'),
-  v.literal('published'),
-  v.literal('archived'),
-)
-const generationStrategy = v.union(
-  v.literal('single_shot'),
-  v.literal('draft_critique'),
-)
-const planTier = v.union(
-  v.literal('pup'),
-  v.literal('top_dog'),
-  v.literal('the_pack'),
-)
+const narratorStatus = v.union(v.literal('draft'), v.literal('published'), v.literal('archived'))
+const generationStrategy = v.union(v.literal('single_shot'), v.literal('draft_critique'))
+const planTier = v.union(v.literal('pup'), v.literal('top_dog'), v.literal('the_pack'))
 
 export const listTraits = query({
   args: {},

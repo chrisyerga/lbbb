@@ -20,20 +20,15 @@ export type PetListRow = {
 function StatChip({ value, label }: { value: number; label: string }) {
   return (
     <span className="stat-chip">
-      <span className="font-display text-base font-extrabold tracking-tight text-[var(--landing-ink)]">
-        {value}
-      </span>
-      <span className="font-mono text-[10.5px] tracking-wide text-[var(--landing-ink)]/60 uppercase">
-        {label}
-      </span>
+      <span className="font-display text-base font-extrabold tracking-tight text-[var(--landing-ink)]">{value}</span>
+      <span className="font-mono text-[10.5px] tracking-wide text-[var(--landing-ink)]/60 uppercase">{label}</span>
     </span>
   )
 }
 
 export function PetRowCard({ row }: { row: PetListRow }) {
   const { pet, blog, avatarUrl, postCount, imageCount, latestPost } = row
-  const speciesLine =
-    [pet.species, pet.breed].filter(Boolean).join(' · ') || 'No species set'
+  const speciesLine = [pet.species, pet.breed].filter(Boolean).join(' · ') || 'No species set'
 
   return (
     <article className="pet-row-card">

@@ -135,15 +135,11 @@ export const queueDetail = query({
     const avatarUrl = pet ? await resolvePetAvatarUrl(ctx, pet) : null
     const costTotal = costs.reduce((sum, c) => sum + c.estimatedCostUsd, 0)
     const hasTextCost = costs.some((c) => c.operation === 'blog_text')
-    const imageCostCount = costs.filter(
-      (c) => c.operation === 'image_generation',
-    ).length
+    const imageCostCount = costs.filter((c) => c.operation === 'image_generation').length
 
     return {
       job,
-      pet: pet
-        ? { petId: pet._id, name: pet.name, avatarUrl }
-        : null,
+      pet: pet ? { petId: pet._id, name: pet.name, avatarUrl } : null,
       ownerEmail: owner?.email ?? 'unknown',
       events,
       costs,
@@ -175,21 +171,9 @@ export const queueStats = query({
     const dayAgo = Date.now() - 24 * 60 * 60 * 1000
 
     const [recentJobs, todayCosts, jobsLast24h] = await Promise.all([
-      ctx.db
-        .query('generationJobs')
-        .withIndex('by_created')
-        .order('desc')
-        .take(500),
-      ctx.db
-        .query('generationCosts')
-        .withIndex('by_created')
-        .order('desc')
-        .take(500),
-      ctx.db
-        .query('generationJobs')
-        .withIndex('by_created')
-        .order('desc')
-        .take(200),
+      ctx.db.query('generationJobs').withIndex('by_created').order('desc').take(500),
+      ctx.db.query('generationCosts').withIndex('by_created').order('desc').take(500),
+      ctx.db.query('generationJobs').withIndex('by_created').order('desc').take(200),
     ])
 
     const costsToday = todayCosts.filter((c) => c.createdAt >= dayStart)
@@ -206,17 +190,11 @@ export const queueStats = query({
       statusCounts[job.status] += 1
     }
 
-    const costTodayTotal = costsToday.reduce(
-      (sum, c) => sum + c.estimatedCostUsd,
-      0,
-    )
+    const costTodayTotal = costsToday.reduce((sum, c) => sum + c.estimatedCostUsd, 0)
 
     const costByModel = new Map<string, number>()
     for (const cost of costsToday) {
-      costByModel.set(
-        cost.model,
-        (costByModel.get(cost.model) ?? 0) + cost.estimatedCostUsd,
-      )
+      costByModel.set(cost.model, (costByModel.get(cost.model) ?? 0) + cost.estimatedCostUsd)
     }
     const costByModelRows = [...costByModel.entries()]
       .map(([model, amount]) => ({ model, amount }))
@@ -227,28 +205,16 @@ export const queueStats = query({
     const hourlyBuckets = Array.from({ length: 24 }, (_, i) => {
       const bucketStart = dayAgo + i * 60 * 60 * 1000
       const bucketEnd = bucketStart + 60 * 60 * 1000
-      return jobsInLast24h.filter(
-        (j) => j.createdAt >= bucketStart && j.createdAt < bucketEnd,
-      ).length
+      return jobsInLast24h.filter((j) => j.createdAt >= bucketStart && j.createdAt < bucketEnd).length
     })
 
     const terminalLast24h = jobsInLast24h.filter(
-      (j) =>
-        j.status === 'completed' ||
-        j.status === 'failed' ||
-        j.status === 'cancelled',
+      (j) => j.status === 'completed' || j.status === 'failed' || j.status === 'cancelled',
     )
-    const completedLast24h = jobsInLast24h.filter(
-      (j) => j.status === 'completed',
-    ).length
-    const successRate =
-      terminalLast24h.length > 0
-        ? Math.round((completedLast24h / terminalLast24h.length) * 100)
-        : 100
+    const completedLast24h = jobsInLast24h.filter((j) => j.status === 'completed').length
+    const successRate = terminalLast24h.length > 0 ? Math.round((completedLast24h / terminalLast24h.length) * 100) : 100
 
-    const failedRecent = recentJobs
-      .filter((j) => j.status === 'failed' && j.error)
-      .slice(0, 50)
+    const failedRecent = recentJobs.filter((j) => j.status === 'failed' && j.error).slice(0, 50)
     const incidentMap = new Map<string, { count: number; lastAt: number }>()
     for (const job of failedRecent) {
       const key = job.error ?? 'unknown'
@@ -263,10 +229,7 @@ export const queueStats = query({
       .sort((a, b) => b.lastAt - a.lastAt)
       .slice(0, 5)
 
-    const jobsPerHour =
-      jobsInLast24h.length > 0
-        ? Math.round(jobsInLast24h.length / 24)
-        : 0
+    const jobsPerHour = jobsInLast24h.length > 0 ? Math.round(jobsInLast24h.length / 24) : 0
 
     return {
       activeCount: statusCounts.processing,

@@ -11,12 +11,7 @@ type UseTypewriterOptions = {
 
 export function useTypewriter(
   text: string,
-  {
-    speed = 26,
-    startDelay = 600,
-    loop = true,
-    pause = 5000,
-  }: UseTypewriterOptions = {},
+  { speed = 26, startDelay = 600, loop = true, pause = 5000 }: UseTypewriterOptions = {},
 ) {
   const [shown, setShown] = useState('')
 

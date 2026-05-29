@@ -41,10 +41,7 @@ function petBlogBaseSlug(name: string) {
 
 type DbReader = Pick<GenericQueryCtx<DataModel>, 'db'>
 
-async function resolveAvatarUrl(
-  ctx: GenericQueryCtx<DataModel>,
-  avatarAssetId: Id<'assets'> | undefined,
-) {
+async function resolveAvatarUrl(ctx: GenericQueryCtx<DataModel>, avatarAssetId: Id<'assets'> | undefined) {
   if (!avatarAssetId) return null
   const asset = await ctx.db.get(avatarAssetId)
   if (!asset) return null
@@ -93,17 +90,12 @@ export const listMine = query({
           .query('assets')
           .withIndex('by_pet', (q) => q.eq('petId', pet._id))
           .collect()
-        const imageCount = images.filter(
-          (a) => a.kind === 'generated_image',
-        ).length
+        const imageCount = images.filter((a) => a.kind === 'generated_image').length
 
-        const latestPost = posts.reduce<(typeof posts)[number] | null>(
-          (latest, post) => {
-            if (!latest || post.updatedAt > latest.updatedAt) return post
-            return latest
-          },
-          null,
-        )
+        const latestPost = posts.reduce<(typeof posts)[number] | null>((latest, post) => {
+          if (!latest || post.updatedAt > latest.updatedAt) return post
+          return latest
+        }, null)
 
         return {
           pet,
@@ -111,9 +103,7 @@ export const listMine = query({
           avatarUrl,
           postCount: posts.length,
           imageCount,
-          latestPost: latestPost
-            ? { title: latestPost.title, updatedAt: latestPost.updatedAt }
-            : null,
+          latestPost: latestPost ? { title: latestPost.title, updatedAt: latestPost.updatedAt } : null,
         }
       }),
     )
@@ -162,13 +152,7 @@ export const create = mutation({
     species: v.optional(v.string()),
     breed: v.optional(v.string()),
     bio: v.optional(v.string()),
-    visibility: v.optional(
-      v.union(
-        v.literal('private'),
-        v.literal('public'),
-        v.literal('unlisted'),
-      ),
-    ),
+    visibility: v.optional(v.union(v.literal('private'), v.literal('public'), v.literal('unlisted'))),
   },
   handler: async (ctx, args) => {
     const user = await requireUser(ctx)
@@ -241,8 +225,7 @@ export const update = mutation({
       if (!name) throw new Error('Name cannot be empty')
       patch.name = name
     }
-    if (args.species !== undefined)
-      patch.species = args.species.trim() || undefined
+    if (args.species !== undefined) patch.species = args.species.trim() || undefined
     if (args.breed !== undefined) patch.breed = args.breed.trim() || undefined
     if (args.bio !== undefined) patch.bio = args.bio.trim() || undefined
 
@@ -275,13 +258,7 @@ export const updateBlogMeta = mutation({
   args: {
     petId: v.id('pets'),
     description: v.optional(v.string()),
-    visibility: v.optional(
-      v.union(
-        v.literal('private'),
-        v.literal('public'),
-        v.literal('unlisted'),
-      ),
-    ),
+    visibility: v.optional(v.union(v.literal('private'), v.literal('public'), v.literal('unlisted'))),
   },
   handler: async (ctx, args) => {
     const user = await requireUser(ctx)
@@ -297,8 +274,7 @@ export const updateBlogMeta = mutation({
 
     const now = Date.now()
     const patch: Record<string, unknown> = { updatedAt: now }
-    if (args.description !== undefined)
-      patch.description = args.description.trim() || undefined
+    if (args.description !== undefined) patch.description = args.description.trim() || undefined
     if (args.visibility !== undefined) patch.visibility = args.visibility
 
     await ctx.db.patch(blog._id, patch)

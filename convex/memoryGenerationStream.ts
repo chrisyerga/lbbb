@@ -4,28 +4,16 @@ import { components, internal } from './_generated/api'
 import { PersistentTextStreaming } from '@convex-dev/persistent-text-streaming'
 import type { StreamId } from '@convex-dev/persistent-text-streaming'
 import { getAuthUserId } from '@convex-dev/auth/server'
-import {
-  buildMetadataPromptFromPlan,
-  buildStreamMessagesFromPlan,
-} from './lib/generation/prompts'
+import { buildMetadataPromptFromPlan, buildStreamMessagesFromPlan } from './lib/generation/prompts'
 import type { MemoryJobInputSnapshot } from './lib/generation/types'
 import { estimateTextCostUsd } from './lib/generation/pricing'
-import {
-  callOpenAIMetadata,
-  streamOpenAIMarkdown,
-} from './lib/generation/providers/openaiText'
+import { callOpenAIMetadata, streamOpenAIMarkdown } from './lib/generation/providers/openaiText'
 
-const persistentTextStreaming = new PersistentTextStreaming(
-  components.persistentTextStreaming,
-)
+const persistentTextStreaming = new PersistentTextStreaming(components.persistentTextStreaming)
 
 function corsHeaders(origin: string | null) {
-  const allowed =
-    process.env.SITE_URL ??
-    process.env.VITE_SITE_URL ??
-    'http://localhost:3000'
-  const allowOrigin =
-    origin && (origin === allowed || allowed === '*') ? origin : allowed
+  const allowed = process.env.SITE_URL ?? process.env.VITE_SITE_URL ?? 'http://localhost:3000'
+  const allowOrigin = origin && (origin === allowed || allowed === '*') ? origin : allowed
   return {
     'Access-Control-Allow-Origin': allowOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -43,19 +31,14 @@ function isMemoryJobInput(input: unknown): input is MemoryJobInputSnapshot {
   )
 }
 
-export async function createMemoryGenerationStream(
-  ctx: Parameters<typeof persistentTextStreaming.createStream>[0],
-) {
+export async function createMemoryGenerationStream(ctx: Parameters<typeof persistentTextStreaming.createStream>[0]) {
   return await persistentTextStreaming.createStream(ctx)
 }
 
 export const getStreamBody = query({
   args: { streamId: v.string() },
   handler: async (ctx, args) => {
-    return await persistentTextStreaming.getStreamBody(
-      ctx,
-      args.streamId as StreamId,
-    )
+    return await persistentTextStreaming.getStreamBody(ctx, args.streamId as StreamId)
   },
 })
 
@@ -78,10 +61,7 @@ export const streamMemoryGeneration = httpAction(async (ctx, request) => {
     })
   }
 
-  const job = await ctx.runQuery(
-    internal.generationState.getJobForStreamInternal,
-    { streamId: body.streamId },
-  )
+  const job = await ctx.runQuery(internal.generationState.getJobForStreamInternal, { streamId: body.streamId })
   if (!job || job.ownerUserId !== userId) {
     return new Response('Forbidden', {
       status: 403,
@@ -149,10 +129,7 @@ export const streamMemoryGeneration = httpAction(async (ctx, request) => {
             model: plan.text.model,
             inputTokens: metadata.usage?.inputTokens,
             outputTokens: metadata.usage?.outputTokens,
-            estimatedCostUsd: estimateTextCostUsd(
-              metadata.usage?.inputTokens,
-              metadata.usage?.outputTokens,
-            ),
+            estimatedCostUsd: estimateTextCostUsd(metadata.usage?.inputTokens, metadata.usage?.outputTokens),
             providerRequestId: metadata.providerRequestId,
           },
         })
@@ -163,14 +140,9 @@ export const streamMemoryGeneration = httpAction(async (ctx, request) => {
           streamBody: fullBody.trim(),
         })
 
-        await ctx.scheduler.runAfter(
-          0,
-          internal.generationWorkflow.runMemoryGenerationImages,
-          { jobId },
-        )
+        await ctx.scheduler.runAfter(0, internal.generationWorkflow.runMemoryGenerationImages, { jobId })
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : 'Generation failed'
+        const message = error instanceof Error ? error.message : 'Generation failed'
         await ctx.runMutation(internal.generationState.markFailed, {
           jobId: job._id,
           error: message,

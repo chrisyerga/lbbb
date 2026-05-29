@@ -217,9 +217,7 @@ export const finalizeGenerationJob = internalMutation({
 
     const now = Date.now()
     const outputSnapshot = {
-      ...(typeof draft.outputSnapshot === 'object' && draft.outputSnapshot !== null
-        ? draft.outputSnapshot
-        : {}),
+      ...(typeof draft.outputSnapshot === 'object' && draft.outputSnapshot !== null ? draft.outputSnapshot : {}),
       imagePrompt: args.baseImagePrompt,
       imagePrompts: args.imagePrompts,
     }

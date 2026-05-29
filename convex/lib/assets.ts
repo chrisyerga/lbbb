@@ -17,16 +17,11 @@ export function assertUploadAllowed(contentType: string, byteSize: number) {
     throw new Error('File is empty.')
   }
   if (byteSize > maxUploadBytes()) {
-    throw new Error(
-      `File exceeds ${Math.round(maxUploadBytes() / (1024 * 1024))} MB limit.`,
-    )
+    throw new Error(`File exceeds ${Math.round(maxUploadBytes() / (1024 * 1024))} MB limit.`)
   }
 }
 
-export async function resolveAssetUrl(
-  ctx: Ctx,
-  asset: Doc<'assets'>,
-): Promise<string | null> {
+export async function resolveAssetUrl(ctx: Ctx, asset: Doc<'assets'>): Promise<string | null> {
   if (asset.storageProvider === 'convex' && asset.storageId) {
     return await ctx.storage.getUrl(asset.storageId)
   }
@@ -36,11 +31,7 @@ export async function resolveAssetUrl(
   return null
 }
 
-export async function requirePetOwner(
-  ctx: Ctx,
-  petId: Id<'pets'>,
-  userId: Id<'users'>,
-): Promise<Doc<'pets'>> {
+export async function requirePetOwner(ctx: Ctx, petId: Id<'pets'>, userId: Id<'users'>): Promise<Doc<'pets'>> {
   const pet = await ctx.db.get(petId)
   if (!pet || pet.deletedAt !== undefined) {
     throw new Error('Pet not found')

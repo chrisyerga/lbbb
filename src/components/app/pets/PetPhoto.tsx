@@ -19,15 +19,8 @@ export function PetPhoto({ name, imageUrl, size = 132 }: PetPhotoProps) {
 
   if (imageUrl) {
     return (
-      <div
-        className="pet-photo shrink-0 overflow-hidden bg-white"
-        style={{ width: size, height: size }}
-      >
-        <img
-          src={imageUrl}
-          alt={`${name} profile`}
-          className="h-full w-full object-cover object-center"
-        />
+      <div className="pet-photo shrink-0 overflow-hidden bg-white" style={{ width: size, height: size }}>
+        <img src={imageUrl} alt={`${name} profile`} className="h-full w-full object-cover object-center" />
       </div>
     )
   }

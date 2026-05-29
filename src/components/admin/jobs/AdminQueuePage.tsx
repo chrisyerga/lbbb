@@ -13,11 +13,7 @@ import { EventStream } from './EventStream'
 import { JobHeader, OutputPanel } from './JobDetailPanels'
 import { StepRail } from './StepRail'
 
-export function AdminQueuePage({
-  selectedJobId,
-}: {
-  selectedJobId: Id<'generationJobs'> | null
-}) {
+export function AdminQueuePage({ selectedJobId }: { selectedJobId: Id<'generationJobs'> | null }) {
   const navigate = useNavigate()
   const rows = useQuery(api.adminJobs.queueList, { limit: 100 })
   const stats = useQuery(api.adminJobs.queueStats, {})
@@ -30,10 +26,7 @@ export function AdminQueuePage({
     return rows?.[0]?.jobId ?? null
   }, [selectedJobId, rows])
 
-  const detail = useQuery(
-    api.adminJobs.queueDetail,
-    effectiveJobId ? { jobId: effectiveJobId } : 'skip',
-  )
+  const detail = useQuery(api.adminJobs.queueDetail, effectiveJobId ? { jobId: effectiveJobId } : 'skip')
 
   function onSelect(jobId: Id<'generationJobs'>) {
     void navigate({
@@ -79,10 +72,7 @@ export function AdminQueuePage({
                 eventTypes={detail.events.map((e) => e.type)}
               />
               <div className="admin-center-grid">
-                <EventStream
-                  events={detail.events}
-                  isLive={detail.job.status === 'processing'}
-                />
+                <EventStream events={detail.events} isLive={detail.job.status === 'processing'} />
                 <OutputPanel
                   draft={detail.draft}
                   imageCount={detail.draft?.imageUrls.length ?? 0}

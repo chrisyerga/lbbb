@@ -56,13 +56,9 @@ export function LandingPricing() {
                   ★ most loved
                 </div>
               )}
-              <div className="font-display text-[30px] font-extrabold tracking-tight">
-                {t.name}
-              </div>
+              <div className="font-display text-[30px] font-extrabold tracking-tight">{t.name}</div>
               <div className="mt-3 flex items-baseline gap-1.5">
-                <span className="font-display text-[64px] leading-none font-extrabold tracking-tight">
-                  ${t.price}
-                </span>
+                <span className="font-display text-[64px] leading-none font-extrabold tracking-tight">${t.price}</span>
                 <span className="text-sm opacity-70">{t.sub}</span>
               </div>
               <ul className="my-6 mb-7 list-none p-0 text-[14.5px]">
@@ -71,9 +67,7 @@ export function LandingPricing() {
                     key={li}
                     className="flex items-center gap-2 border-t border-dashed py-2.5"
                     style={{
-                      borderColor: isFeatured
-                        ? 'rgba(255,255,255,.3)'
-                        : 'rgba(20,16,14,.18)',
+                      borderColor: isFeatured ? 'rgba(255,255,255,.3)' : 'rgba(20,16,14,.18)',
                     }}
                   >
                     <span>→</span>

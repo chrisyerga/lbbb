@@ -33,11 +33,7 @@ function emptyArtStyle(sortOrder: number): ArtStyleDoc {
   }
 }
 
-export function AdminArtStylesPage({
-  selectedStyleId,
-}: {
-  selectedStyleId: Id<'artStyles'> | null
-}) {
+export function AdminArtStylesPage({ selectedStyleId }: { selectedStyleId: Id<'artStyles'> | null }) {
   const navigate = useNavigate()
   const styles = useQuery(api.adminNarrators.listArtStyles)
   const usage = useQuery(api.adminNarrators.artStyleUsage)
@@ -80,8 +76,7 @@ export function AdminArtStylesPage({
   }
 
   function startNew() {
-    const maxOrder =
-      styles?.reduce((m, s) => Math.max(m, s.sortOrder), 0) ?? 0
+    const maxOrder = styles?.reduce((m, s) => Math.max(m, s.sortOrder), 0) ?? 0
     setIsNew(true)
     setDraft(emptyArtStyle(maxOrder + 10))
     void navigate({ to: '/app/admin/art-styles', search: {} })
@@ -122,16 +117,11 @@ export function AdminArtStylesPage({
           <MonoLabel>Image generation look &amp; prompt suffixes</MonoLabel>
         </div>
         <div className="admin-catalog-topbar-actions">
-          {message ? (
-            <span className="admin-mono admin-save-message">{message}</span>
-          ) : null}
+          {message ? <span className="admin-mono admin-save-message">{message}</span> : null}
           <AdminBtnPrimary onClick={startNew} disabled={!canEdit}>
             New style
           </AdminBtnPrimary>
-          <AdminBtnPrimary
-            onClick={() => void save()}
-            disabled={!canEdit || !draft || busy}
-          >
+          <AdminBtnPrimary onClick={() => void save()} disabled={!canEdit || !draft || busy}>
             {busy ? 'Saving…' : 'Save'}
           </AdminBtnPrimary>
         </div>
@@ -152,11 +142,7 @@ export function AdminArtStylesPage({
               <button
                 key={style._id}
                 type="button"
-                className={
-                  style._id === effectiveId && !isNew
-                    ? 'admin-trait-row is-active'
-                    : 'admin-trait-row'
-                }
+                className={style._id === effectiveId && !isNew ? 'admin-trait-row is-active' : 'admin-trait-row'}
                 onClick={() => selectStyle(style._id)}
               >
                 <span
@@ -165,9 +151,7 @@ export function AdminArtStylesPage({
                 />
                 <span className="admin-trait-row-copy">
                   <span className="admin-trait-row-label">{style.name}</span>
-                  <span className="admin-mono admin-trait-row-slug">
-                    {style.slug}
-                  </span>
+                  <span className="admin-mono admin-trait-row-slug">{style.slug}</span>
                 </span>
                 <CatalogStatusChip status={style.status} />
                 <span className="admin-mono admin-trait-row-used">
@@ -190,17 +174,11 @@ export function AdminArtStylesPage({
                     style={{ background: artStyleColor(draft.slug) }}
                   />
                   <div>
-                    <h2 className="admin-inspector-title">
-                      {isNew ? 'New art style' : draft.name || 'Untitled'}
-                    </h2>
+                    <h2 className="admin-inspector-title">{isNew ? 'New art style' : draft.name || 'Untitled'}</h2>
                     {!isNew ? <CatalogStatusChip status={draft.status} /> : null}
                   </div>
                 </div>
-                {!canEdit ? (
-                  <p className="admin-readonly-note">
-                    Site admin required to edit catalog.
-                  </p>
-                ) : null}
+                {!canEdit ? <p className="admin-readonly-note">Site admin required to edit catalog.</p> : null}
                 {!isNew && usedBy.length > 0 && draft.status === 'archived' ? (
                   <p className="admin-readonly-note">
                     Still referenced by {usedBy.length} narrator
@@ -256,17 +234,12 @@ export function AdminArtStylesPage({
                     onChange={(status) => setDraft({ ...draft, status })}
                   />
                 </AdminField>
-                <AdminField
-                  label="Image prompt suffix"
-                  helper="appended to scene prompts for image generation"
-                >
+                <AdminField label="Image prompt suffix" helper="appended to scene prompts for image generation">
                   <AdminTextarea
                     rows={6}
                     value={draft.imagePromptSuffix}
                     disabled={!canEdit}
-                    onChange={(imagePromptSuffix) =>
-                      setDraft({ ...draft, imagePromptSuffix })
-                    }
+                    onChange={(imagePromptSuffix) => setDraft({ ...draft, imagePromptSuffix })}
                   />
                 </AdminField>
               </div>

@@ -14,27 +14,13 @@ function Sparkline({ data }: { data: Array<number> }) {
   return (
     <div className="admin-sparkline">
       {data.map((v, i) => (
-        <div
-          key={i}
-          className="admin-spark-bar"
-          style={{ height: `${Math.max(4, (v / max) * 100)}%` }}
-        />
+        <div key={i} className="admin-spark-bar" style={{ height: `${Math.max(4, (v / max) * 100)}%` }} />
       ))}
     </div>
   )
 }
 
-function Bar({
-  label,
-  value,
-  max,
-  color,
-}: {
-  label: string
-  value: number
-  max: number
-  color: string
-}) {
+function Bar({ label, value, max, color }: { label: string; value: number; max: number; color: string }) {
   return (
     <div className="admin-bar-row">
       <span style={{ minWidth: 90, color: 'var(--admin-ink-2)' }}>{label}</span>
@@ -75,10 +61,7 @@ export function StatsRail({ stats }: { stats: Stats | undefined }) {
           <span className="admin-mono" style={{ fontSize: 11, color: 'var(--admin-ink-3)' }}>
             jobs total
           </span>
-          <span
-            className="admin-mono"
-            style={{ marginLeft: 'auto', fontSize: 10.5, color: 'var(--admin-ink-3)' }}
-          >
+          <span className="admin-mono" style={{ marginLeft: 'auto', fontSize: 10.5, color: 'var(--admin-ink-3)' }}>
             {stats?.jobsPerHour ?? '—'} jobs/hr
           </span>
         </div>
@@ -88,9 +71,7 @@ export function StatsRail({ stats }: { stats: Stats | undefined }) {
       <div className="admin-stat-block">
         <p className="admin-stat-block-title">cost · today</p>
         <div style={{ marginBottom: 12 }}>
-          <span style={{ fontSize: '1.625rem', fontWeight: 700 }}>
-            {stats ? formatUsd(stats.costTodayTotal) : '—'}
-          </span>
+          <span style={{ fontSize: '1.625rem', fontWeight: 700 }}>{stats ? formatUsd(stats.costTodayTotal) : '—'}</span>
         </div>
         {stats?.costByModel.map((row, i) => (
           <Bar
@@ -106,18 +87,10 @@ export function StatsRail({ stats }: { stats: Stats | undefined }) {
       <div className="admin-stat-block">
         <p className="admin-stat-block-title">active jobs</p>
         <div className="admin-bar-row">
-          <span
-            className="admin-status-dot is-live"
-            style={{ background: 'var(--admin-tomato)' }}
-          />
-          <span style={{ color: 'var(--admin-ink-2)' }}>
-            {stats?.activeCount ?? 0} processing
-          </span>
+          <span className="admin-status-dot is-live" style={{ background: 'var(--admin-tomato)' }} />
+          <span style={{ color: 'var(--admin-ink-2)' }}>{stats?.activeCount ?? 0} processing</span>
         </div>
-        <p
-          className="admin-mono"
-          style={{ fontSize: 10.5, color: 'var(--admin-ink-4)', marginTop: 8 }}
-        >
+        <p className="admin-mono" style={{ fontSize: 10.5, color: 'var(--admin-ink-4)', marginTop: 8 }}>
           Worker pool not configured — showing live job count.
         </p>
       </div>
@@ -130,15 +103,8 @@ export function StatsRail({ stats }: { stats: Stats | undefined }) {
           </p>
         ) : (
           stats.incidents.map((inc) => (
-            <div
-              key={inc.error}
-              className="admin-bar-row"
-              style={{ alignItems: 'flex-start', marginBottom: 8 }}
-            >
-              <span
-                className="admin-status-dot"
-                style={{ background: 'var(--admin-red)', marginTop: 4 }}
-              />
+            <div key={inc.error} className="admin-bar-row" style={{ alignItems: 'flex-start', marginBottom: 8 }}>
+              <span className="admin-status-dot" style={{ background: 'var(--admin-red)', marginTop: 4 }} />
               <span
                 style={{
                   flex: 1,

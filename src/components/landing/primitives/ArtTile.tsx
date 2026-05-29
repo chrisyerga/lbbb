@@ -12,14 +12,7 @@ type ArtTileProps = {
   style?: CSSProperties
 }
 
-export function ArtTile({
-  palette,
-  label,
-  accent,
-  rotate = 0,
-  className,
-  style,
-}: ArtTileProps) {
+export function ArtTile({ palette, label, accent, rotate = 0, className, style }: ArtTileProps) {
   const rawId = useId()
   const id = rawId.replace(/:/g, '')
   const accentColor = accent ?? palette.accent
@@ -30,39 +23,19 @@ export function ArtTile({
       style={{
         background: palette.cream,
         transform: `rotate(${rotate}deg)`,
-        boxShadow:
-          '0 8px 24px rgba(0,0,0,.10), 0 1.5px 0 rgba(0,0,0,.05)',
+        boxShadow: '0 8px 24px rgba(0,0,0,.10), 0 1.5px 0 rgba(0,0,0,.05)',
         ...style,
       }}
     >
-      <svg
-        viewBox="0 0 200 200"
-        width="100%"
-        height="100%"
-        preserveAspectRatio="xMidYMid slice"
-        className="block"
-      >
+      <svg viewBox="0 0 200 200" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" className="block">
         <defs>
           <linearGradient id={`g${id}`} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor={accentColor} stopOpacity="0.9" />
             <stop offset="100%" stopColor={palette.ink} stopOpacity="0.85" />
           </linearGradient>
-          <pattern
-            id={`p${id}`}
-            width="8"
-            height="8"
-            patternUnits="userSpaceOnUse"
-            patternTransform="rotate(35)"
-          >
+          <pattern id={`p${id}`} width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
             <rect width="8" height="8" fill="transparent" />
-            <line
-              x1="0"
-              y1="0"
-              x2="0"
-              y2="8"
-              stroke="rgba(255,255,255,.18)"
-              strokeWidth="1.5"
-            />
+            <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(255,255,255,.18)" strokeWidth="1.5" />
           </pattern>
         </defs>
         <rect width="200" height="200" fill={`url(#g${id})`} />

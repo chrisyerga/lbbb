@@ -7,11 +7,11 @@ description: Design system for Little Bestiary Blog Builder (LBBB). Use when bui
 
 Two visual contexts — pick the right one:
 
-| Context | Route | Aesthetic |
-| ------- | ----- | --------- |
-| **App UI** | `/app/*`, `/login` | V1 Sticker Pop (cream, Unbounded, sticker buttons) |
-| **Public blogs** | `/p/*` | Flat dark utilitarian (legacy) |
-| **Marketing landing** | `/` | V1 Sticker Pop scrapbook |
+| Context               | Route              | Aesthetic                                          |
+| --------------------- | ------------------ | -------------------------------------------------- |
+| **App UI**            | `/app/*`, `/login` | V1 Sticker Pop (cream, Unbounded, sticker buttons) |
+| **Public blogs**      | `/p/*`             | Flat dark utilitarian (legacy)                     |
+| **Marketing landing** | `/`                | V1 Sticker Pop scrapbook                           |
 
 ---
 
@@ -30,12 +30,12 @@ Uses the same V1 **Sticker Pop** system as the landing page, scoped via [`AppShe
 
 Inside `.landing-v1`, existing app utility vars are bridged to landing palette:
 
-| Token | Maps to |
-| ----- | ------- |
-| `--bg-base` | `--landing-cream` |
-| `--bg-raised` | `#fff` |
-| `--text-primary` | `--landing-ink` |
-| `--accent` | `--landing-primary` |
+| Token            | Maps to             |
+| ---------------- | ------------------- |
+| `--bg-base`      | `--landing-cream`   |
+| `--bg-raised`    | `#fff`              |
+| `--text-primary` | `--landing-ink`     |
+| `--accent`       | `--landing-primary` |
 
 See [`landingPalette.ts`](src/components/landing/landingPalette.ts) for palette values.
 
@@ -134,13 +134,13 @@ Fonts loaded via [`src/styles/landing-v1.css`](src/styles/landing-v1.css).
 
 On `.landing-v1` — default **Tomato** palette from [`landingPalette.ts`](src/components/landing/landingPalette.ts):
 
-| Token | Default | Use |
-| ----- | ------- | --- |
-| `--landing-cream` | `#FBF1DE` | Page background |
-| `--landing-ink` | `#1A1410` | Text, borders |
-| `--landing-primary` | `#E0382E` | CTAs, emphasis |
-| `--landing-accent` | `#F2A02E` | Decorations, highlights |
-| `--landing-soft` | `#F5E1B4` | Section backgrounds |
+| Token               | Default   | Use                     |
+| ------------------- | --------- | ----------------------- |
+| `--landing-cream`   | `#FBF1DE` | Page background         |
+| `--landing-ink`     | `#1A1410` | Text, borders           |
+| `--landing-primary` | `#E0382E` | CTAs, emphasis          |
+| `--landing-accent`  | `#F2A02E` | Decorations, highlights |
+| `--landing-soft`    | `#F5E1B4` | Section backgrounds     |
 
 ### Motifs
 

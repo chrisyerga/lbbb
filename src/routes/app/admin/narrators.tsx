@@ -17,7 +17,6 @@ export const Route = createFileRoute('/app/admin/narrators')({
 
 function AdminNarratorsRoute() {
   const { narrator } = Route.useSearch()
-  const selectedNarratorId =
-    (narrator as Id<'narrators'> | undefined) ?? null
+  const selectedNarratorId = (narrator as Id<'narrators'> | undefined) ?? null
   return <AdminNarratorsPage selectedNarratorId={selectedNarratorId} />
 }

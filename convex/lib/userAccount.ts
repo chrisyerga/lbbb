@@ -1,22 +1,12 @@
 import type { Doc } from '../_generated/dataModel'
 
-export const ACCESS_ROLES = [
-  'user',
-  'site_admin',
-  'moderator',
-  'support',
-] as const
+export const ACCESS_ROLES = ['user', 'site_admin', 'moderator', 'support'] as const
 export type AccessRole = (typeof ACCESS_ROLES)[number]
 
 export const PLAN_TIERS = ['pup', 'top_dog', 'the_pack'] as const
 export type PlanTier = (typeof PLAN_TIERS)[number]
 
-export const PLAN_STATUSES = [
-  'active',
-  'trialing',
-  'cancelled',
-  'past_due',
-] as const
+export const PLAN_STATUSES = ['active', 'trialing', 'cancelled', 'past_due'] as const
 export type PlanStatus = (typeof PLAN_STATUSES)[number]
 
 export const FEATURES = [
@@ -43,11 +33,7 @@ export const DEFAULT_ACCESS_ROLE: AccessRole = 'user'
 export const DEFAULT_PLAN_TIER: PlanTier = 'pup'
 export const DEFAULT_PLAN_STATUS: PlanStatus = 'active'
 
-const STAFF_ROLES = new Set<AccessRole>([
-  'site_admin',
-  'moderator',
-  'support',
-])
+const STAFF_ROLES = new Set<AccessRole>(['site_admin', 'moderator', 'support'])
 
 const TIER_RANK: Record<PlanTier, number> = {
   pup: 0,
@@ -59,45 +45,29 @@ const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
   pup: {
     maxPets: 1,
     maxPostsPerMonth: 3,
-    dailyTextGenerations: Number(
-      process.env.DAILY_TEXT_GENERATION_LIMIT ?? 20,
-    ),
-    dailyImageGenerations: Number(
-      process.env.DAILY_IMAGE_GENERATION_LIMIT ?? 5,
-    ),
+    dailyTextGenerations: Number(process.env.DAILY_TEXT_GENERATION_LIMIT ?? 20),
+    dailyImageGenerations: Number(process.env.DAILY_IMAGE_GENERATION_LIMIT ?? 5),
     maxUploadBytes: Number(process.env.MAX_UPLOAD_BYTES ?? 10 * 1024 * 1024),
   },
   top_dog: {
     maxPets: null,
     maxPostsPerMonth: null,
-    dailyTextGenerations: Number(
-      process.env.DAILY_TEXT_GENERATION_LIMIT ?? 20,
-    ) * 5,
-    dailyImageGenerations: Number(
-      process.env.DAILY_IMAGE_GENERATION_LIMIT ?? 5,
-    ) * 5,
+    dailyTextGenerations: Number(process.env.DAILY_TEXT_GENERATION_LIMIT ?? 20) * 5,
+    dailyImageGenerations: Number(process.env.DAILY_IMAGE_GENERATION_LIMIT ?? 5) * 5,
     maxUploadBytes: Number(process.env.MAX_UPLOAD_BYTES ?? 10 * 1024 * 1024),
   },
   the_pack: {
     maxPets: 10,
     maxPostsPerMonth: null,
-    dailyTextGenerations: Number(
-      process.env.DAILY_TEXT_GENERATION_LIMIT ?? 20,
-    ) * 5,
-    dailyImageGenerations: Number(
-      process.env.DAILY_IMAGE_GENERATION_LIMIT ?? 5,
-    ) * 5,
+    dailyTextGenerations: Number(process.env.DAILY_TEXT_GENERATION_LIMIT ?? 20) * 5,
+    dailyImageGenerations: Number(process.env.DAILY_IMAGE_GENERATION_LIMIT ?? 5) * 5,
     maxUploadBytes: Number(process.env.MAX_UPLOAD_BYTES ?? 10 * 1024 * 1024),
   },
 }
 
 const TIER_FEATURES: Record<PlanTier, ReadonlySet<Feature>> = {
   pup: new Set(),
-  top_dog: new Set([
-    'custom_domain',
-    'all_narrator_voices',
-    'auto_schedule_socials',
-  ]),
+  top_dog: new Set(['custom_domain', 'all_narrator_voices', 'auto_schedule_socials']),
   the_pack: new Set([
     'custom_domain',
     'all_narrator_voices',
@@ -118,11 +88,7 @@ export function isSiteAdmin(role: AccessRole): boolean {
 
 export function effectivePlanTier(account: UserAccountDoc): PlanTier {
   if (account.planStatus === 'cancelled') return 'pup'
-  if (
-    account.planExpiresAt !== undefined &&
-    account.planExpiresAt < Date.now() &&
-    account.planStatus !== 'active'
-  ) {
+  if (account.planExpiresAt !== undefined && account.planExpiresAt < Date.now() && account.planStatus !== 'active') {
     return 'pup'
   }
   return account.planTier
@@ -140,10 +106,8 @@ export function accountLimits(account: UserAccountDoc): PlanLimits {
   return {
     maxPets: overrides.maxPets ?? base.maxPets,
     maxPostsPerMonth: base.maxPostsPerMonth,
-    dailyTextGenerations:
-      overrides.dailyTextGenerations ?? base.dailyTextGenerations,
-    dailyImageGenerations:
-      overrides.dailyImageGenerations ?? base.dailyImageGenerations,
+    dailyTextGenerations: overrides.dailyTextGenerations ?? base.dailyTextGenerations,
+    dailyImageGenerations: overrides.dailyImageGenerations ?? base.dailyImageGenerations,
     maxUploadBytes: base.maxUploadBytes,
   }
 }
@@ -152,10 +116,7 @@ export function hasFeature(account: UserAccountDoc, feature: Feature): boolean {
   return TIER_FEATURES[effectivePlanTier(account)].has(feature)
 }
 
-export function hasPlanAtLeast(
-  account: UserAccountDoc,
-  tier: PlanTier,
-): boolean {
+export function hasPlanAtLeast(account: UserAccountDoc, tier: PlanTier): boolean {
   return TIER_RANK[effectivePlanTier(account)] >= TIER_RANK[tier]
 }
 

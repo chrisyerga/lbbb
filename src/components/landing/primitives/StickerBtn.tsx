@@ -51,12 +51,7 @@ export function StickerBtn({
 
   if (to) {
     return (
-      <Link
-        to={to}
-        className={cn(classes, 'no-underline')}
-        style={inlineStyle}
-        {...pressHandlers}
-      >
+      <Link to={to} className={cn(classes, 'no-underline')} style={inlineStyle} {...pressHandlers}>
         {children}
       </Link>
     )

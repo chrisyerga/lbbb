@@ -1,9 +1,6 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
-import {
-  accountCapabilities,
-  accountLimits,
-} from './lib/userAccount'
+import { accountCapabilities, accountLimits } from './lib/userAccount'
 import {
   getAccountByUserId,
   getOrCreateAccount,
@@ -13,23 +10,9 @@ import {
 } from './lib/requireAccount'
 import { optionalUser, requireUser } from './lib/requireUser'
 
-const accessRole = v.union(
-  v.literal('user'),
-  v.literal('site_admin'),
-  v.literal('moderator'),
-  v.literal('support'),
-)
-const planTier = v.union(
-  v.literal('pup'),
-  v.literal('top_dog'),
-  v.literal('the_pack'),
-)
-const planStatus = v.union(
-  v.literal('active'),
-  v.literal('trialing'),
-  v.literal('cancelled'),
-  v.literal('past_due'),
-)
+const accessRole = v.union(v.literal('user'), v.literal('site_admin'), v.literal('moderator'), v.literal('support'))
+const planTier = v.union(v.literal('pup'), v.literal('top_dog'), v.literal('the_pack'))
+const planStatus = v.union(v.literal('active'), v.literal('trialing'), v.literal('cancelled'), v.literal('past_due'))
 
 export const ensureAccount = mutation({
   args: {},

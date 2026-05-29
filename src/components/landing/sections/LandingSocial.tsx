@@ -20,11 +20,7 @@ export function LandingSocial() {
     <section className="relative px-4 py-10 sm:px-8 sm:py-16 lg:px-14 lg:pb-[120px]">
       <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-14">
         <div>
-          <Pill
-            bg="var(--landing-cream)"
-            color="var(--landing-ink)"
-            className="mb-[18px]"
-          >
+          <Pill bg="var(--landing-cream)" color="var(--landing-ink)" className="mb-[18px]">
             The art
           </Pill>
           <h2 className="font-display m-0 text-[clamp(2.25rem,5vw,3.75rem)] leading-[0.95] font-extrabold tracking-tight text-[var(--landing-ink)]">
@@ -35,8 +31,7 @@ export function LandingSocial() {
             <span className="text-[var(--landing-primary)]">Every. Day.</span>
           </h2>
           <p className="mt-[22px] max-w-[380px] text-[17px] leading-normal text-[var(--landing-ink)]/80">
-            Same dog, six aesthetics. Pick a favorite, schedule the rest, or
-            remix the prompt and roll again.
+            Same dog, six aesthetics. Pick a favorite, schedule the rest, or remix the prompt and roll again.
           </p>
         </div>
 

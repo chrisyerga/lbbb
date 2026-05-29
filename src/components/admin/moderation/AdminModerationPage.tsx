@@ -5,12 +5,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useMutation, useQuery } from 'convex/react'
 import type { Id } from '#convex/_generated/dataModel'
 import { api } from '#convex/_generated/api'
-import {
-  AdminBtnPrimary,
-  AdminField,
-  AdminTextarea,
-  ModerationStatusChip,
-} from '#/components/admin/form'
+import { AdminBtnPrimary, AdminField, AdminTextarea, ModerationStatusChip } from '#/components/admin/form'
 import { MonoLabel } from '#/components/admin/jobs/primitives'
 import { hashColor, narratorInitials, MODERATION_STATUS_TAX } from '#/lib/adminCatalogUi'
 import { relTime } from '#/lib/adminJobsUi'
@@ -84,18 +79,11 @@ export function AdminModerationPage({
   function selectItem(item: NonNullable<typeof rows>[number]) {
     void navigate({
       to: '/app/admin/moderation',
-      search:
-        item.kind === 'post' && item.postId
-          ? { post: item.postId }
-          : item.assetId
-            ? { asset: item.assetId }
-            : {},
+      search: item.kind === 'post' && item.postId ? { post: item.postId } : item.assetId ? { asset: item.assetId } : {},
     })
   }
 
-  async function decide(
-    decision: 'approved' | 'flagged' | 'rejected',
-  ) {
+  async function decide(decision: 'approved' | 'flagged' | 'rejected') {
     if (!effectiveSelection.postId && !effectiveSelection.assetId) return
     setBusy(true)
     try {
@@ -151,11 +139,7 @@ export function AdminModerationPage({
                 <button
                   key={id}
                   type="button"
-                  className={
-                    filter === id
-                      ? 'admin-filter-chip is-active'
-                      : 'admin-filter-chip'
-                  }
+                  className={filter === id ? 'admin-filter-chip is-active' : 'admin-filter-chip'}
                   onClick={() => setFilter(id)}
                 >
                   {id} ({n})
@@ -174,23 +158,14 @@ export function AdminModerationPage({
                   <button
                     key={row.id}
                     type="button"
-                    className={
-                      isActive
-                        ? 'admin-queue-row is-active'
-                        : 'admin-queue-row'
-                    }
+                    className={isActive ? 'admin-queue-row is-active' : 'admin-queue-row'}
                     onClick={() => selectItem(row)}
                   >
-                    <span
-                      className="admin-pet-dot"
-                      style={{ background: color }}
-                    >
+                    <span className="admin-pet-dot" style={{ background: color }}>
                       {row.petName[0]}
                     </span>
                     <span className="admin-queue-row-body">
-                      <span className="admin-queue-row-title">
-                        {row.title}
-                      </span>
+                      <span className="admin-queue-row-title">{row.title}</span>
                       <span className="admin-queue-row-meta">
                         {row.petName} · {row.ownerEmail}
                       </span>
@@ -230,19 +205,12 @@ export function AdminModerationPage({
                     </p>
                   </div>
                 </div>
-                <ModerationStatusChip
-                  status={detail.post.moderationStatus}
-                  size="lg"
-                />
+                <ModerationStatusChip status={detail.post.moderationStatus} size="lg" />
               </header>
 
-              {detail.post.excerpt ? (
-                <p className="admin-moderation-excerpt">{detail.post.excerpt}</p>
-              ) : null}
+              {detail.post.excerpt ? <p className="admin-moderation-excerpt">{detail.post.excerpt}</p> : null}
 
-              <article className="admin-output-body admin-moderation-body">
-                {detail.post.bodyMarkdown}
-              </article>
+              <article className="admin-output-body admin-moderation-body">{detail.post.bodyMarkdown}</article>
 
               {detail.imageUrls.length > 0 ? (
                 <div className="admin-output-images">
@@ -270,18 +238,13 @@ export function AdminModerationPage({
                     {narratorInitials(detail.pet?.name ?? '?')[0]}
                   </span>
                   <div>
-                    <h2 className="admin-output-title">
-                      {detail.asset.kind.replace('_', ' ')}
-                    </h2>
+                    <h2 className="admin-output-title">{detail.asset.kind.replace('_', ' ')}</h2>
                     <p className="admin-moderation-sub">
                       {detail.pet?.name ?? 'No pet'} · {detail.ownerEmail}
                     </p>
                   </div>
                 </div>
-                <ModerationStatusChip
-                  status={detail.asset.moderationStatus}
-                  size="lg"
-                />
+                <ModerationStatusChip status={detail.asset.moderationStatus} size="lg" />
               </header>
               {detail.imageUrl ? (
                 <div className="admin-moderation-image-wrap">
@@ -298,12 +261,7 @@ export function AdminModerationPage({
           <div className="admin-inspector-section">
             <MonoLabel>Resolution</MonoLabel>
             <AdminField label="Reason / notes" helper="optional audit trail">
-              <AdminTextarea
-                rows={4}
-                value={reason}
-                placeholder="Why approve, flag, or reject…"
-                onChange={setReason}
-              />
+              <AdminTextarea rows={4} value={reason} placeholder="Why approve, flag, or reject…" onChange={setReason} />
             </AdminField>
             <div className="admin-moderation-actions">
               <AdminBtnPrimary disabled={busy || !detail} onClick={() => decide('approved')}>
@@ -336,20 +294,11 @@ export function AdminModerationPage({
                   const tax = MODERATION_STATUS_TAX[ev.status]
                   return (
                     <li key={ev._id} className="admin-event-history-row">
-                      <span
-                        className="admin-status-dot"
-                        style={{ background: tax.dot }}
-                      />
+                      <span className="admin-status-dot" style={{ background: tax.dot }} />
                       <span className="admin-event-history-copy">
                         <span className="admin-mono">{ev.status}</span>
-                        {ev.reason ? (
-                          <span className="admin-event-history-reason">
-                            {ev.reason}
-                          </span>
-                        ) : null}
-                        <span className="admin-mono admin-event-history-time">
-                          {relTime(ev.createdAt)}
-                        </span>
+                        {ev.reason ? <span className="admin-event-history-reason">{ev.reason}</span> : null}
+                        <span className="admin-mono admin-event-history-time">{relTime(ev.createdAt)}</span>
                       </span>
                     </li>
                   )

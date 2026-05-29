@@ -1,12 +1,6 @@
 import type { GenericMutationCtx, GenericQueryCtx } from 'convex/server'
 import type { DataModel, Doc } from '../_generated/dataModel'
-import {
-  DEFAULT_ACCESS_ROLE,
-  DEFAULT_PLAN_STATUS,
-  DEFAULT_PLAN_TIER,
-  isSiteAdmin,
-  isStaff,
-} from './userAccount'
+import { DEFAULT_ACCESS_ROLE, DEFAULT_PLAN_STATUS, DEFAULT_PLAN_TIER, isSiteAdmin, isStaff } from './userAccount'
 import { requireUser } from './requireUser'
 
 type Ctx = GenericQueryCtx<DataModel> | GenericMutationCtx<DataModel>
@@ -27,10 +21,7 @@ function bootstrapAccessRole(email: string | undefined) {
   return DEFAULT_ACCESS_ROLE
 }
 
-export async function getAccountByUserId(
-  ctx: Ctx,
-  userId: Doc<'users'>['_id'],
-): Promise<Doc<'userAccounts'> | null> {
+export async function getAccountByUserId(ctx: Ctx, userId: Doc<'users'>['_id']): Promise<Doc<'userAccounts'> | null> {
   return await ctx.db
     .query('userAccounts')
     .withIndex('by_user', (q) => q.eq('userId', userId))
@@ -59,9 +50,7 @@ export async function getOrCreateAccount(
   return account
 }
 
-export async function requireAccount(
-  ctx: Ctx,
-): Promise<Doc<'userAccounts'>> {
+export async function requireAccount(ctx: Ctx): Promise<Doc<'userAccounts'>> {
   const user = await requireUser(ctx)
 
   if ('insert' in ctx.db) {
@@ -78,10 +67,7 @@ export async function requireAccount(
   return account
 }
 
-function effectiveStaffRole(
-  account: Doc<'userAccounts'>,
-  email: string | undefined,
-) {
+function effectiveStaffRole(account: Doc<'userAccounts'>, email: string | undefined) {
   if (isStaff(account.accessRole)) return account.accessRole
   if (email && adminEmails().has(email.toLowerCase())) return 'site_admin' as const
   return account.accessRole
@@ -96,9 +82,7 @@ export async function requireStaff(ctx: Ctx): Promise<Doc<'userAccounts'>> {
   return account
 }
 
-export async function requireSiteAdmin(
-  ctx: Ctx,
-): Promise<Doc<'userAccounts'>> {
+export async function requireSiteAdmin(ctx: Ctx): Promise<Doc<'userAccounts'>> {
   const user = await requireUser(ctx)
   const account = await requireAccount(ctx)
   const role = effectiveStaffRole(account, user.email)

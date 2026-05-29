@@ -45,17 +45,12 @@ export default function Header() {
     <header
       className={cn(
         'sticky top-0 z-50 px-4',
-        isAppV1
-          ? 'app-header'
-          : 'border-b border-[var(--border)] bg-[var(--header-bg)]',
+        isAppV1 ? 'app-header' : 'border-b border-[var(--border)] bg-[var(--header-bg)]',
       )}
     >
       <nav className="page-wrap flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
         {isAppV1 ? (
-          <Link
-            to="/app"
-            className="mr-2 flex items-center gap-2.5 no-underline"
-          >
+          <Link to="/app" className="mr-2 flex items-center gap-2.5 no-underline">
             <img
               src="/favicon.png"
               alt=""
@@ -85,26 +80,14 @@ export default function Header() {
           >
             Dashboard
           </Link>
-          <Link
-            to="/app/pets"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
-          >
+          <Link to="/app/pets" className="nav-link" activeProps={{ className: 'nav-link is-active' }}>
             Pets
           </Link>
-          <Link
-            to="/app/cast"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
-          >
+          <Link to="/app/cast" className="nav-link" activeProps={{ className: 'nav-link is-active' }}>
             Friends & family
           </Link>
           {isStaff ? (
-            <Link
-              to="/app/admin"
-              className="nav-link"
-              activeProps={{ className: 'nav-link is-active' }}
-            >
+            <Link to="/app/admin" className="nav-link" activeProps={{ className: 'nav-link is-active' }}>
               Admin
             </Link>
           ) : null}
@@ -115,15 +98,11 @@ export default function Header() {
             <>
               <Link
                 to="/app/account"
-                className={cn(
-                  'inline-flex items-center gap-2 no-underline hover:opacity-90',
-                )}
+                className={cn('inline-flex items-center gap-2 no-underline hover:opacity-90')}
                 title={display}
               >
                 <UserAvatar imageUrl={imageUrl} name={display} size="sm" />
-                <span className="nav-link hidden max-w-[10rem] truncate sm:inline">
-                  {display}
-                </span>
+                <span className="nav-link hidden max-w-[10rem] truncate sm:inline">{display}</span>
               </Link>
               <button
                 type="button"
@@ -135,20 +114,11 @@ export default function Header() {
             </>
           ) : !isLoading ? (
             isAppV1 ? (
-              <StickerBtn
-                bg="var(--landing-primary)"
-                size="md"
-                to="/login"
-                className="hidden sm:inline-flex"
-              >
+              <StickerBtn bg="var(--landing-primary)" size="md" to="/login" className="hidden sm:inline-flex">
                 Sign in
               </StickerBtn>
             ) : (
-              <Link
-                to="/login"
-                search={{ redirect: undefined }}
-                className="nav-link hidden sm:inline-flex"
-              >
+              <Link to="/login" search={{ redirect: undefined }} className="nav-link hidden sm:inline-flex">
                 Sign in
               </Link>
             )

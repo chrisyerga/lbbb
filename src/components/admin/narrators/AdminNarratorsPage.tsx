@@ -15,13 +15,7 @@ import {
   NarratorStatusChip,
 } from '#/components/admin/form'
 import { MonoLabel } from '#/components/admin/jobs/primitives'
-import {
-  TRAIT_CATEGORIES,
-  artStyleColor,
-  hashColor,
-  narratorInitials,
-  slugify
-} from '#/lib/adminCatalogUi'
+import { TRAIT_CATEGORIES, artStyleColor, hashColor, narratorInitials, slugify } from '#/lib/adminCatalogUi'
 import type { NarratorStatus } from '#/lib/adminCatalogUi'
 import { relTime } from '#/lib/adminJobsUi'
 
@@ -66,11 +60,7 @@ function buildDraft(
   }
 }
 
-export function AdminNarratorsPage({
-  selectedNarratorId,
-}: {
-  selectedNarratorId: Id<'narrators'> | null
-}) {
+export function AdminNarratorsPage({ selectedNarratorId }: { selectedNarratorId: Id<'narrators'> | null }) {
   const navigate = useNavigate()
   const narrators = useQuery(api.adminNarrators.listAll)
   const traits = useQuery(api.adminNarrators.listTraits)
@@ -97,11 +87,7 @@ export function AdminNarratorsPage({
       if (filter !== 'all' && n.status !== filter) return false
       if (!search.trim()) return true
       const q = search.toLowerCase()
-      return (
-        n.name.toLowerCase().includes(q) ||
-        n.tagline.toLowerCase().includes(q) ||
-        n.slug.toLowerCase().includes(q)
-      )
+      return n.name.toLowerCase().includes(q) || n.tagline.toLowerCase().includes(q) || n.slug.toLowerCase().includes(q)
     })
   }, [narrators, filter, search])
 
@@ -153,9 +139,7 @@ export function AdminNarratorsPage({
     const has = draft.traitIds.includes(traitId)
     setDraft({
       ...draft,
-      traitIds: has
-        ? draft.traitIds.filter((id) => id !== traitId)
-        : [...draft.traitIds, traitId],
+      traitIds: has ? draft.traitIds.filter((id) => id !== traitId) : [...draft.traitIds, traitId],
     })
   }
 
@@ -209,13 +193,11 @@ export function AdminNarratorsPage({
     }
   }
 
-  const previewTraits = draft?.traitIds
-    .map((id) => traitMap.get(id))
-    .filter(Boolean) as Doc<'narratorTraits'>[] | undefined
+  const previewTraits = draft?.traitIds.map((id) => traitMap.get(id)).filter(Boolean) as
+    | Doc<'narratorTraits'>[]
+    | undefined
 
-  const previewStyle = artStyles?.find(
-    (s) => s._id === draft?.defaultArtStyleId,
-  )
+  const previewStyle = artStyles?.find((s) => s._id === draft?.defaultArtStyleId)
 
   return (
     <div className="admin-queue-page">
@@ -225,16 +207,11 @@ export function AdminNarratorsPage({
           <MonoLabel>AI post-generation personas</MonoLabel>
         </div>
         <div className="admin-catalog-topbar-actions">
-          {message ? (
-            <span className="admin-mono admin-save-message">{message}</span>
-          ) : null}
+          {message ? <span className="admin-mono admin-save-message">{message}</span> : null}
           <AdminBtnPrimary onClick={startNew} disabled={!canEdit || !defaultArtStyleId}>
             New narrator
           </AdminBtnPrimary>
-          <AdminBtnPrimary
-            onClick={() => void save()}
-            disabled={!canEdit || !draft || busy}
-          >
+          <AdminBtnPrimary onClick={() => void save()} disabled={!canEdit || !draft || busy}>
             {busy ? 'Saving…' : 'Save'}
           </AdminBtnPrimary>
         </div>
@@ -261,11 +238,7 @@ export function AdminNarratorsPage({
                 <button
                   key={id}
                   type="button"
-                  className={
-                    filter === id
-                      ? 'admin-filter-chip is-active'
-                      : 'admin-filter-chip'
-                  }
+                  className={filter === id ? 'admin-filter-chip is-active' : 'admin-filter-chip'}
                   onClick={() => setFilter(id)}
                 >
                   {id} ({n})
@@ -281,9 +254,7 @@ export function AdminNarratorsPage({
                 <button
                   key={n._id}
                   type="button"
-                  className={
-                    active ? 'admin-narrator-row is-active' : 'admin-narrator-row'
-                  }
+                  className={active ? 'admin-narrator-row is-active' : 'admin-narrator-row'}
                   onClick={() => selectNarrator(n._id)}
                 >
                   <span className="admin-pet-dot" style={{ background: color }}>
@@ -301,9 +272,7 @@ export function AdminNarratorsPage({
                         {n.traitIds.length} traits
                         {!n.public ? ' · internal' : ''}
                       </span>
-                      <span className="admin-mono admin-narrator-row-time">
-                        {relTime(n.updatedAt)}
-                      </span>
+                      <span className="admin-mono admin-narrator-row-time">{relTime(n.updatedAt)}</span>
                     </span>
                   </span>
                 </button>
@@ -328,11 +297,7 @@ export function AdminNarratorsPage({
                   <button
                     key={id}
                     type="button"
-                    className={
-                      tab === id
-                        ? 'admin-editor-tab is-active'
-                        : 'admin-editor-tab'
-                    }
+                    className={tab === id ? 'admin-editor-tab is-active' : 'admin-editor-tab'}
                     onClick={() => setTab(id)}
                   >
                     {label}
@@ -340,11 +305,7 @@ export function AdminNarratorsPage({
                 ))}
               </div>
 
-              {!canEdit ? (
-                <p className="admin-readonly-note">
-                  Site admin required to edit catalog.
-                </p>
-              ) : null}
+              {!canEdit ? <p className="admin-readonly-note">Site admin required to edit catalog.</p> : null}
 
               {tab === 'identity' ? (
                 <div className="admin-editor-form">
@@ -375,9 +336,7 @@ export function AdminNarratorsPage({
                       rows={3}
                       value={draft.description ?? ''}
                       disabled={!canEdit}
-                      onChange={(description) =>
-                        setDraft({ ...draft, description })
-                      }
+                      onChange={(description) => setDraft({ ...draft, description })}
                     />
                   </AdminField>
                   <AdminField label="Example excerpt">
@@ -385,9 +344,7 @@ export function AdminNarratorsPage({
                       rows={3}
                       value={draft.exampleExcerpt ?? ''}
                       disabled={!canEdit}
-                      onChange={(exampleExcerpt) =>
-                        setDraft({ ...draft, exampleExcerpt })
-                      }
+                      onChange={(exampleExcerpt) => setDraft({ ...draft, exampleExcerpt })}
                     />
                   </AdminField>
                   <div className="admin-editor-row">
@@ -439,9 +396,7 @@ export function AdminNarratorsPage({
                         { value: 'top_dog', label: 'top_dog' },
                         { value: 'the_pack', label: 'the_pack' },
                       ]}
-                      onChange={(minPlanTier) =>
-                        setDraft({ ...draft, minPlanTier })
-                      }
+                      onChange={(minPlanTier) => setDraft({ ...draft, minPlanTier })}
                     />
                   </AdminField>
                 </div>
@@ -449,59 +404,41 @@ export function AdminNarratorsPage({
 
               {tab === 'traits' ? (
                 <div className="admin-editor-form">
-                  {TRAIT_CATEGORIES.filter((c) => c.id !== 'all').map(
-                    (category) => {
-                      const group =
-                        traits?.filter((t) => t.category === category.id) ?? []
-                      const selected = group.filter((t) =>
-                        draft.traitIds.includes(t._id),
-                      ).length
-                      return (
-                        <div key={category.id} className="admin-trait-group">
-                          <div className="admin-trait-group-head">
-                            <span className="admin-trait-group-title">
-                              {category.label}
-                            </span>
-                            <MonoLabel>{category.helper}</MonoLabel>
-                            <span className="admin-mono admin-trait-group-count">
-                              {selected} selected
-                            </span>
-                          </div>
-                          <div className="admin-trait-pills">
-                            {group.map((trait) => {
-                              const on = draft.traitIds.includes(trait._id)
-                              return (
-                                <button
-                                  key={trait._id}
-                                  type="button"
-                                  disabled={!canEdit}
-                                  className={
-                                    on
-                                      ? 'admin-trait-pill is-selected'
-                                      : 'admin-trait-pill'
-                                  }
-                                  onClick={() => toggleTrait(trait._id)}
-                                >
-                                  {trait.label}
-                                </button>
-                              )
-                            })}
-                          </div>
+                  {TRAIT_CATEGORIES.filter((c) => c.id !== 'all').map((category) => {
+                    const group = traits?.filter((t) => t.category === category.id) ?? []
+                    const selected = group.filter((t) => draft.traitIds.includes(t._id)).length
+                    return (
+                      <div key={category.id} className="admin-trait-group">
+                        <div className="admin-trait-group-head">
+                          <span className="admin-trait-group-title">{category.label}</span>
+                          <MonoLabel>{category.helper}</MonoLabel>
+                          <span className="admin-mono admin-trait-group-count">{selected} selected</span>
                         </div>
-                      )
-                    },
-                  )}
-                  <AdminField
-                    label="Specialization prompt"
-                    helper="core persona instruction"
-                  >
+                        <div className="admin-trait-pills">
+                          {group.map((trait) => {
+                            const on = draft.traitIds.includes(trait._id)
+                            return (
+                              <button
+                                key={trait._id}
+                                type="button"
+                                disabled={!canEdit}
+                                className={on ? 'admin-trait-pill is-selected' : 'admin-trait-pill'}
+                                onClick={() => toggleTrait(trait._id)}
+                              >
+                                {trait.label}
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )
+                  })}
+                  <AdminField label="Specialization prompt" helper="core persona instruction">
                     <AdminTextarea
                       rows={6}
                       value={draft.specializationPrompt}
                       disabled={!canEdit}
-                      onChange={(specializationPrompt) =>
-                        setDraft({ ...draft, specializationPrompt })
-                      }
+                      onChange={(specializationPrompt) => setDraft({ ...draft, specializationPrompt })}
                     />
                   </AdminField>
                   <AdminField label="System prompt addon">
@@ -509,18 +446,14 @@ export function AdminNarratorsPage({
                       rows={3}
                       value={draft.systemPromptAddon ?? ''}
                       disabled={!canEdit}
-                      onChange={(systemPromptAddon) =>
-                        setDraft({ ...draft, systemPromptAddon })
-                      }
+                      onChange={(systemPromptAddon) => setDraft({ ...draft, systemPromptAddon })}
                     />
                   </AdminField>
                   <AdminField label="Prompt version key">
                     <AdminInput
                       value={draft.promptVersionKey}
                       disabled={!canEdit}
-                      onChange={(promptVersionKey) =>
-                        setDraft({ ...draft, promptVersionKey })
-                      }
+                      onChange={(promptVersionKey) => setDraft({ ...draft, promptVersionKey })}
                     />
                   </AdminField>
                 </div>
@@ -545,9 +478,7 @@ export function AdminNarratorsPage({
                       value={draft.textModel ?? ''}
                       disabled={!canEdit}
                       placeholder="gpt-4o"
-                      onChange={(textModel) =>
-                        setDraft({ ...draft, textModel })
-                      }
+                      onChange={(textModel) => setDraft({ ...draft, textModel })}
                     />
                   </AdminField>
                   <AdminField label="Generation strategy">
@@ -558,9 +489,7 @@ export function AdminNarratorsPage({
                         { value: 'single_shot', label: 'single_shot' },
                         { value: 'draft_critique', label: 'draft_critique' },
                       ]}
-                      onChange={(generationStrategy) =>
-                        setDraft({ ...draft, generationStrategy })
-                      }
+                      onChange={(generationStrategy) => setDraft({ ...draft, generationStrategy })}
                     />
                   </AdminField>
                   <AdminField label="Default art style">
@@ -588,12 +517,8 @@ export function AdminNarratorsPage({
                               background: artStyleColor(style.slug),
                             }}
                           />
-                          <span className="admin-art-style-name">
-                            {style.name}
-                          </span>
-                          <span className="admin-mono admin-art-style-slug">
-                            {style.slug}
-                          </span>
+                          <span className="admin-art-style-name">{style.name}</span>
+                          <span className="admin-mono admin-art-style-slug">{style.slug}</span>
                         </button>
                       ))}
                     </div>
@@ -603,9 +528,7 @@ export function AdminNarratorsPage({
                       rows={3}
                       value={draft.imagePromptSuffix ?? ''}
                       disabled={!canEdit}
-                      onChange={(imagePromptSuffix) =>
-                        setDraft({ ...draft, imagePromptSuffix })
-                      }
+                      onChange={(imagePromptSuffix) => setDraft({ ...draft, imagePromptSuffix })}
                     />
                   </AdminField>
                   <AdminField label="Default mood hints">
@@ -619,10 +542,7 @@ export function AdminNarratorsPage({
                             onClick={() =>
                               setDraft({
                                 ...draft,
-                                defaultMoodHints:
-                                  draft.defaultMoodHints?.filter(
-                                    (h) => h !== hint,
-                                  ),
+                                defaultMoodHints: draft.defaultMoodHints?.filter((h) => h !== hint),
                               })
                             }
                           >
@@ -658,24 +578,17 @@ export function AdminNarratorsPage({
             <>
               <MonoLabel>Preview</MonoLabel>
               <div className="admin-preview-card">
-                <span
-                  className="admin-pet-dot is-lg"
-                  style={{ background: hashColor(draft.slug) }}
-                >
+                <span className="admin-pet-dot is-lg" style={{ background: hashColor(draft.slug) }}>
                   {narratorInitials(draft.name)}
                 </span>
                 <h3 className="admin-preview-name">{draft.name}</h3>
                 <p className="admin-preview-tagline">{draft.tagline}</p>
                 {draft.exampleExcerpt ? (
-                  <blockquote className="admin-preview-excerpt">
-                    {draft.exampleExcerpt}
-                  </blockquote>
+                  <blockquote className="admin-preview-excerpt">{draft.exampleExcerpt}</blockquote>
                 ) : null}
                 <div className="admin-preview-meta">
                   <NarratorStatusChip status={draft.status} />
-                  {previewStyle ? (
-                    <span className="admin-mono">{previewStyle.name}</span>
-                  ) : null}
+                  {previewStyle ? <span className="admin-mono">{previewStyle.name}</span> : null}
                 </div>
                 {previewTraits && previewTraits.length > 0 ? (
                   <div className="admin-preview-traits">

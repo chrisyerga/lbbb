@@ -23,14 +23,8 @@ type PendingPhoto = {
 function PetMemoriesPage() {
   const { petId } = Route.useParams()
   const parsedPetId = parsePetId(petId)
-  const petData = useQuery(
-    api.pets.getMineByPetId,
-    parsedPetId ? { petId } : 'skip',
-  )
-  const memories = useQuery(
-    api.memories.listByPet,
-    parsedPetId ? { petId: parsedPetId } : 'skip',
-  )
+  const petData = useQuery(api.pets.getMineByPetId, parsedPetId ? { petId } : 'skip')
+  const memories = useQuery(api.memories.listByPet, parsedPetId ? { petId: parsedPetId } : 'skip')
   const createMemory = useMutation(api.memories.create)
   const removeMemory = useMutation(api.memories.remove)
 
@@ -103,17 +97,10 @@ function PetMemoriesPage() {
         </Link>
       </p>
 
-      <form
-        onSubmit={(e) => void onSubmit(e)}
-        className="panel mb-8 grid gap-4 p-6 text-sm"
-      >
-        <h2 className="m-0 text-lg font-semibold text-[var(--text-primary)]">
-          New memory
-        </h2>
+      <form onSubmit={(e) => void onSubmit(e)} className="panel mb-8 grid gap-4 p-6 text-sm">
+        <h2 className="m-0 text-lg font-semibold text-[var(--text-primary)]">New memory</h2>
 
-        {error ? (
-          <p className="alert-error m-0 px-3 py-2">{error}</p>
-        ) : null}
+        {error ? <p className="alert-error m-0 px-3 py-2">{error}</p> : null}
 
         <label className="grid gap-2 text-[var(--text-primary)]">
           Date
@@ -140,25 +127,13 @@ function PetMemoriesPage() {
 
         <div className="grid gap-2">
           <p className="section-label">Photos</p>
-          <PhotoUpload
-            petId={pet._id}
-            multiple
-            label="Add photos"
-            onUploaded={onPhotoUploaded}
-          />
+          <PhotoUpload petId={pet._id} multiple label="Add photos" onUploaded={onPhotoUploaded} />
           {pendingPhotos.length > 0 ? (
             <ul className="m-0 grid list-none grid-cols-3 gap-0 border border-[var(--border)] p-0 sm:grid-cols-4">
               {pendingPhotos.map((photo) =>
                 photo.url ? (
-                  <li
-                    key={photo.assetId}
-                    className="relative border-b border-r border-[var(--border)] p-2"
-                  >
-                    <img
-                      src={photo.url}
-                      alt=""
-                      className="aspect-square w-full object-cover"
-                    />
+                  <li key={photo.assetId} className="relative border-b border-r border-[var(--border)] p-2">
+                    <img src={photo.url} alt="" className="aspect-square w-full object-cover" />
                     <button
                       type="button"
                       className="mt-1 w-full cursor-pointer border-0 bg-transparent text-xs text-[var(--text-muted)] hover:text-[var(--accent)]"
@@ -171,21 +146,11 @@ function PetMemoriesPage() {
               )}
             </ul>
           ) : (
-            <p className="m-0 text-[var(--text-muted)]">
-              Add at least one photo before saving.
-            </p>
+            <p className="m-0 text-[var(--text-muted)]">Add at least one photo before saving.</p>
           )}
         </div>
 
-        <Button
-          type="submit"
-          disabled={
-            submitting ||
-            !occurredOn ||
-            !description.trim() ||
-            pendingPhotos.length === 0
-          }
-        >
+        <Button type="submit" disabled={submitting || !occurredOn || !description.trim() || pendingPhotos.length === 0}>
           {submitting ? 'Saving…' : 'Save memory'}
         </Button>
       </form>
@@ -203,17 +168,13 @@ function PetMemoriesPage() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="section-label">{memory.occurredOn}</p>
-                  <p className="mt-2 m-0 text-[var(--text-primary)]">
-                    {memory.description}
-                  </p>
+                  <p className="mt-2 m-0 text-[var(--text-primary)]">{memory.description}</p>
                 </div>
                 <Button
                   type="button"
                   variant="ghost"
                   className="text-xs"
-                  onClick={() =>
-                    void removeMemory({ memoryId: memory.memoryId })
-                  }
+                  onClick={() => void removeMemory({ memoryId: memory.memoryId })}
                 >
                   Delete
                 </Button>
@@ -222,15 +183,8 @@ function PetMemoriesPage() {
                 <ul className="mt-4 grid list-none grid-cols-3 gap-0 border border-[var(--border)] p-0 sm:grid-cols-4 md:grid-cols-6">
                   {memory.photos.map((photo) =>
                     photo.url ? (
-                      <li
-                        key={photo.assetId}
-                        className="border-b border-r border-[var(--border)]"
-                      >
-                        <img
-                          src={photo.url}
-                          alt=""
-                          className="aspect-square w-full object-cover"
-                        />
+                      <li key={photo.assetId} className="border-b border-r border-[var(--border)]">
+                        <img src={photo.url} alt="" className="aspect-square w-full object-cover" />
                       </li>
                     ) : null,
                   )}
@@ -242,11 +196,7 @@ function PetMemoriesPage() {
       )}
 
       <p className="mt-8 text-sm">
-        <Link
-          to="/app/pets/$petId"
-          params={{ petId: pet._id }}
-          className="font-semibold no-underline"
-        >
+        <Link to="/app/pets/$petId" params={{ petId: pet._id }} className="font-semibold no-underline">
           ← Back to edit {pet.name}
         </Link>
       </p>

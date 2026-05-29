@@ -25,9 +25,7 @@ export const usageToday = query({
       .collect()
 
     const rendersUsed = jobs.filter(
-      (j) =>
-        j.createdAt >= dayStart &&
-        (j.operation === 'blog_post' || j.operation === 'regeneration'),
+      (j) => j.createdAt >= dayStart && (j.operation === 'blog_post' || j.operation === 'regeneration'),
     ).length
 
     const rendersLimit = limits.dailyTextGenerations

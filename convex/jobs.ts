@@ -3,30 +3,20 @@ import { v } from 'convex/values'
 import { PersistentTextStreaming } from '@convex-dev/persistent-text-streaming'
 import { components } from './_generated/api'
 import { requireStaff } from './lib/requireAccount'
-import {
-  composePersonaPrompt,
-  loadNarratorBundle,
-  resolveGenerationPlan,
-} from './lib/generationPlan'
+import { composePersonaPrompt, loadNarratorBundle, resolveGenerationPlan } from './lib/generationPlan'
 import { buildCastBlock, resolveCastSnapshot } from './lib/castContext'
 import { syncCastMemberFromPet } from './lib/castSync'
 import { assertCanCreateGenerationJob } from './lib/quotaEnforcement'
 import { requireUser } from './lib/requireUser'
 import { resolveAssetUrl } from './lib/assets'
 
-const persistentTextStreaming = new PersistentTextStreaming(
-  components.persistentTextStreaming,
-)
+const persistentTextStreaming = new PersistentTextStreaming(components.persistentTextStreaming)
 
 export const createGenerationJob = mutation({
   args: {
     petId: v.id('pets'),
     memoryId: v.optional(v.id('petMemories')),
-    operation: v.union(
-      v.literal('blog_post'),
-      v.literal('image'),
-      v.literal('regeneration'),
-    ),
+    operation: v.union(v.literal('blog_post'), v.literal('image'), v.literal('regeneration')),
     provider: v.optional(v.union(v.literal('openai'), v.literal('openrouter'))),
     narratorId: v.optional(v.id('narrators')),
   },
@@ -108,10 +98,7 @@ export const startMemoryGeneration = mutation({
       systemPromptAddon: narrator.systemPromptAddon,
     })
     const moodHints = narrator.defaultMoodHints ?? []
-    const moodBlock =
-      moodHints.length > 0
-        ? `Mood and scene tone: ${moodHints.filter(Boolean).join(', ')}`
-        : ''
+    const moodBlock = moodHints.length > 0 ? `Mood and scene tone: ${moodHints.filter(Boolean).join(', ')}` : ''
 
     const promptVars = {
       petName: `${args.petName}${args.petSpecies ? ` (${args.petSpecies})` : ''}`,

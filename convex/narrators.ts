@@ -78,9 +78,7 @@ export const getBySlug = query({
       name: narrator.name,
       tagline: narrator.tagline,
       exampleExcerpt: narrator.exampleExcerpt,
-      defaultArtStyle: artStyle
-        ? { slug: artStyle.slug, name: artStyle.name }
-        : null,
+      defaultArtStyle: artStyle ? { slug: artStyle.slug, name: artStyle.name } : null,
     }
   },
 })
@@ -90,9 +88,7 @@ export const getDefault = query({
   handler: async (ctx) => {
     const featured = await ctx.db
       .query('narrators')
-      .withIndex('by_featured', (q) =>
-        q.eq('featured', true).eq('status', 'published'),
-      )
+      .withIndex('by_featured', (q) => q.eq('featured', true).eq('status', 'published'))
       .collect()
 
     featured.sort((a, b) => a.sortOrder - b.sortOrder)

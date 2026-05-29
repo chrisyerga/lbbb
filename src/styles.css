@@ -64,8 +64,7 @@ body {
   font-family: var(--font-sans);
   background-color: var(--bg-base);
   background-image:
-    linear-gradient(var(--border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
   background-size: 32px 32px;
   background-position: -1px -1px;
   overflow-x: hidden;

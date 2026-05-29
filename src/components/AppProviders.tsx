@@ -7,10 +7,7 @@ import type { ReactNode } from 'react'
 
 export function AppProviders({ children }: { children: ReactNode }) {
   const convexUrl = import.meta.env.VITE_CONVEX_URL as string | undefined
-  const convex = useMemo(
-    () => (convexUrl ? new ConvexReactClient(convexUrl) : null),
-    [convexUrl],
-  )
+  const convex = useMemo(() => (convexUrl ? new ConvexReactClient(convexUrl) : null), [convexUrl])
 
   if (!convex) return children
 

@@ -1,16 +1,7 @@
 import type { Doc } from '../../_generated/dataModel'
-import {
-  buildCastBlock,
-  buildCastVisualSuffix,
-} from '../castContext'
-import {
-  imagePromptVariants,
-  resolveBaseImagePrompt,
-} from '../imagePrompt'
-import type {
-  CastSnapshotEntry,
-  GenerationPlan,
-} from './types'
+import { buildCastBlock, buildCastVisualSuffix } from '../castContext'
+import { imagePromptVariants, resolveBaseImagePrompt } from '../imagePrompt'
+import type { CastSnapshotEntry, GenerationPlan } from './types'
 
 const DEFAULT_SYSTEM_PROMPT =
   'You write warm, specific, non-cringey pet blog posts. Preserve the owner voice, avoid baby talk, and keep posts suitable for public indexing.'
@@ -49,10 +40,7 @@ export function defaultSystemPrompt() {
   return DEFAULT_SYSTEM_PROMPT
 }
 
-export function interpolateTemplate(
-  template: string,
-  vars: Record<string, string>,
-): string {
+export function interpolateTemplate(template: string, vars: Record<string, string>): string {
   let result = template
   for (const [key, value] of Object.entries(vars)) {
     result = result.replaceAll(`{{${key}}}`, value)
@@ -148,11 +136,7 @@ export function buildImagePromptsFromPlan(args: {
   const suffix = args.plan.image.promptSuffix
   const styledBase = suffix ? `${withCast} ${suffix}` : withCast
 
-  return imagePromptVariants(
-    styledBase,
-    artStyleLabel,
-    args.plan.image.variantCount,
-  )
+  return imagePromptVariants(styledBase, artStyleLabel, args.plan.image.variantCount)
 }
 
 export { buildCastBlock }

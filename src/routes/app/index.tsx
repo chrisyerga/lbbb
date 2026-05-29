@@ -13,17 +13,11 @@ function AppDashboard() {
   const jobs = useQuery(api.jobs.recentMine, { limit: 50 })
   const pets = useQuery(api.pets.listMine)
 
-  const queued =
-    jobs?.filter((j) => j.status === 'queued' || j.status === 'processing')
-      .length ?? 0
-  const awaitingReview =
-    jobs?.filter((j) => j.status === 'awaiting_review').length ?? 0
+  const queued = jobs?.filter((j) => j.status === 'queued' || j.status === 'processing').length ?? 0
+  const awaitingReview = jobs?.filter((j) => j.status === 'awaiting_review').length ?? 0
 
   return (
-    <PageShell
-      eyebrow="Dashboard"
-      title="Create, review, and publish pet stories."
-    >
+    <PageShell eyebrow="Dashboard" title="Create, review, and publish pet stories.">
       <div className="mb-6 flex flex-wrap gap-3">
         <Link to="/app/pets" className={buttonClassName('primary')}>
           Manage pets

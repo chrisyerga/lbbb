@@ -1,14 +1,7 @@
 import type { GenericQueryCtx } from 'convex/server'
 import type { DataModel, Doc, Id } from '../../_generated/dataModel'
-import {
-  artStyleSnapshotFromDoc,
-  narratorSnapshotFromDoc,
-} from './types'
-import type {
-  CastSnapshotEntry,
-  GenerationPlan,
-  TextParameters,
-} from './types'
+import { artStyleSnapshotFromDoc, narratorSnapshotFromDoc } from './types'
+import type { CastSnapshotEntry, GenerationPlan, TextParameters } from './types'
 import {
   DEFAULT_METADATA_USER_TEMPLATE,
   DEFAULT_STREAM_USER_TEMPLATE,
@@ -22,20 +15,14 @@ import {
 
 type Ctx = GenericQueryCtx<DataModel>
 
-function resolveImagePromptSuffix(
-  artStyle: Doc<'artStyles'>,
-  narrator?: Doc<'narrators'>,
-) {
+function resolveImagePromptSuffix(artStyle: Doc<'artStyles'>, narrator?: Doc<'narrators'>) {
   const parts = [artStyle.imagePromptSuffix.trim()]
   const narratorSuffix = narrator?.imagePromptSuffix?.trim()
   if (narratorSuffix) parts.push(narratorSuffix)
   return parts.filter(Boolean).join(' ')
 }
 
-export async function loadNarratorBundle(
-  ctx: Ctx,
-  narratorId: Id<'narrators'>,
-) {
+export async function loadNarratorBundle(ctx: Ctx, narratorId: Id<'narrators'>) {
   const narrator = await ctx.db.get(narratorId)
   if (!narrator || narrator.status !== 'published') {
     throw new Error('Narrator not found')
@@ -46,15 +33,11 @@ export async function loadNarratorBundle(
     throw new Error('Narrator art style not found')
   }
 
-  const traits = await Promise.all(
-    narrator.traitIds.map((id) => ctx.db.get(id)),
-  )
+  const traits = await Promise.all(narrator.traitIds.map((id) => ctx.db.get(id)))
 
   const promptVersion = await ctx.db
     .query('promptVersions')
-    .withIndex('by_active', (q) =>
-      q.eq('key', narrator.promptVersionKey).eq('active', true),
-    )
+    .withIndex('by_active', (q) => q.eq('key', narrator.promptVersionKey).eq('active', true))
     .first()
 
   return {
@@ -75,8 +58,7 @@ export async function resolveGenerationPlan(
     castSnapshot?: Array<CastSnapshotEntry>
   },
 ): Promise<GenerationPlan> {
-  const { narrator, artStyle, traits, promptVersion } =
-    await loadNarratorBundle(ctx, args.narratorId)
+  const { narrator, artStyle, traits, promptVersion } = await loadNarratorBundle(ctx, args.narratorId)
 
   const personaBlock = composePersonaPrompt({
     traits,
@@ -87,16 +69,9 @@ export async function resolveGenerationPlan(
   const moodHints = narrator.defaultMoodHints ?? []
   const wordTarget = narrator.wordTarget
 
-  const systemPrompt = [
-    promptVersion?.systemPrompt ?? defaultSystemPrompt(),
-    personaBlock,
-  ]
-    .filter(Boolean)
-    .join('\n\n')
+  const systemPrompt = [promptVersion?.systemPrompt ?? defaultSystemPrompt(), personaBlock].filter(Boolean).join('\n\n')
 
-  const castBlock = args.castSnapshot?.length
-    ? buildCastBlock(args.castSnapshot)
-    : ''
+  const castBlock = args.castSnapshot?.length ? buildCastBlock(args.castSnapshot) : ''
 
   const templateVars = {
     petName: `${args.petName}${args.petSpecies ? ` (${args.petSpecies})` : ''}`,
@@ -110,17 +85,12 @@ export async function resolveGenerationPlan(
 
   const userTemplate = promptVersion?.userPromptTemplate ?? DEFAULT_USER_TEMPLATE
   const userPrompt = interpolateTemplate(userTemplate, templateVars)
-  const streamUserPrompt = interpolateTemplate(
-    DEFAULT_STREAM_USER_TEMPLATE,
-    templateVars,
-  )
+  const streamUserPrompt = interpolateTemplate(DEFAULT_STREAM_USER_TEMPLATE, templateVars)
 
   const textParameters: TextParameters = {
     temperature:
       narrator.textParameters?.temperature ??
-      (typeof promptVersion?.parameters?.temperature === 'number'
-        ? promptVersion.parameters.temperature
-        : 0.7),
+      (typeof promptVersion?.parameters?.temperature === 'number' ? promptVersion.parameters.temperature : 0.7),
     maxTokens: narrator.textParameters?.maxTokens,
   }
 
@@ -135,11 +105,7 @@ export async function resolveGenerationPlan(
       userPrompt,
       streamUserPrompt,
       metadataUserPrompt: DEFAULT_METADATA_USER_TEMPLATE,
-      model:
-        narrator.textModel ??
-        promptVersion?.model ??
-        process.env.OPENAI_TEXT_MODEL ??
-        'gpt-5.4-mini',
+      model: narrator.textModel ?? promptVersion?.model ?? process.env.OPENAI_TEXT_MODEL ?? 'gpt-5.4-mini',
       parameters: textParameters,
       wordTarget,
       strategy: narrator.generationStrategy,
@@ -147,10 +113,7 @@ export async function resolveGenerationPlan(
     image: {
       artStyle: artStyleSnapshotFromDoc(artStyle),
       promptSuffix: imagePromptSuffix,
-      model:
-        narrator.imageModel ??
-        process.env.OPENAI_IMAGE_MODEL ??
-        'gpt-image-2',
+      model: narrator.imageModel ?? process.env.OPENAI_IMAGE_MODEL ?? 'gpt-image-2',
       variantCount: 4,
     },
     speech: narrator.speechProfile,

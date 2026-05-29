@@ -9,17 +9,7 @@ type Stats = {
   jobsPerHour: number
 }
 
-function Stat({
-  label,
-  value,
-  sub,
-  live,
-}: {
-  label: string
-  value: string | number
-  sub?: string
-  live?: boolean
-}) {
+function Stat({ label, value, sub, live }: { label: string; value: string | number; sub?: string; live?: boolean }) {
   return (
     <div className="admin-top-stat">
       <div className="admin-top-stat-label">
@@ -53,23 +43,11 @@ export function QueueTopBar({ stats }: { stats: Stats | undefined }) {
       >
         <MonoLabel>generation queue</MonoLabel>
       </div>
-      <Stat
-        label="active"
-        value={stats?.activeCount ?? '—'}
-        sub="/ workers n/a"
-        live={(stats?.activeCount ?? 0) > 0}
-      />
+      <Stat label="active" value={stats?.activeCount ?? '—'} sub="/ workers n/a" live={(stats?.activeCount ?? 0) > 0} />
       <Stat label="queued" value={stats?.queuedCount ?? '—'} />
       <Stat label="throughput" value={stats?.jobsPerHour ?? '—'} sub="jobs/hr" />
-      <Stat
-        label="cost today"
-        value={stats ? formatUsd(stats.costTodayTotal) : '—'}
-      />
-      <Stat
-        label="success"
-        value={stats ? `${stats.successRate}%` : '—'}
-        sub="24h"
-      />
+      <Stat label="cost today" value={stats ? formatUsd(stats.costTodayTotal) : '—'} />
+      <Stat label="success" value={stats ? `${stats.successRate}%` : '—'} sub="24h" />
       <div
         style={{
           marginLeft: 'auto',
@@ -78,12 +56,7 @@ export function QueueTopBar({ stats }: { stats: Stats | undefined }) {
           padding: '0 18px',
         }}
       >
-        <button
-          type="button"
-          className="admin-btn-secondary"
-          disabled
-          title="Pause queue not implemented yet"
-        >
+        <button type="button" className="admin-btn-secondary" disabled title="Pause queue not implemented yet">
           Pause queue
         </button>
       </div>

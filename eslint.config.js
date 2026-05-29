@@ -4,13 +4,7 @@ import { tanstackConfig } from '@tanstack/eslint-config'
 
 export default [
   {
-    ignores: [
-      '.output/**',
-      'node_modules/**',
-      'convex/_generated/**',
-      'eslint.config.js',
-      'prettier.config.js',
-    ],
+    ignores: ['.output/**', 'node_modules/**', 'convex/_generated/**', 'eslint.config.js', 'prettier.config.js'],
   },
   ...tanstackConfig,
   {

@@ -1,10 +1,6 @@
 'use client'
 
-import {
-  BLOG_PARAGRAPHS,
-  BLOG_TITLE,
-  DIARY_TEXT,
-} from '../landingContent'
+import { BLOG_PARAGRAPHS, BLOG_TITLE, DIARY_TEXT } from '../landingContent'
 import { Pill } from '../primitives/Pill'
 import { StickerBtn } from '../primitives/StickerBtn'
 import { useTypewriter } from '../hooks/useTypewriter'
@@ -36,8 +32,7 @@ export function LandingDemo() {
           </h2>
         </div>
         <p className="m-0 max-w-[320px] text-[15px] leading-normal text-[var(--landing-ink)]/75">
-          Six-word diary → polished post & six AI portraits. Editable to the
-          last comma.
+          Six-word diary → polished post & six AI portraits. Editable to the last comma.
         </p>
       </div>
 
@@ -47,9 +42,7 @@ export function LandingDemo() {
             <div className="font-mono text-[11px] tracking-[0.18em] text-[var(--landing-primary)] uppercase">
               Diary · mar 14
             </div>
-            <span className="font-mono text-[11px] text-[var(--landing-ink)]/50">
-              {text.length}/220
-            </span>
+            <span className="font-mono text-[11px] text-[var(--landing-ink)]/50">{text.length}/220</span>
           </div>
           <div className="font-mono min-h-[240px] text-[15px] leading-relaxed whitespace-pre-wrap text-[var(--landing-ink)]">
             {text}
@@ -73,11 +66,7 @@ export function LandingDemo() {
             <div className="font-mono text-[11px] tracking-[0.18em] text-[var(--landing-accent)] uppercase">
               ↳ preview · cafezoe.app/zoe/mar-14
             </div>
-            <StickerBtn
-              bg="var(--landing-primary)"
-              size="md"
-              className="px-3.5 py-2 text-[12.5px]"
-            >
+            <StickerBtn bg="var(--landing-primary)" size="md" className="px-3.5 py-2 text-[12.5px]">
               Publish ↑
             </StickerBtn>
           </div>
@@ -85,16 +74,11 @@ export function LandingDemo() {
           <div
             className="relative mb-[18px] aspect-[16/7] overflow-hidden rounded-xl border border-[#14100E] transition-opacity duration-500"
             style={{
-              background:
-                'linear-gradient(135deg, var(--landing-primary), var(--landing-accent))',
+              background: 'linear-gradient(135deg, var(--landing-primary), var(--landing-accent))',
               opacity: artShown ? 1 : 0.3,
             }}
           >
-            <img
-              src="/images/zoe-smile.png"
-              alt=""
-              className="absolute -right-5 -bottom-2.5 h-[140%] max-w-none"
-            />
+            <img src="/images/zoe-smile.png" alt="" className="absolute -right-5 -bottom-2.5 h-[140%] max-w-none" />
           </div>
 
           <h3 className="font-display m-0 min-h-[34px] text-[clamp(1.5rem,3vw,1.875rem)] leading-tight font-extrabold tracking-tight text-[var(--landing-ink)]">

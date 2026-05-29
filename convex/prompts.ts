@@ -6,9 +6,7 @@ export const seedDefaultPrompt = mutation({
   handler: async (ctx) => {
     const existing = await ctx.db
       .query('promptVersions')
-      .withIndex('by_key_version', (q) =>
-        q.eq('key', 'pet_blog_post').eq('version', 1),
-      )
+      .withIndex('by_key_version', (q) => q.eq('key', 'pet_blog_post').eq('version', 1))
       .unique()
 
     if (existing) return existing._id
