@@ -15,7 +15,7 @@ import {
 
 type Ctx = GenericQueryCtx<DataModel>
 
-function resolveImagePromptSuffix(artStyle: Doc<'artStyles'>, narrator?: Doc<'narrators'>) {
+export function resolveImagePromptSuffix(artStyle: Doc<'artStyles'>, narrator?: Doc<'narrators'>) {
   const parts = [artStyle.imagePromptSuffix.trim()]
   const narratorSuffix = narrator?.imagePromptSuffix?.trim()
   if (narratorSuffix) parts.push(narratorSuffix)

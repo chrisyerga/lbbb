@@ -14,6 +14,7 @@ import {
   AdminToggle,
   NarratorStatusChip,
 } from '#/components/admin/form'
+import { AdminCatalogResizeLayout } from '#/components/admin/AdminCatalogResizeLayout'
 import { MonoLabel } from '#/components/admin/jobs/primitives'
 import { NarratorTextPreviewPanel } from '#/components/admin/narrators/NarratorTextPreviewPanel'
 import { TRAIT_CATEGORIES, artStyleColor, hashColor, narratorInitials, slugify } from '#/lib/adminCatalogUi'
@@ -218,8 +219,9 @@ export function AdminNarratorsPage({ selectedNarratorId }: { selectedNarratorId:
         </div>
       </header>
 
-      <div className="admin-catalog-layout">
-        <aside className="admin-narrator-list">
+      <AdminCatalogResizeLayout
+        list={
+          <aside className="admin-narrator-list">
           <div className="admin-queue-list-head">
             <input
               className="admin-queue-search"
@@ -281,8 +283,9 @@ export function AdminNarratorsPage({ selectedNarratorId }: { selectedNarratorId:
             })}
           </div>
         </aside>
-
-        <main className="admin-editor-panel">
+        }
+        editor={
+          <>
           {!draft ? (
             <div className="admin-empty-state">Select a narrator to edit.</div>
           ) : (
@@ -570,9 +573,10 @@ export function AdminNarratorsPage({ selectedNarratorId }: { selectedNarratorId:
               ) : null}
             </>
           )}
-        </main>
-
-        <aside className="admin-preview-rail">
+          </>
+        }
+        preview={
+          <>
           {!draft ? (
             <div className="admin-empty-state">Preview</div>
           ) : (
@@ -609,8 +613,9 @@ export function AdminNarratorsPage({ selectedNarratorId }: { selectedNarratorId:
               />
             </>
           )}
-        </aside>
-      </div>
+          </>
+        }
+      />
     </div>
   )
 }

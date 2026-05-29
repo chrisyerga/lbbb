@@ -14,6 +14,8 @@ import {
   CatalogStatusChip,
 } from '#/components/admin/form'
 import { MonoLabel } from '#/components/admin/jobs/primitives'
+import { AdminCatalogResizeLayout } from '#/components/admin/AdminCatalogResizeLayout'
+import { ArtStyleImageDryRunPanel } from '#/components/admin/artStyles/ArtStyleImageDryRunPanel'
 import { artStyleColor, slugify } from '#/lib/adminCatalogUi'
 
 type ArtStyleDoc = Doc<'artStyles'>
@@ -127,8 +129,9 @@ export function AdminArtStylesPage({ selectedStyleId }: { selectedStyleId: Id<'a
         </div>
       </header>
 
-      <div className="admin-catalog-layout">
-        <section className="admin-trait-list-panel">
+      <AdminCatalogResizeLayout
+        list={
+          <section className="admin-trait-list-panel">
           <div className="admin-queue-list-head">
             <input
               className="admin-queue-search"
@@ -161,8 +164,9 @@ export function AdminArtStylesPage({ selectedStyleId }: { selectedStyleId: Id<'a
             ))}
           </div>
         </section>
-
-        <aside className="admin-inspector-rail admin-inspector-rail-wide">
+        }
+        editor={
+          <>
           {!draft ? (
             <div className="admin-empty-state">Select an art style to edit.</div>
           ) : (
@@ -268,8 +272,22 @@ export function AdminArtStylesPage({ selectedStyleId }: { selectedStyleId: Id<'a
               ) : null}
             </>
           )}
-        </aside>
-      </div>
+          </>
+        }
+        preview={
+          <>
+          {!draft ? (
+            <div className="admin-empty-state">Dry run</div>
+          ) : (
+            <ArtStyleImageDryRunPanel
+              artStyleId={draft._id || null}
+              disabled={isNew || !draft._id}
+              canRun={Boolean(draft) && !isNew}
+            />
+          )}
+          </>
+        }
+      />
     </div>
   )
 }

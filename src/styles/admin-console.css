@@ -851,6 +851,45 @@
   padding: 20px 24px;
 }
 
+.admin-console .admin-editor-panel-resizable {
+  flex: 0 0 auto;
+  min-width: 320px;
+}
+
+.admin-console .admin-catalog-resize-handle {
+  width: 6px;
+  flex-shrink: 0;
+  margin: 0 -3px;
+  position: relative;
+  z-index: 2;
+  cursor: col-resize;
+  touch-action: none;
+  background: transparent;
+}
+
+.admin-console .admin-catalog-resize-handle::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: var(--admin-border);
+  transition: background 0.15s ease, width 0.15s ease;
+}
+
+.admin-console .admin-catalog-resize-handle:hover::after,
+.admin-console .admin-catalog-layout.is-resizing .admin-catalog-resize-handle::after {
+  width: 2px;
+  background: var(--admin-border-hi);
+}
+
+.admin-console .admin-catalog-layout.is-resizing {
+  cursor: col-resize;
+  user-select: none;
+}
+
 .admin-console .admin-preview-rail,
 .admin-console .admin-inspector-rail {
   width: 320px;
@@ -859,6 +898,12 @@
   background: var(--admin-panel);
   overflow-y: auto;
   padding: 16px;
+}
+
+.admin-console .admin-preview-rail-flex {
+  flex: 1;
+  width: auto;
+  min-width: 280px;
 }
 
 .admin-console .admin-inspector-rail {
@@ -1340,6 +1385,48 @@
   flex-wrap: wrap;
   gap: 5px;
   margin-top: 10px;
+}
+
+.admin-console .admin-art-style-dry-run {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.admin-console .admin-preview-rail .admin-art-style-dry-run .admin-field:first-of-type {
+  margin-top: 12px;
+}
+
+.admin-console .admin-art-style-dry-run .admin-field {
+  margin-top: 12px;
+}
+
+.admin-console .admin-art-style-dry-run .admin-btn-primary {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.admin-console .admin-dry-run-advanced-toggle {
+  margin-top: 12px;
+}
+
+.admin-console .admin-dry-run-advanced {
+  margin-top: 8px;
+}
+
+.admin-console .admin-preview-prompt-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-console .admin-preview-prompt-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .admin-console .admin-pet-dot.is-lg {

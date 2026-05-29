@@ -1,13 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import type { ReactNode } from 'react'
 import { useMutation, useQuery } from 'convex/react'
 import type { FunctionReturnType } from 'convex/server'
 import type { Id } from '#convex/_generated/dataModel'
 import { api } from '#convex/_generated/api'
 import { AdminBtnPrimary, AdminField, AdminTextarea } from '#/components/admin/form'
 import { MonoLabel } from '#/components/admin/jobs/primitives'
+import { PreviewInputBlock, PreviewInputRow, PreviewInputSection } from '#/components/admin/preview/PreviewInputPanels'
 import { useNarratorTextPreviewStream } from '#/hooks/useNarratorTextPreviewStream'
 
 const DEFAULT_STORY_PLACEHOLDER =
@@ -15,36 +15,6 @@ const DEFAULT_STORY_PLACEHOLDER =
 
 type PreviewResult = NonNullable<FunctionReturnType<typeof api.adminNarratorPreview.getTextPreview>>
 type OutputTab = 'output' | 'inputs'
-
-function PreviewInputSection({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <div className="admin-preview-input-section">
-      <h5 className="admin-preview-input-heading">{title}</h5>
-      {children}
-    </div>
-  )
-}
-
-function PreviewInputRow({ label, value }: { label: string; value: string | number | undefined | null }) {
-  const display = value === undefined || value === null || value === '' ? '(none)' : String(value)
-  const isEmpty = display === '(none)'
-
-  return (
-    <div className="admin-preview-input-row">
-      <span className="admin-preview-input-label">{label}</span>
-      <span className={`admin-preview-input-value${isEmpty ? ' is-empty' : ''}`}>{display}</span>
-    </div>
-  )
-}
-
-function PreviewInputBlock({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="admin-preview-input-row is-block">
-      <span className="admin-preview-input-label">{label}</span>
-      <pre className="admin-preview-input-block">{value || '(none)'}</pre>
-    </div>
-  )
-}
 
 function PreviewInputsPanel({
   inputs,

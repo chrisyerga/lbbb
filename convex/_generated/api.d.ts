@@ -10,11 +10,13 @@
 
 import type * as accounts from "../accounts.js";
 import type * as admin from "../admin.js";
+import type * as adminArtStylePreview from "../adminArtStylePreview.js";
 import type * as adminJobs from "../adminJobs.js";
 import type * as adminModeration from "../adminModeration.js";
 import type * as adminNarratorPreview from "../adminNarratorPreview.js";
 import type * as adminNarratorPreviewStream from "../adminNarratorPreviewStream.js";
 import type * as adminNarrators from "../adminNarrators.js";
+import type * as adminPets from "../adminPets.js";
 import type * as assets from "../assets.js";
 import type * as auth from "../auth.js";
 import type * as castMembers from "../castMembers.js";
@@ -27,6 +29,7 @@ import type * as jobs from "../jobs.js";
 import type * as lib_assets from "../lib/assets.js";
 import type * as lib_castContext from "../lib/castContext.js";
 import type * as lib_castSync from "../lib/castSync.js";
+import type * as lib_generation_artStyleDryRun from "../lib/generation/artStyleDryRun.js";
 import type * as lib_generation_buildSnapshot from "../lib/generation/buildSnapshot.js";
 import type * as lib_generation_previewSnapshot from "../lib/generation/previewSnapshot.js";
 import type * as lib_generation_pricing from "../lib/generation/pricing.js";
@@ -63,11 +66,13 @@ import type {
 declare const fullApi: ApiFromModules<{
   accounts: typeof accounts;
   admin: typeof admin;
+  adminArtStylePreview: typeof adminArtStylePreview;
   adminJobs: typeof adminJobs;
   adminModeration: typeof adminModeration;
   adminNarratorPreview: typeof adminNarratorPreview;
   adminNarratorPreviewStream: typeof adminNarratorPreviewStream;
   adminNarrators: typeof adminNarrators;
+  adminPets: typeof adminPets;
   assets: typeof assets;
   auth: typeof auth;
   castMembers: typeof castMembers;
@@ -80,6 +85,7 @@ declare const fullApi: ApiFromModules<{
   "lib/assets": typeof lib_assets;
   "lib/castContext": typeof lib_castContext;
   "lib/castSync": typeof lib_castSync;
+  "lib/generation/artStyleDryRun": typeof lib_generation_artStyleDryRun;
   "lib/generation/buildSnapshot": typeof lib_generation_buildSnapshot;
   "lib/generation/previewSnapshot": typeof lib_generation_previewSnapshot;
   "lib/generation/pricing": typeof lib_generation_pricing;
