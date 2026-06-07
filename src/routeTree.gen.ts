@@ -157,16 +157,18 @@ const PPetSlugPostsPostSlugRoute = PPetSlugPostsPostSlugRouteImport.update({
   path: '/p/$petSlug/posts/$postSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppPetsPetIdMemoriesRouteRoute = AppPetsPetIdMemoriesRouteRouteImport.update({
-  id: '/memories',
-  path: '/memories',
-  getParentRoute: () => AppPetsPetIdRoute,
-} as any)
-const AppPetsPetIdMemoriesIndexRoute = AppPetsPetIdMemoriesIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AppPetsPetIdMemoriesRouteRoute,
-} as any)
+const AppPetsPetIdMemoriesRouteRoute =
+  AppPetsPetIdMemoriesRouteRouteImport.update({
+    id: '/memories',
+    path: '/memories',
+    getParentRoute: () => AppPetsPetIdRoute,
+  } as any)
+const AppPetsPetIdMemoriesIndexRoute =
+  AppPetsPetIdMemoriesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppPetsPetIdMemoriesRouteRoute,
+  } as any)
 const AppPetsPetIdMemoriesNewRoute = AppPetsPetIdMemoriesNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -568,21 +570,25 @@ const AppAdminRouteRouteChildren: AppAdminRouteRouteChildren = {
   AppAdminIndexRoute: AppAdminIndexRoute,
 }
 
-const AppAdminRouteRouteWithChildren = AppAdminRouteRoute._addFileChildren(AppAdminRouteRouteChildren)
+const AppAdminRouteRouteWithChildren = AppAdminRouteRoute._addFileChildren(
+  AppAdminRouteRouteChildren,
+)
 
 interface AppPetsPetIdMemoriesRouteRouteChildren {
   AppPetsPetIdMemoriesNewRoute: typeof AppPetsPetIdMemoriesNewRoute
   AppPetsPetIdMemoriesIndexRoute: typeof AppPetsPetIdMemoriesIndexRoute
 }
 
-const AppPetsPetIdMemoriesRouteRouteChildren: AppPetsPetIdMemoriesRouteRouteChildren = {
-  AppPetsPetIdMemoriesNewRoute: AppPetsPetIdMemoriesNewRoute,
-  AppPetsPetIdMemoriesIndexRoute: AppPetsPetIdMemoriesIndexRoute,
-}
+const AppPetsPetIdMemoriesRouteRouteChildren: AppPetsPetIdMemoriesRouteRouteChildren =
+  {
+    AppPetsPetIdMemoriesNewRoute: AppPetsPetIdMemoriesNewRoute,
+    AppPetsPetIdMemoriesIndexRoute: AppPetsPetIdMemoriesIndexRoute,
+  }
 
-const AppPetsPetIdMemoriesRouteRouteWithChildren = AppPetsPetIdMemoriesRouteRoute._addFileChildren(
-  AppPetsPetIdMemoriesRouteRouteChildren,
-)
+const AppPetsPetIdMemoriesRouteRouteWithChildren =
+  AppPetsPetIdMemoriesRouteRoute._addFileChildren(
+    AppPetsPetIdMemoriesRouteRouteChildren,
+  )
 
 interface AppPetsPetIdRouteChildren {
   AppPetsPetIdMemoriesRouteRoute: typeof AppPetsPetIdMemoriesRouteRouteWithChildren
@@ -594,7 +600,9 @@ const AppPetsPetIdRouteChildren: AppPetsPetIdRouteChildren = {
   AppPetsPetIdIndexRoute: AppPetsPetIdIndexRoute,
 }
 
-const AppPetsPetIdRouteWithChildren = AppPetsPetIdRoute._addFileChildren(AppPetsPetIdRouteChildren)
+const AppPetsPetIdRouteWithChildren = AppPetsPetIdRoute._addFileChildren(
+  AppPetsPetIdRouteChildren,
+)
 
 interface AppRouteRouteChildren {
   AppAdminRouteRoute: typeof AppAdminRouteRouteWithChildren
@@ -618,7 +626,9 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppPetsIndexRoute: AppPetsIndexRoute,
 }
 
-const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(AppRouteRouteChildren)
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -630,7 +640,9 @@ const rootRouteChildren: RootRouteChildren = {
   PPetSlugIndexRoute: PPetSlugIndexRoute,
   PPetSlugPostsPostSlugRoute: PPetSlugPostsPostSlugRoute,
 }
-export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
 import type { createStart } from '@tanstack/react-start'

@@ -1,4 +1,62 @@
-Welcome to your new TanStack Start app!
+Lida Bida Boda Butt
+
+## Local Convex Backend
+
+Notes to self because I always forget this stuff.
+
+The Justfile here is copied from the [convex-backend](https://github.com/get-convex/convex-backend) repo. Use **`just convex`** in place of **`npx convex`** so CLI commands hit `http://127.0.0.1:3210` with the local admin key.
+
+**Terminal 1** (from `convex-backend` repo):
+
+```bash
+just run-local-backend
+```
+
+**Terminal 2** (from this repo):
+
+```bash
+just convex dev
+npm run dev
+```
+
+`.env.local` (Vite):
+
+```bash
+VITE_CONVEX_URL=http://127.0.0.1:3210
+VITE_CONVEX_SITE_URL=http://127.0.0.1:3211
+VITE_SITE_URL=http://localhost:3000
+VITE_DEV_AUTH_EMAIL=you@example.com
+VITE_DEV_AUTH_PASSWORD=devpassword123
+```
+
+### Convex Auth JWT keys (`--from-file`)
+
+`npx @convex-dev/auth` does not support self-hosted backends. JWT keys must be set manually.
+
+**Do not** run `just convex env set JWT_PRIVATE_KEY "-----BEGIN..."` — PEM values start with dashes and the CLI parses them as flags (`unknown option '-----BEGIN...'`).
+
+Generate keys and apply them in one step:
+
+```bash
+just convex-auth-env
+```
+
+Or step by step:
+
+```bash
+npx -p jose node scripts/generate-auth-keys.mjs   # writes convex-auth.env.local
+just convex env set --from-file convex-auth.env.local --force
+just convex env set ADMIN_EMAILS you@example.com  # match VITE_DEV_AUTH_EMAIL
+just convex env list
+```
+
+Seed the catalog (narrators, prompts, etc.):
+
+```bash
+just convex run seedNarrators:seedCatalogInternal
+```
+
+More detail: [docs/local-dev.md](docs/local-dev.md).
 
 # Getting Started
 
