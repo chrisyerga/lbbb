@@ -1,6 +1,7 @@
 ---
 name: convex-migration-helper
-description: Plans Convex schema and data migrations with widen-migrate-narrow and
+description:
+  Plans Convex schema and data migrations with widen-migrate-narrow and
   @convex-dev/migrations. Use for breaking schema changes, backfills, table
   reshaping, or zero-downtime rollouts.
 ---
@@ -64,22 +65,22 @@ it existed.
 // Before
 users: defineTable({
   name: v.string(),
-})
+});
 
 // After - safe, new field is optional
 users: defineTable({
   name: v.string(),
   bio: v.optional(v.string()),
-})
+});
 ```
 
 ### Adding New Table
 
 ```typescript
 posts: defineTable({
-  userId: v.id('users'),
+  userId: v.id("users"),
   title: v.string(),
-}).index('by_user', ['userId'])
+}).index("by_user", ["userId"]);
 ```
 
 ### Adding Index
@@ -88,7 +89,7 @@ posts: defineTable({
 users: defineTable({
   name: v.string(),
   email: v.string(),
-}).index('by_email', ['email'])
+}).index("by_email", ["email"]);
 ```
 
 ## Breaking Changes: The Deployment Workflow
@@ -122,7 +123,8 @@ component. It handles batching, cursor-based pagination, state tracking, resume
 from failure, dry runs, and progress monitoring.
 
 See `references/migrations-component.md` for installation, setup, defining and
-running migrations, dry runs, status monitoring, and configuration options.
+running migrations directly with `npx convex run migrations:myMigration`, dry
+runs, status monitoring, and configuration options.
 
 ## Common Migration Patterns
 
@@ -166,8 +168,9 @@ covering:
 - [ ] Update code to write the new format for new documents
 - [ ] Deploy widened schema and updated code
 - [ ] Define migration using the `@convex-dev/migrations` component
-- [ ] Test with `dryRun: true`
-- [ ] Run migration and monitor status
+- [ ] Test with `npx convex run migrations:myMigration '{"dryRun": true}'`
+- [ ] Run migration directly with `npx convex run migrations:myMigration` and
+      monitor status
 - [ ] Verify all documents are migrated
 - [ ] Update schema to require new format only
 - [ ] Clean up code that handled old format
