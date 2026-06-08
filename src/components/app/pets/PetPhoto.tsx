@@ -1,3 +1,5 @@
+import { LogoPaw } from '../icons'
+
 const ACCENTS = ['#E0382E', '#F2A02E', '#3CB07A', '#7E5BFF'] as const
 
 function accentForName(name: string) {
@@ -12,10 +14,11 @@ type PetPhotoProps = {
   name: string
   imageUrl?: string | null
   size?: number
+  accentColor?: string | null
 }
 
-export function PetPhoto({ name, imageUrl, size = 132 }: PetPhotoProps) {
-  const accent = accentForName(name)
+export function PetPhoto({ name, imageUrl, size = 132, accentColor }: PetPhotoProps) {
+  const accent = accentColor ?? accentForName(name)
 
   if (imageUrl) {
     return (
@@ -36,6 +39,11 @@ export function PetPhoto({ name, imageUrl, size = 132 }: PetPhotoProps) {
       >
         {name.charAt(0).toUpperCase()}
       </span>
+      <LogoPaw
+        size={size * 0.45}
+        fg="rgba(255,255,255,.18)"
+        style={{ position: 'absolute', right: -6, bottom: -6, transform: 'rotate(15deg)' }}
+      />
     </div>
   )
 }

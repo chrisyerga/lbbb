@@ -1,7 +1,7 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 import type { GenericQueryCtx } from 'convex/server'
-import type { DataModel, Id } from './_generated/dataModel'
+import type { DataModel, Doc, Id } from './_generated/dataModel'
 import { requirePetAsset, resolveAssetUrl } from './lib/assets'
 import { syncCastMemberFromPet } from './lib/castSync'
 import { parsePetId } from './lib/ids'
@@ -48,6 +48,31 @@ async function resolveAvatarUrl(ctx: GenericQueryCtx<DataModel>, avatarAssetId: 
   return await resolveAssetUrl(ctx, asset)
 }
 
+async function resolvePetDefaults(ctx: GenericQueryCtx<DataModel>, pet: Doc<'pets'>) {
+  const narrator = pet.defaultNarratorId ? await ctx.db.get(pet.defaultNarratorId) : null
+  const artStyle = pet.defaultArtStyleId ? await ctx.db.get(pet.defaultArtStyleId) : null
+
+  return {
+    defaultNarrator:
+      narrator && narrator.status === 'published'
+        ? {
+            _id: narrator._id,
+            slug: narrator.slug,
+            name: narrator.name,
+            exampleExcerpt: narrator.exampleExcerpt,
+          }
+        : null,
+    defaultArtStyle:
+      artStyle && artStyle.status === 'active'
+        ? {
+            _id: artStyle._id,
+            slug: artStyle.slug,
+            name: artStyle.name,
+          }
+        : null,
+  }
+}
+
 async function allocatePetBlogSlug(ctx: DbReader, baseSlug: string) {
   let candidate = baseSlug
   let n = 2
@@ -91,6 +116,10 @@ export const listMine = query({
           .withIndex('by_pet', (q) => q.eq('petId', pet._id))
           .collect()
         const imageCount = images.filter((a) => a.kind === 'generated_image').length
+        const memories = await ctx.db
+          .query('petMemories')
+          .withIndex('by_pet', (q) => q.eq('petId', pet._id))
+          .collect()
 
         const latestPost = posts.reduce<(typeof posts)[number] | null>((latest, post) => {
           if (!latest || post.updatedAt > latest.updatedAt) return post
@@ -103,6 +132,8 @@ export const listMine = query({
           avatarUrl,
           postCount: posts.length,
           imageCount,
+          memoryCount: memories.length,
+          ...(await resolvePetDefaults(ctx, pet)),
           latestPost: latestPost ? { title: latestPost.title, updatedAt: latestPost.updatedAt } : null,
         }
       }),
@@ -128,7 +159,7 @@ export const getMineByPetId = query({
       .withIndex('by_pet', (q) => q.eq('petId', pet._id))
       .first()
     const avatarUrl = await resolveAvatarUrl(ctx, pet.avatarAssetId)
-    return { pet, blog, avatarUrl }
+    return { pet, blog, avatarUrl, ...(await resolvePetDefaults(ctx, pet)) }
   },
 })
 
@@ -210,6 +241,11 @@ export const update = mutation({
     species: v.optional(v.string()),
     breed: v.optional(v.string()),
     bio: v.optional(v.string()),
+    accentColor: v.optional(v.string()),
+    traits: v.optional(v.array(v.string())),
+    featured: v.optional(v.boolean()),
+    defaultNarratorId: v.optional(v.id('narrators')),
+    defaultArtStyleId: v.optional(v.id('artStyles')),
   },
   handler: async (ctx, args) => {
     const user = await requireUser(ctx)
@@ -228,6 +264,21 @@ export const update = mutation({
     if (args.species !== undefined) patch.species = args.species.trim() || undefined
     if (args.breed !== undefined) patch.breed = args.breed.trim() || undefined
     if (args.bio !== undefined) patch.bio = args.bio.trim() || undefined
+    if (args.accentColor !== undefined) patch.accentColor = args.accentColor.trim() || undefined
+    if (args.traits !== undefined) {
+      patch.traits = args.traits.map((trait) => trait.trim()).filter(Boolean)
+    }
+    if (args.featured !== undefined) patch.featured = args.featured
+    if (args.defaultNarratorId !== undefined) {
+      const narrator = await ctx.db.get(args.defaultNarratorId)
+      if (!narrator || narrator.status !== 'published') throw new Error('Narrator not found')
+      patch.defaultNarratorId = args.defaultNarratorId
+    }
+    if (args.defaultArtStyleId !== undefined) {
+      const artStyle = await ctx.db.get(args.defaultArtStyleId)
+      if (!artStyle || artStyle.status !== 'active') throw new Error('Art style not found')
+      patch.defaultArtStyleId = args.defaultArtStyleId
+    }
 
     await ctx.db.patch(args.petId, patch)
 

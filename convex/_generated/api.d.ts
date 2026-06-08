@@ -17,6 +17,7 @@ import type * as adminNarratorPreview from "../adminNarratorPreview.js";
 import type * as adminNarratorPreviewStream from "../adminNarratorPreviewStream.js";
 import type * as adminNarrators from "../adminNarrators.js";
 import type * as adminPets from "../adminPets.js";
+import type * as artStyles from "../artStyles.js";
 import type * as assets from "../assets.js";
 import type * as auth from "../auth.js";
 import type * as castMembers from "../castMembers.js";
@@ -73,6 +74,7 @@ declare const fullApi: ApiFromModules<{
   adminNarratorPreviewStream: typeof adminNarratorPreviewStream;
   adminNarrators: typeof adminNarrators;
   adminPets: typeof adminPets;
+  artStyles: typeof artStyles;
   assets: typeof assets;
   auth: typeof auth;
   castMembers: typeof castMembers;

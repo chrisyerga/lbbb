@@ -25,6 +25,8 @@ import { Route as PPetSlugAboutRouteImport } from './routes/p/$petSlug/about'
 import { Route as AppPetsNewRouteImport } from './routes/app/pets/new'
 import { Route as AppPetsPetIdRouteImport } from './routes/app/pets/$petId'
 import { Route as AppGenerationsJobIdRouteImport } from './routes/app/generations.$jobId'
+import { Route as AppCastNewRouteImport } from './routes/app/cast.new'
+import { Route as AppCastCastMemberIdRouteImport } from './routes/app/cast.$castMemberId'
 import { Route as AppAdminTraitsRouteImport } from './routes/app/admin/traits'
 import { Route as AppAdminNarratorsRouteImport } from './routes/app/admin/narrators'
 import { Route as AppAdminModerationRouteImport } from './routes/app/admin/moderation'
@@ -117,6 +119,16 @@ const AppGenerationsJobIdRoute = AppGenerationsJobIdRouteImport.update({
   path: '/generations/$jobId',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppCastNewRoute = AppCastNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AppCastRoute,
+} as any)
+const AppCastCastMemberIdRoute = AppCastCastMemberIdRouteImport.update({
+  id: '/$castMemberId',
+  path: '/$castMemberId',
+  getParentRoute: () => AppCastRoute,
+} as any)
 const AppAdminTraitsRoute = AppAdminTraitsRouteImport.update({
   id: '/traits',
   path: '/traits',
@@ -182,7 +194,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/app/admin': typeof AppAdminRouteRouteWithChildren
   '/app/account': typeof AppAccountRoute
-  '/app/cast': typeof AppCastRoute
+  '/app/cast': typeof AppCastRouteWithChildren
   '/app/': typeof AppIndexRoute
   '/app/admin/art-styles': typeof AppAdminArtStylesRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
@@ -190,6 +202,8 @@ export interface FileRoutesByFullPath {
   '/app/admin/moderation': typeof AppAdminModerationRoute
   '/app/admin/narrators': typeof AppAdminNarratorsRoute
   '/app/admin/traits': typeof AppAdminTraitsRoute
+  '/app/cast/$castMemberId': typeof AppCastCastMemberIdRoute
+  '/app/cast/new': typeof AppCastNewRoute
   '/app/generations/$jobId': typeof AppGenerationsJobIdRoute
   '/app/pets/$petId': typeof AppPetsPetIdRouteWithChildren
   '/app/pets/new': typeof AppPetsNewRoute
@@ -209,7 +223,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/app/account': typeof AppAccountRoute
-  '/app/cast': typeof AppCastRoute
+  '/app/cast': typeof AppCastRouteWithChildren
   '/app': typeof AppIndexRoute
   '/app/admin/art-styles': typeof AppAdminArtStylesRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
@@ -217,6 +231,8 @@ export interface FileRoutesByTo {
   '/app/admin/moderation': typeof AppAdminModerationRoute
   '/app/admin/narrators': typeof AppAdminNarratorsRoute
   '/app/admin/traits': typeof AppAdminTraitsRoute
+  '/app/cast/$castMemberId': typeof AppCastCastMemberIdRoute
+  '/app/cast/new': typeof AppCastNewRoute
   '/app/generations/$jobId': typeof AppGenerationsJobIdRoute
   '/app/pets/new': typeof AppPetsNewRoute
   '/p/$petSlug/about': typeof PPetSlugAboutRoute
@@ -237,7 +253,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/app/admin': typeof AppAdminRouteRouteWithChildren
   '/app/account': typeof AppAccountRoute
-  '/app/cast': typeof AppCastRoute
+  '/app/cast': typeof AppCastRouteWithChildren
   '/app/': typeof AppIndexRoute
   '/app/admin/art-styles': typeof AppAdminArtStylesRoute
   '/app/admin/costs': typeof AppAdminCostsRoute
@@ -245,6 +261,8 @@ export interface FileRoutesById {
   '/app/admin/moderation': typeof AppAdminModerationRoute
   '/app/admin/narrators': typeof AppAdminNarratorsRoute
   '/app/admin/traits': typeof AppAdminTraitsRoute
+  '/app/cast/$castMemberId': typeof AppCastCastMemberIdRoute
+  '/app/cast/new': typeof AppCastNewRoute
   '/app/generations/$jobId': typeof AppGenerationsJobIdRoute
   '/app/pets/$petId': typeof AppPetsPetIdRouteWithChildren
   '/app/pets/new': typeof AppPetsNewRoute
@@ -276,6 +294,8 @@ export interface FileRouteTypes {
     | '/app/admin/moderation'
     | '/app/admin/narrators'
     | '/app/admin/traits'
+    | '/app/cast/$castMemberId'
+    | '/app/cast/new'
     | '/app/generations/$jobId'
     | '/app/pets/$petId'
     | '/app/pets/new'
@@ -303,6 +323,8 @@ export interface FileRouteTypes {
     | '/app/admin/moderation'
     | '/app/admin/narrators'
     | '/app/admin/traits'
+    | '/app/cast/$castMemberId'
+    | '/app/cast/new'
     | '/app/generations/$jobId'
     | '/app/pets/new'
     | '/p/$petSlug/about'
@@ -330,6 +352,8 @@ export interface FileRouteTypes {
     | '/app/admin/moderation'
     | '/app/admin/narrators'
     | '/app/admin/traits'
+    | '/app/cast/$castMemberId'
+    | '/app/cast/new'
     | '/app/generations/$jobId'
     | '/app/pets/$petId'
     | '/app/pets/new'
@@ -470,6 +494,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppGenerationsJobIdRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/app/cast/new': {
+      id: '/app/cast/new'
+      path: '/new'
+      fullPath: '/app/cast/new'
+      preLoaderRoute: typeof AppCastNewRouteImport
+      parentRoute: typeof AppCastRoute
+    }
+    '/app/cast/$castMemberId': {
+      id: '/app/cast/$castMemberId'
+      path: '/$castMemberId'
+      fullPath: '/app/cast/$castMemberId'
+      preLoaderRoute: typeof AppCastCastMemberIdRouteImport
+      parentRoute: typeof AppCastRoute
+    }
     '/app/admin/traits': {
       id: '/app/admin/traits'
       path: '/traits'
@@ -574,6 +612,19 @@ const AppAdminRouteRouteWithChildren = AppAdminRouteRoute._addFileChildren(
   AppAdminRouteRouteChildren,
 )
 
+interface AppCastRouteChildren {
+  AppCastCastMemberIdRoute: typeof AppCastCastMemberIdRoute
+  AppCastNewRoute: typeof AppCastNewRoute
+}
+
+const AppCastRouteChildren: AppCastRouteChildren = {
+  AppCastCastMemberIdRoute: AppCastCastMemberIdRoute,
+  AppCastNewRoute: AppCastNewRoute,
+}
+
+const AppCastRouteWithChildren =
+  AppCastRoute._addFileChildren(AppCastRouteChildren)
+
 interface AppPetsPetIdMemoriesRouteRouteChildren {
   AppPetsPetIdMemoriesNewRoute: typeof AppPetsPetIdMemoriesNewRoute
   AppPetsPetIdMemoriesIndexRoute: typeof AppPetsPetIdMemoriesIndexRoute
@@ -607,7 +658,7 @@ const AppPetsPetIdRouteWithChildren = AppPetsPetIdRoute._addFileChildren(
 interface AppRouteRouteChildren {
   AppAdminRouteRoute: typeof AppAdminRouteRouteWithChildren
   AppAccountRoute: typeof AppAccountRoute
-  AppCastRoute: typeof AppCastRoute
+  AppCastRoute: typeof AppCastRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
   AppGenerationsJobIdRoute: typeof AppGenerationsJobIdRoute
   AppPetsPetIdRoute: typeof AppPetsPetIdRouteWithChildren
@@ -618,7 +669,7 @@ interface AppRouteRouteChildren {
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppAdminRouteRoute: AppAdminRouteRouteWithChildren,
   AppAccountRoute: AppAccountRoute,
-  AppCastRoute: AppCastRoute,
+  AppCastRoute: AppCastRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
   AppGenerationsJobIdRoute: AppGenerationsJobIdRoute,
   AppPetsPetIdRoute: AppPetsPetIdRouteWithChildren,

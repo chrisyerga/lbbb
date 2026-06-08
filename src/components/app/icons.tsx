@@ -80,6 +80,60 @@ export function IconSparkle(props: IconProps) {
   )
 }
 
+export function IconPlus(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 5v14M5 12h14" />
+    </Icon>
+  )
+}
+
+export function IconPencil(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z" />
+      <path d="M14 7l3 3" />
+    </Icon>
+  )
+}
+
+export function IconRss(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M5 5c7.7 0 14 6.3 14 14" />
+      <path d="M5 11c4.4 0 8 3.6 8 8" />
+      <circle cx="6.5" cy="17.5" r="1.5" fill="currentColor" stroke="none" />
+    </Icon>
+  )
+}
+
+export function IconPalette(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 4a8 8 0 0 0 0 16h1.2a1.8 1.8 0 0 0 1.3-3.1l-.4-.4a1.3 1.3 0 0 1 .9-2.2h1.2A3.8 3.8 0 0 0 20 10.5C20 6.9 16.4 4 12 4z" />
+      <circle cx="8.5" cy="10" r=".8" fill="currentColor" stroke="none" />
+      <circle cx="11.5" cy="8" r=".8" fill="currentColor" stroke="none" />
+      <circle cx="14.5" cy="10" r=".8" fill="currentColor" stroke="none" />
+    </Icon>
+  )
+}
+
+export function IconCheck(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M5 12.5l4.2 4.2L19 7" />
+    </Icon>
+  )
+}
+
+export function IconArrowUp(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 19V5M5 12l7-7 7 7" />
+    </Icon>
+  )
+}
+
 export function LogoPaw({ size = 26, fg = '#fff', style = {} }: { size?: number; fg?: string; style?: CSSProperties }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill={fg} style={{ display: 'block', ...style }}>

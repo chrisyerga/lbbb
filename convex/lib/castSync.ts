@@ -31,6 +31,7 @@ export async function syncCastMemberFromPet(ctx: MutationCtx, pet: Doc<'pets'>):
     species: pet.species,
     breed: pet.breed,
     avatarAssetId: pet.avatarAssetId,
+    relatedPetIds: existing?.relatedPetIds ?? [],
     updatedAt: now,
   }
 
@@ -49,6 +50,7 @@ export async function syncCastMemberFromPet(ctx: MutationCtx, pet: Doc<'pets'>):
     name: pet.name,
     aliases: [],
     kind: 'pet',
+    relatedPetIds: [],
     species: pet.species,
     breed: pet.breed,
     visualDescription: defaultVisualDescriptionFromPet(pet),

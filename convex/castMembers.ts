@@ -1,13 +1,20 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
 import type { GenericMutationCtx, GenericQueryCtx } from 'convex/server'
-import type { DataModel, Doc } from './_generated/dataModel'
+import type { DataModel, Doc, Id } from './_generated/dataModel'
 import { resolveAssetUrl, requireCastMemberOwner } from './lib/assets'
 import { nameMatchesMemory } from './lib/castContext'
 import { syncAllCastMembersFromPets } from './lib/castSync'
 import { requireUser } from './lib/requireUser'
 
 type Ctx = GenericQueryCtx<DataModel> | GenericMutationCtx<DataModel>
+const relKind = v.union(
+  v.literal('family'),
+  v.literal('friend'),
+  v.literal('pal'),
+  v.literal('neighbor'),
+  v.literal('nemesis'),
+)
 
 async function resolveMemberAvatarUrl(
   ctx: Ctx,
@@ -18,6 +25,46 @@ async function resolveMemberAvatarUrl(
   const asset = await ctx.db.get(assetId)
   if (!asset) return null
   return await resolveAssetUrl(ctx, asset)
+}
+
+async function resolvePetAvatarUrl(ctx: Ctx, avatarAssetId: Id<'assets'> | undefined) {
+  if (!avatarAssetId) return null
+  const asset = await ctx.db.get(avatarAssetId)
+  if (!asset) return null
+  return await resolveAssetUrl(ctx, asset)
+}
+
+async function resolveRelatedPets(ctx: Ctx, petIds: Array<Id<'pets'>> | undefined) {
+  if (!petIds?.length) return []
+  const pets = await Promise.all(
+    petIds.map(async (petId) => {
+      const pet = await ctx.db.get(petId)
+      if (!pet || pet.deletedAt !== undefined) return null
+      return {
+        _id: pet._id,
+        name: pet.name,
+        avatarUrl: await resolvePetAvatarUrl(ctx, pet.avatarAssetId),
+        accentColor: pet.accentColor ?? null,
+      }
+    }),
+  )
+  return pets.filter((pet): pet is NonNullable<typeof pet> => pet !== null)
+}
+
+function appearanceCount(member: Doc<'castMembers'>, memories: Array<Doc<'petMemories'>>) {
+  return memories.filter((memory) => {
+    if (member.linkedPetId && memory.petId === member.linkedPetId) return true
+    return nameMatchesMemory(memory.description, member.name, member.aliases)
+  }).length
+}
+
+async function assertRelatedPetOwnership(ctx: Ctx, ownerUserId: Id<'users'>, petIds: Array<Id<'pets'>>) {
+  for (const petId of petIds) {
+    const pet = await ctx.db.get(petId)
+    if (!pet || pet.deletedAt !== undefined || pet.ownerUserId !== ownerUserId) {
+      throw new Error('Related pet not found')
+    }
+  }
 }
 
 export const listMine = query({
@@ -31,6 +78,10 @@ export const listMine = query({
       .collect()
 
     members.sort((a, b) => a.sortOrder - b.sortOrder)
+    const memories = await ctx.db
+      .query('petMemories')
+      .withIndex('by_owner', (q) => q.eq('ownerUserId', user._id))
+      .collect()
 
     return Promise.all(
       members.map(async (member) => {
@@ -39,6 +90,8 @@ export const listMine = query({
           ...member,
           avatarUrl: await resolveMemberAvatarUrl(ctx, member),
           linkedPetName: linkedPet?.name ?? null,
+          relatedPets: await resolveRelatedPets(ctx, member.relatedPetIds),
+          appearanceCount: appearanceCount(member, memories),
         }
       }),
     )
@@ -63,11 +116,17 @@ export const getById = query({
     )
 
     const linkedPet = member.linkedPetId ? await ctx.db.get(member.linkedPetId) : null
+    const memories = await ctx.db
+      .query('petMemories')
+      .withIndex('by_owner', (q) => q.eq('ownerUserId', user._id))
+      .collect()
 
     return {
       ...member,
       avatarUrl: await resolveMemberAvatarUrl(ctx, member),
       linkedPetName: linkedPet?.name ?? null,
+      relatedPets: await resolveRelatedPets(ctx, member.relatedPetIds),
+      appearanceCount: appearanceCount(member, memories),
       referencePhotos: referencePhotos.filter((photo): photo is NonNullable<typeof photo> => photo !== null),
     }
   },
@@ -87,7 +146,9 @@ export const create = mutation({
     name: v.string(),
     kind: v.union(v.literal('person'), v.literal('animal')),
     aliases: v.optional(v.array(v.string())),
+    relKind: v.optional(relKind),
     relationship: v.optional(v.string()),
+    relatedPetIds: v.optional(v.array(v.id('pets'))),
     species: v.optional(v.string()),
     breed: v.optional(v.string()),
     visualDescription: v.string(),
@@ -99,6 +160,7 @@ export const create = mutation({
 
     const visualDescription = args.visualDescription.trim()
     if (!visualDescription) throw new Error('Visual description is required')
+    await assertRelatedPetOwnership(ctx, user._id, args.relatedPetIds ?? [])
 
     const members = await ctx.db
       .query('castMembers')
@@ -112,7 +174,9 @@ export const create = mutation({
       name,
       aliases: (args.aliases ?? []).map((alias) => alias.trim()).filter(Boolean),
       kind: args.kind,
+      relKind: args.relKind,
       relationship: args.relationship?.trim() || undefined,
+      relatedPetIds: args.relatedPetIds ?? [],
       species: args.species?.trim() || undefined,
       breed: args.breed?.trim() || undefined,
       visualDescription,
@@ -132,7 +196,9 @@ export const update = mutation({
     castMemberId: v.id('castMembers'),
     name: v.optional(v.string()),
     aliases: v.optional(v.array(v.string())),
+    relKind: v.optional(relKind),
     relationship: v.optional(v.string()),
+    relatedPetIds: v.optional(v.array(v.id('pets'))),
     species: v.optional(v.string()),
     breed: v.optional(v.string()),
     visualDescription: v.optional(v.string()),
@@ -152,8 +218,15 @@ export const update = mutation({
     if (args.aliases !== undefined) {
       patch.aliases = args.aliases.map((alias) => alias.trim()).filter(Boolean)
     }
+    if (args.relKind !== undefined) {
+      patch.relKind = args.relKind
+    }
     if (args.relationship !== undefined) {
       patch.relationship = args.relationship.trim() || undefined
+    }
+    if (args.relatedPetIds !== undefined) {
+      await assertRelatedPetOwnership(ctx, user._id, args.relatedPetIds)
+      patch.relatedPetIds = args.relatedPetIds
     }
     if (args.species !== undefined) {
       patch.species = args.species.trim() || undefined
