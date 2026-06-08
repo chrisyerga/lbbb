@@ -15,4 +15,4 @@ todos.json
 yerga-localfiles/
 client_secret_*.json
 .tmp/
-
+.pnpm-store/
